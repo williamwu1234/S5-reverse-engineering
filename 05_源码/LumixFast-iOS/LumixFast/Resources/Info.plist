@@ -1,0 +1,61 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+ <plist version="1.0">
+ <dict>
+     <key>CFBundleDevelopmentRegion</key>
+     <string>zh-Hans</string>
+     <key>CFBundleLocalizations</key>
+     <array>
+         <string>zh-Hans</string>
+         <string>en</string>
+     </array>
+     <key>CFBundleDisplayName</key>
+     <string>Lumix Fast</string>
+     <key>CFBundleExecutable</key>
+     <string>$(EXECUTABLE_NAME)</string>
+     <key>CFBundleIdentifier</key>
+     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+     <key>CFBundleInfoDictionaryVersion</key>
+     <string>6.0</string>
+     <key>CFBundleName</key>
+     <string>$(PRODUCT_NAME)</string>
+     <key>CFBundlePackageType</key>
+     <string>APPL</string>
+     <key>CFBundleShortVersionString</key>
+     <string>1.0.0</string>
+     <key>CFBundleVersion</key>
+     <string>1</string>
+     <key>LSRequiresIPhoneOS</key>
+     <true/>
+     <key>UILaunchScreen</key>
+     <dict/>
+     <key>UIRequiredDeviceCapabilities</key>
+     <array>
+         <string>arm64</string>
+         <string>local-network</string>
+     </array>
+     <key>UISupportedInterfaceOrientations</key>
+     <array>
+         <string>UIInterfaceOrientationPortrait</string>
+         <string>UIInterfaceOrientationLandscapeLeft</string>
+         <string>UIInterfaceOrientationLandscapeRight</string>
+     </array>
+     <key>UISupportedInterfaceOrientations~ipad</key>
+     <array>
+         <string>UIInterfaceOrientationPortrait</string>
+         <string>UIInterfaceOrientationPortraitUpsideDown</string>
+         <string>UIInterfaceOrientationLandscapeLeft</string>
+         <string>UIInterfaceOrientationLandscapeRight</string>
+     </array>
+     <!-- Local network / Bonjour (required for Wi-Fi camera control) -->
+     <key>NSLocalNetworkUsageDescription</key>
+     <string>用于在本地网络上发现并连接 Lumix 相机，进行取景、快门和照片回传。全程在本地网络完成，不上传云端。</string>
+     <key>NSBonjourServices</key>
+     <array>
+         <string>_http._tcp.</string>
+     </array>
+     <!-- Photos (save transferred images) -->
+     <key>NSPhotoLibraryAddUsageDescription</key>
+     <string>用于将相机回传的照片保存到系统相册。</string>
+ </dict>
+ </plist>

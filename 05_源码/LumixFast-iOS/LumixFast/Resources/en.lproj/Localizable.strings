@@ -1,0 +1,35 @@
+ /* Lumix Fast - English */
+
+ "Lumix Fast" = "Lumix Fast";
+ "LUMIX 遥控 / 联机" = "LUMIX Remote / Tether";
+ "通过 Wi-Fi 连接相机，实现取景、快门与照片回传。全程本地运行，无云端。" = "Connect to your camera over Wi-Fi for live view, shutter and photo transfer. Runs entirely on the local network, no cloud.";
+ "授权相册（用于保存回传的照片）" = "Authorize Photos (to save transferred images)";
+ "手动输入相机 IP" = "Enter camera IP";
+ "连接" = "Connect";
+ "自动发现（Bonjour）" = "Auto-discover (Bonjour)";
+ "未发现相机。请确认相机已开启 Wi-Fi 并与手机在同一网络。" = "No camera found. Make sure the camera's Wi-Fi is on and it's on the same network.";
+ "取景" = "Live View";
+ "相册" = "Gallery";
+ "设置" = "Settings";
+ "等待取景画面…" = "Waiting for live view…";
+ "对焦·广角" = "Focus · Wide";
+ "对焦·正常" = "Focus · Normal";
+ "对焦·长焦" = "Focus · Tele";
+ "停止对焦" = "Stop focus";
+ "关机" = "Power off";
+ "开机" = "Power on";
+ "相机相册" = "Camera Gallery";
+ "上级目录" = "Up a level";
+ "没有内容" = "No content";
+ "正在下载…" = "Downloading…";
+ "下载照片" = "Download photo";
+ "保存到相册" = "Save to Photos";
+ "取消" = "Cancel";
+ "照片风格" = "Photo Style";
+ "拍摄设置" = "Capture Settings";
+ "通过 cam.cgi setsetting 写入机内照片风格。" = "Writes the in-camera photo style via cam.cgi setsetting.";
+ "连接信息" = "Connection";
+ "相机地址" = "Camera address";
+ "固件" = "Firmware";
+ "模式" = "Mode";
+ "断开连接" = "Disconnect";

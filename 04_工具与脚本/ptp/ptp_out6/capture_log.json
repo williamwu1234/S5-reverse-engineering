@@ -1,0 +1,13 @@
+[
+  {
+    "purpose" : "readonly_0x9421_dump",
+    "model_filter" : "S5",
+    "event" : "started",
+    "mode" : "dump",
+    "time_utc" : "2026-10-12T20:30:36Z"
+  },
+  {
+    "event" : "timeout",
+    "time_utc" : "2026-10-12T20:33:36Z"
+  }
+]

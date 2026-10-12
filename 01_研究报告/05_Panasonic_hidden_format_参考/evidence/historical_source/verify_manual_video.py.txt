@@ -1,0 +1,15 @@
+from pathlib import Path
+import subprocess,json,re,hashlib
+BASE=Path(__file__).parent;OUT=BASE/'wifi_captures/latest_record_20261012_014052'
+VIDEO=OUT/'P1022641.MP4'
+FF=Path('/Users/grau/.codex/.chatgpt-projects/g-p-6aad2a4507808191a2d6737e3eece318/outputs/s1h_readonly/tools/ffmpeg')
+if not VIDEO.exists():raise SystemExit('Wait until complete download exists')
+subprocess.run(['python3',str(BASE/'inspect_test_mp4.py'),str(VIDEO)],check=True,stdout=subprocess.DEVNULL)
+args=[str(FF),'-hide_banner','-nostdin','-xerror','-i',str(VIDEO),'-map','0:v:0','-map','0:a:0','-vf','showinfo','-f','null','-']
+with (OUT/'full_decode.log').open('w') as f:r=subprocess.run(args,stdout=f,stderr=subprocess.STDOUT)
+log=(OUT/'full_decode.log').read_text();frames=re.findall(r'\bn:\s*(\d+) pts:.*?fmt:(\S+).*?s:(\d+x\d+).*?iskey:(\d+) type:(\S+)',log)
+meta=json.loads(VIDEO.with_suffix('.metadata.json').read_text());track=next(x for x in meta['tracks'] if x['handler']=='vide')
+expected=track['sample_count'];full=r.returncode==0 and len(frames)==expected and [int(x[0]) for x in frames]==list(range(expected))
+result=dict(candidate='mp4ed_25p_400mbps_4k_10bit',file=str(VIDEO),sha256=meta['sha256'],bytes=meta['bytes'],duration_seconds=track['duration_seconds'],fps=track['sample_rate_average'],width=track['width'],height=track['height'],ffmpeg_exit_code=r.returncode,decoded_frames=len(frames),expected_frames=expected,all_frames_decoded=full,pixel_formats=sorted({x[1] for x in frames}),frame_geometries=sorted({x[2] for x in frames}),all_frames_intra=bool(frames) and all(x[4]=='I' for x in frames),all_frames_keyframes=bool(frames) and all(x[3]=='1' for x in frames),audio_stream=next((x.strip() for x in log.splitlines() if 'Audio:' in x),None),video_stream=next((x.strip() for x in log.splitlines() if 'Video:' in x),None),file_average_bitrate=meta['file_average_bitrate'],nominal_setting_mbps=400,notes=['All decoded frames are checked; nominal 400Mbps setting is not a measured constant bitrate.','MP4+LPCM hidden combination is verified for this 6.72 second clip; equivalent image encoding exists in official MOV recording modes.','No sensor performance unlock, executable injection or firmware decryption demonstrated.'])
+(OUT/'verified_recording.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False))
+if not full:raise SystemExit(1)

@@ -1,0 +1,31 @@
+{
+  "candidate": "mp4ed_25p_400mbps_4k_10bit",
+  "file": "./P1022641.MP4",
+  "sha256": "a579a0ff325ed380ac8f6162421f8a382a19c9597e997fd6cf53aed072f19059",
+  "bytes": 223826574,
+  "duration_seconds": 6.72,
+  "fps": 25.0,
+  "width": 3840,
+  "height": 2160,
+  "ffmpeg_exit_code": 0,
+  "decoded_frames": 168,
+  "expected_frames": 168,
+  "all_frames_decoded": true,
+  "pixel_formats": [
+    "yuv422p10le"
+  ],
+  "frame_geometries": [
+    "3840x2160"
+  ],
+  "all_frames_intra": true,
+  "all_frames_keyframes": true,
+  "audio_stream": "Stream #0:1[0x2](und): Audio: pcm_s16be (twos / 0x736F7774), 48000 Hz, stereo, s16, 1536 kb/s (default)",
+  "video_stream": "Stream #0:0[0x1](und): Video: h264 (High 4:2:2 Intra) (avc1 / 0x31637661), yuv422p10le(pc, bt709, progressive), 3840x2160 [SAR 1:1 DAR 16:9], 252128 kb/s, 25 fps, 25 tbr, 90k tbn (default)",
+  "file_average_bitrate": 266460207.14285716,
+  "nominal_setting_mbps": 400,
+  "notes": [
+    "All decoded frames are checked; nominal 400Mbps setting is not a measured constant bitrate.",
+    "MP4+LPCM hidden combination is verified for this 6.72 second clip; equivalent image encoding exists in official MOV recording modes.",
+    "No sensor performance unlock, executable injection or firmware decryption demonstrated."
+  ]
+}

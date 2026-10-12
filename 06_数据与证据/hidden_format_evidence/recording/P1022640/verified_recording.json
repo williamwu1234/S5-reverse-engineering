@@ -1,0 +1,16 @@
+{
+  "exit_code": 0,
+  "video_size": [
+    1280,
+    720
+  ],
+  "fps": 25,
+  "decoded_frames": 180,
+  "pixel_format": "yuvj420p",
+  "codec": "H264 High",
+  "duration_seconds": 7.2,
+  "source": "MP4 parser plus independent FFmpeg full video decode",
+  "hardware_decoder_failed": true,
+  "software_decoder_succeeded": true,
+  "caution": "Hidden 10Mbps token is a nominal quality selection; measured average bitrate is lower on this static scene. No higher-performance recording verified."
+}

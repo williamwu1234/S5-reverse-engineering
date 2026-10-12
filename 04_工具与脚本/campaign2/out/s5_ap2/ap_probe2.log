@@ -1,0 +1,63 @@
+===================================================
+### wifi_ap_probe2.sh 启动 2026-10-13 06:39:02  缓冲 30s
+===================================================
+[orig] ip=192.168.1.96 gw=192.168.1.1
+[orig] 候选网络数: 92
+
+=============== 切换网络 2026-10-13 06:39:32 ===============
+[ap] SSID=S5-70E253 ip=192.168.54.10 gw=192.168.54.1
+[ap] LEFT_HOME=1
+
+=============== 第二轮取证 2026-10-13 06:39:38 ===============
+### SoftAP 第二轮 @ 2026-10-13 06:39:38  cam=192.168.54.1
+[0] getstate -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_reject</result></camrply>
+[0] accctrl req_acc -> err_user_refused,S5-70E253,remote,open
+
+[1] accctrl req_acc_g（只读，取握手密钥）
+    HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_param</result></camrply>
+    原始长度 85
+
+[2] accctrl req_acc  value=4D454930-0100-1000-8001-00006acd61ab value2=MacProbe
+    HTTP 200 | err_user_refused,S5-70E253,remote,open
+    +3s 后 req_acc 状态 -> ok_under_research,S5-70E253,remote,open
+    +6s 后 req_acc 状态 -> err_user_refused,S5-70E253,remote,open
+    +9s 后 req_acc 状态 -> ok_under_research,S5-70E253,remote,open
+
+[3] 请求访问后复测读端点
+    getstate                 -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+    getinfo capability       -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+    getinfo lens             -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+    getsetting videoformat   -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+    startsenddata            -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+
+[4] accctrl req_acc_can（清理 pending）
+    HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+
+[5] 新端口服务识别
+  -- port 50001 --
+     HTTP/raw: 
+  -- port 60606 --
+     HTTP/raw: HTTP/1.1 404 Not Found CONNECTION: close
+     /                                              -> 404 | Server=- | 
+     /index.html                                    -> 404 | Server=- | 
+     /rootDesc.xml                                  -> 404 | Server=- | 
+     /description.xml                               -> 404 | Server=- | 
+     /upnp/control/content_directory                -> 404 | Server=- | 
+     /cgi-bin/magicBox.cgi?action=getDeviceInfo     -> 404 | Server=- | 
+
+[6] 全端口扫描 1-65535（并行）
+    开放端口: [80, 50001, 60606]
+
+### 第二轮完成 -> /Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/04_工具与脚本/campaign2/out/s5_ap2/ap_probe2.json
+=============== 取证结束 2026-10-13 06:40:44 ===============
+
+[restore] === 开始切回原网络，目标网关 192.168.1.1 ===
+[restore] 成功 -> "ChinaNet-VhtX-5G" ip=192.168.1.96 (第1轮)
+
+[final] ip=192.168.1.96 gw=192.168.1.1
+[final] 联网自检 HTTP=200
+### 全部完成 2026-10-13 06:42:13
+[trap] 异常退出，执行恢复
+[restore] === 开始切回原网络，目标网关 192.168.1.1 ===
+[restore] 成功 -> "2401-5G" ip=192.168.1.96 (第1轮)
+[trap] 恢复流程结束

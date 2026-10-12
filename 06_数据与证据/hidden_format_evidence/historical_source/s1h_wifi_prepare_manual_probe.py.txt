@@ -1,0 +1,47 @@
+# -*- coding: utf-8 -*-
+from pathlib import Path
+import datetime,json,time,urllib.parse,xml.etree.ElementTree as E
+from s1h_wifi_read import read_url
+BASE=Path(__file__).parent;OUT=BASE/'wifi_captures'/datetime.datetime.now().strftime('manual_probe_%Y%m%d_%H%M%S');OUT.mkdir()
+TARGET='mp4ed_25p_400mbps_4k_10bit';logs=[];origfmt=None;origq=None;mp4q=None;attempt=False;prepared=False;error=None;restore_errors=[];baseline=None;before_count=None
+allowed=set()
+def call(label,mode,**args):
+ if mode=='setsetting' and (args.get('type'),args.get('value')) not in allowed:raise ValueError('Outside exact settings allowlist')
+ if mode=='camcmd' and args.get('value') not in ('playmode','recmode'):raise ValueError('No recording commands allowed')
+ if mode not in ('getinfo','getsetting','getstate','get_content_info','setsetting','camcmd'):raise ValueError('Unknown mode')
+ b=read_url('http://192.168.2.107/cam.cgi?'+urllib.parse.urlencode({'mode':mode,**args}));(OUT/(label+'.bin')).write_bytes(b);r=E.fromstring(b) if b.lstrip().startswith(b'<') else None
+ logs.append({'label':label,'mode':mode,**args,'result':r.findtext('result') if r is not None else 'binary'});(OUT/'requests.json').write_text(json.dumps(logs,indent=2))
+ if r is not None and r.findtext('result')!='ok':raise ValueError(str(logs[-1]))
+ time.sleep(1.2 if mode in ('setsetting','camcmd') else .3);return r,b
+def val(label,k):
+ r,_=call(label,'getsetting',type=k);return r.find('settingvalue').get(k)
+try:
+ r,_=call('identity','getinfo',type='capability')
+ if r.findtext('productinfo/modelname')!='S1H':raise ValueError('Not S1H')
+ r,_=call('initial_state','getstate')
+ if r.findtext('state/rec')!='off' or r.findtext('state/cammode')!='rec':raise ValueError('Not stopped standby')
+ origfmt=val('original_format','videoformat');origq=val('original_quality','videoquality');_,baseline=call('baseline_snapshot','getinfo',type='camsetting')
+ allowed.update([('videoformat',origfmt),('videoformat','mp4'),('videoquality',origq),('videoquality',TARGET),('videoquality','mp4ed_50p_100mbps')])
+ call('count_playback','camcmd',value='playmode');r,_=call('before_count','get_content_info');before_count=int(r.findtext('content_number'));call('count_restore_standby','camcmd',value='recmode')
+ c,_=call('initial_menu','getinfo',type='curmenu');states={x.get('id'):x.get('enable') for x in c.iter() if x.get('id')}
+ if states.get('menu_item_id_videoformat_mp4')!='yes':raise ValueError('MP4 unavailable')
+ attempt=True;call('mp4_format','setsetting',type='videoformat',value='mp4');mp4q=val('saved_mp4_quality','videoquality');allowed.add(('videoquality',mp4q))
+ c,_=call('mp4_menu','getinfo',type='curmenu');states={x.get('id'):x.get('enable') for x in c.iter() if x.get('id')}
+ if states.get('menu_item_id_v_quality_'+TARGET)!='yes':raise ValueError('Test target not enabled')
+ call('target_set','setsetting',type='videoquality',value=TARGET)
+ for i in range(2):
+  if val('target_readback_'+str(i),'videoquality')!=TARGET:raise ValueError('Target readback mismatch')
+ target_format=val('target_format','videoformat');_,target_snapshot=call('target_snapshot','getinfo',type='camsetting')
+ r,_=call('prepared_state','getstate')
+ if r.findtext('state/rec')!='off':raise ValueError('Unexpected recording')
+ prepared=True
+except Exception as e:error=str(e)
+finally:
+ if not prepared and attempt:
+  for label,kind,v in [('rollback_mp4_format','videoformat','mp4'),('rollback_secondary','videoquality','mp4ed_50p_100mbps'),('rollback_mp4_format_again','videoformat','mp4'),('rollback_mp4_quality','videoquality',mp4q),('rollback_format','videoformat',origfmt),('rollback_quality','videoquality',origq)]:
+   if v is None:continue
+   try:call(label,'setsetting',type=kind,value=v)
+   except Exception as e:restore_errors.append(str(e))
+  try:call('rollback_standby','camcmd',value='recmode')
+  except Exception as e:restore_errors.append(str(e))
+ result={'capture':str(OUT.resolve()),'status':'awaiting_manual_recording' if prepared else 'not_prepared','target':TARGET,'original_format':origfmt,'original_quality':origq,'mp4_saved_quality':mp4q,'target_format':target_format if prepared else None,'before_content_count':before_count,'error':error,'restore_errors':restore_errors,'recording_started_by_script':False};(OUT/'prepared.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))

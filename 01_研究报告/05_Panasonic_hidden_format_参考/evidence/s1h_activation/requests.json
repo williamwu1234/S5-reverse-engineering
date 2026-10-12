@@ -1,0 +1,97 @@
+[
+  {
+    "label": "identity",
+    "mode": "getinfo",
+    "type": "capability",
+    "result": "ok"
+  },
+  {
+    "label": "initial_state",
+    "mode": "getstate",
+    "result": "ok"
+  },
+  {
+    "label": "original_format",
+    "mode": "getsetting",
+    "type": "videoformat",
+    "result": "ok"
+  },
+  {
+    "label": "original_quality",
+    "mode": "getsetting",
+    "type": "videoquality",
+    "result": "ok"
+  },
+  {
+    "label": "count_playback",
+    "mode": "camcmd",
+    "value": "playmode",
+    "result": "ok"
+  },
+  {
+    "label": "before_count",
+    "mode": "get_content_info",
+    "result": "ok"
+  },
+  {
+    "label": "count_restore_standby",
+    "mode": "camcmd",
+    "value": "recmode",
+    "result": "ok"
+  },
+  {
+    "label": "initial_menu",
+    "mode": "getinfo",
+    "type": "curmenu",
+    "result": "ok"
+  },
+  {
+    "label": "mp4_format",
+    "mode": "setsetting",
+    "type": "videoformat",
+    "value": "mp4",
+    "result": "ok"
+  },
+  {
+    "label": "saved_mp4_quality",
+    "mode": "getsetting",
+    "type": "videoquality",
+    "result": "ok"
+  },
+  {
+    "label": "mp4_menu",
+    "mode": "getinfo",
+    "type": "curmenu",
+    "result": "ok"
+  },
+  {
+    "label": "target_set",
+    "mode": "setsetting",
+    "type": "videoquality",
+    "value": "mp4ed_25p_400mbps_4k_10bit",
+    "result": "ok"
+  },
+  {
+    "label": "target_readback_0",
+    "mode": "getsetting",
+    "type": "videoquality",
+    "result": "ok"
+  },
+  {
+    "label": "target_readback_1",
+    "mode": "getsetting",
+    "type": "videoquality",
+    "result": "ok"
+  },
+  {
+    "label": "target_format",
+    "mode": "getsetting",
+    "type": "videoformat",
+    "result": "ok"
+  },
+  {
+    "label": "prepared_state",
+    "mode": "getstate",
+    "result": "ok"
+  }
+]

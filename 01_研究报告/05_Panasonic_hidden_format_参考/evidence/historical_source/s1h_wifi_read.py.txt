@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+"""Discover a local S1H and collect advertised menu settings. No setter/upload commands."""
+import argparse
+import datetime
+import ipaddress
+import json
+import re
+import socket
+import time
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+def read_url(url):
+    parsed = urllib.parse.urlsplit(url)
+    address = ipaddress.ip_address(parsed.hostname)
+    if parsed.scheme != 'http' or not address.is_private or address.is_loopback:
+        raise ValueError('Only advertised private-LAN HTTP addresses are accepted')
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+    with opener.open(url, timeout=4) as response:
+        body = response.read(4 * 1024 * 1024 + 1)
+        if len(body) > 4 * 1024 * 1024:
+            raise ValueError('Response exceeds read limit')
+        return body
+
+
+def discover(folder):
+    replies = []
+    packet = ('M-SEARCH * HTTP/1.1\r\nHOST: 239.255.255.250:1900\r\n'
+              'MAN: "ssdp:discover"\r\nMX: 2\r\nST: ssdp:all\r\n\r\n').encode()
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        sock.bind(('', 0))
+        sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
+        sock.sendto(packet, ('239.255.255.250', 1900))
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            sock.settimeout(max(0.01, deadline - time.monotonic()))
+            try:
+                data, peer = sock.recvfrom(16384)
+            except socket.timeout:
+                break
+            fields = {}
+            for line in data.decode('utf-8', 'replace').splitlines()[1:]:
+                key, sep, value = line.partition(':')
+                if sep:
+                    fields[key.lower()] = value.strip()
+            replies.append({'peer': peer[0], 'headers': fields})
+    locations = sorted({r['headers'].get('location', '') for r in replies} - {''})
+    devices = []
+    for index, location in enumerate(locations[:24]):
+        record = {'location': location}
+        try:
+            body = read_url(location)
+            root = ET.fromstring(body)
+            values = {e.tag.split('}')[-1]: (e.text or '').strip() for e in root.iter()
+                      if e.tag.split('}')[-1] in ('manufacturer', 'modelName', 'modelNumber', 'friendlyName')}
+            record.update(values)
+            record['s1h_identified'] = ('panasonic' in values.get('manufacturer', '').lower()
+                and bool(re.search(r'(?<![a-z0-9])(?:dc-)?s1h(?![a-z0-9])',
+                                   values.get('modelName', '') + ' ' + values.get('modelNumber', ''), re.I)))
+            if record['s1h_identified']:
+                (folder / f'device_{index}.xml').write_bytes(body)
+        except Exception as error:
+            record['error'] = str(error)
+        devices.append(record)
+    (folder / 'discovery.json').write_text(json.dumps({'replies': replies, 'devices': devices}, indent=2))
+    return [d for d in devices if d.get('s1h_identified')]
+
+
+def collect(device, folder):
+    parsed = urllib.parse.urlsplit(device['location'])
+    base = f'http://{parsed.hostname}/cam.cgi?'
+    results = []
+    declared = []
+    def getter(mode, kind=None):
+        if mode not in ('getstate', 'getinfo', 'getsetting'):
+            raise ValueError('Non-read operation prohibited')
+        if mode == 'getinfo' and kind not in ('capability', 'allmenu', 'curmenu'):
+            raise ValueError('Unsupported info getter')
+        query = {'mode': mode}
+        if kind:
+            query['type'] = kind
+        name = mode + ('_' + kind if kind else '')
+        record = {'mode': mode, 'type': kind}
+        root = None
+        try:
+            body = read_url(base + urllib.parse.urlencode(query))
+            (folder / (name + '.xml')).write_bytes(body)
+            root = ET.fromstring(body)
+            record['result'] = next((e.text for e in root.iter() if e.tag.split('}')[-1] == 'result'), None)
+            record['bytes'] = len(body)
+        except Exception as error:
+            record['error'] = str(error)
+        results.append(record)
+        time.sleep(0.3)
+        return root, record
+    _, status = getter('getstate')
+    if status.get('result') == 'ok':
+        for kind in ('capability', 'allmenu', 'curmenu'):
+            root, record = getter('getinfo', kind)
+            if root is None or record.get('result') != 'ok':
+                continue
+            for element in root.iter():
+                attrs = element.attrib
+                if attrs.get('cmd_mode') == 'setsetting':
+                    declared.append({'source': kind, **attrs})
+        # These names come from the camera itself; no hidden-value guessing.
+        keys = sorted({a.get('cmd_type', '') for a in declared}
+                      | {'videoquality'})
+        keys = [k for k in keys if re.fullmatch(r'[a-zA-Z0-9_]{1,64}', k)]
+        for key in keys[:64]:
+            _, record = getter('getsetting', key)
+            if record.get('result') == 'err_critical':
+                # A declared setter does not guarantee a matching getter.
+                # Stop additional setting queries after a critical response.
+                break
+        getter('getstate')
+    report = {'device': device, 'queries': results, 'advertised_setting_commands': declared,
+              'writes_sent': 0, 'session_requests_sent': 0,
+              'limitation': 'Menu declarations are advertised options, not proof of hidden support or sensor timing. No settings were changed.'}
+    (folder / 'collection.json').write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    return report
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', default=str(Path(__file__).parent / 'wifi_captures'))
+    args = parser.parse_args()
+    folder = Path(args.output) / datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+    folder.mkdir(parents=True, exist_ok=False)
+    try:
+        devices = discover(folder)
+        for index, device in enumerate(devices):
+            target = folder / f's1h_{index}'
+            target.mkdir()
+            collect(device, target)
+        summary = {'s1h_discovered': len(devices), 'folder': str(folder), 'writes_sent': 0}
+    except Exception as error:
+        summary = {'error': str(error), 'folder': str(folder), 'writes_sent': 0}
+    (folder / 'summary.json').write_text(json.dumps(summary, indent=2))
+    print(json.dumps(summary))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,176 @@
+{
+  "algorithm": "SHA-256",
+  "self_excluded": [
+    "SHA256SUMS.json"
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 4226,
+      "sha256": "31b928e7c3a425940eee5d06290f140bc56f1eb3cfc258977a746e3f9482bccd"
+    },
+    "evidence/candidate_results.md": {
+      "bytes": 1664,
+      "sha256": "ced1f5ac765833564da3e5b2f65eb8abb40cef69242ff459dc42642d2bbcdcb8"
+    },
+    "evidence/historical_source/README.md": {
+      "bytes": 259,
+      "sha256": "c9a56b3f007f0f007724ecb4d8af6f6345cd29002ae6b9dd2347550dd21a7f06"
+    },
+    "evidence/historical_source/s1h_wifi_prepare_manual_probe.py.txt": {
+      "bytes": 4351,
+      "sha256": "8571226b98b67127c9e525e30fbda609ac13f7284de05975b84a35ae95413f78"
+    },
+    "evidence/historical_source/s1h_wifi_read.py.txt": {
+      "bytes": 6657,
+      "sha256": "bdd831fe44db27d080ce48ce487cd78636c78293481cc53a20043f8e37aa1ab6"
+    },
+    "evidence/historical_source/verify_manual_video.py.txt": {
+      "bytes": 2388,
+      "sha256": "e482bd4da92eb5ceccf7ce4d0fd1cb6324f00aa31a09d87d49a9e6a97da24fb4"
+    },
+    "evidence/native_menu.png": {
+      "bytes": 1708299,
+      "sha256": "2acc921afb37c7ef077bf15f9904793a2af894ec2bc60b722b20a093c4cfd71e"
+    },
+    "evidence/reboot_contact.png": {
+      "bytes": 4988970,
+      "sha256": "b0f59ce6a945d301a7136d0c2d035213c5d1cf64c84d49fb01669d04e5afff10"
+    },
+    "evidence/recording/P1022640/P1022640.MP4": {
+      "bytes": 888140,
+      "sha256": "b83395a3902c5a1b4cd73a30913f69436e36bbea53742297d3870b961802bd7d"
+    },
+    "evidence/recording/P1022640/P1022640.metadata.json": {
+      "bytes": 1398,
+      "sha256": "b86848444347eb4f0295c201981e6eff0ffc3600bc0959586882ac0f982a9509"
+    },
+    "evidence/recording/P1022640/software_decode.log": {
+      "bytes": 1841,
+      "sha256": "24940bfee4420e6a4fb1d3fc95eb56c26bc601fb016037638cf7efad2eb8c309"
+    },
+    "evidence/recording/P1022640/verified_recording.json": {
+      "bytes": 487,
+      "sha256": "c884ebabdc76ec6385d592e8627f7422eb9875e86724518f078aacfe95dbbaa3"
+    },
+    "evidence/recording/P1022641/P1022641.MP4": {
+      "bytes": 223826574,
+      "sha256": "a579a0ff325ed380ac8f6162421f8a382a19c9597e997fd6cf53aed072f19059"
+    },
+    "evidence/recording/P1022641/P1022641.metadata.json": {
+      "bytes": 1511,
+      "sha256": "8f40cd32c8ab2b85a87b30c917c99f7ea5ad04cbe26a468288c1e09077c63ee2"
+    },
+    "evidence/recording/P1022641/full_decode.log": {
+      "bytes": 65731,
+      "sha256": "0f4930b71b3121e7a1acad24bbf8d3b2b51f86809d65d8ffc36aaed44ad53da8"
+    },
+    "evidence/recording/P1022641/verified_recording.json": {
+      "bytes": 1273,
+      "sha256": "2e2aab6afa9abb6238c315955e05d7fc56e04dee3b0c842b2102d3e67ac67d2b"
+    },
+    "evidence/s1h_activation/identity.bin": {
+      "bytes": 10228,
+      "sha256": "adfca88f679106a6a07cfe622d40a73ea6a7759aa92e49b0a6dfd818ac525649"
+    },
+    "evidence/s1h_activation/initial_menu.bin": {
+      "bytes": 42304,
+      "sha256": "50c9338d51c93646d23189ec6357236c2d6d7e6d3186bb1c28ce2145f031169b"
+    },
+    "evidence/s1h_activation/initial_state.bin": {
+      "bytes": 1243,
+      "sha256": "3872ebe22974401682786209ce882f7a956525571cfbd408550dad153ddf4e6d"
+    },
+    "evidence/s1h_activation/mp4_format.bin": {
+      "bytes": 78,
+      "sha256": "54151d9ac79241e65c43cd073776e99b3a1387c4a9b4a571923705e6d8e22d47"
+    },
+    "evidence/s1h_activation/mp4_menu.bin": {
+      "bytes": 39492,
+      "sha256": "1b4611ceca4faecc2ec3fef8dec9f0e53a1a4af5b5418c012c1d0ac0fd0bad97"
+    },
+    "evidence/s1h_activation/original_format.bin": {
+      "bytes": 125,
+      "sha256": "b810268c39782deee7b18a0913e5f2da01dc0ac815a49d7e7dcb692bbe538cef"
+    },
+    "evidence/s1h_activation/original_quality.bin": {
+      "bytes": 149,
+      "sha256": "e5d2a846416c023e2704119a761cd6bed2aaabd5fb8f3d4981e24786ad2d35bf"
+    },
+    "evidence/s1h_activation/prepared_state.bin": {
+      "bytes": 1243,
+      "sha256": "3f0c4f7b571dac43676458740a444eee584dc0b6cea60d0c1df4412149e38576"
+    },
+    "evidence/s1h_activation/requests.json": {
+      "bytes": 1745,
+      "sha256": "2df4df68b4e98f266213db9b952587851b161144e5e22697d20112c2f7294452"
+    },
+    "evidence/s1h_activation/saved_mp4_quality.bin": {
+      "bytes": 137,
+      "sha256": "fa8f2b55b18df740817bfcc1d32f8ee3897bc2202147c68c49ce2088aab7c77f"
+    },
+    "evidence/s1h_activation/target_format.bin": {
+      "bytes": 127,
+      "sha256": "73ccdbbe33cf227a709be38be8f22f688bb8bd86f5ea288bfdf7ff8e9ef11ca6"
+    },
+    "evidence/s1h_activation/target_readback_0.bin": {
+      "bytes": 149,
+      "sha256": "7b6728dbae998e7b493a3ab949b2bc38105a35c509a53dff3724ea722e5087de"
+    },
+    "evidence/s1h_activation/target_readback_1.bin": {
+      "bytes": 149,
+      "sha256": "7b6728dbae998e7b493a3ab949b2bc38105a35c509a53dff3724ea722e5087de"
+    },
+    "evidence/s1h_activation/target_set.bin": {
+      "bytes": 78,
+      "sha256": "54151d9ac79241e65c43cd073776e99b3a1387c4a9b4a571923705e6d8e22d47"
+    },
+    "evidence/static_review/20261012_loader_offset_false_directory_check.json": {
+      "bytes": 6775,
+      "sha256": "f201a9974b8eb3e4f183e71aa2af771ffbe847c5894ab4b18a21e8fa552c620a"
+    },
+    "evidence/static_review/20261012_解码入口研究记录.md": {
+      "bytes": 2457,
+      "sha256": "c50f3a89c410bc1be6b5293cf6195162e6eeb2ab759069a88f20f4426918c99e"
+    },
+    "evidence/static_review/S5_partition_offset_correction.json": {
+      "bytes": 17078,
+      "sha256": "6c79ba437338c110df82b54f430f86c95fe4237af71d8b2146de1bc63f472be0"
+    },
+    "evidence/verified_findings.json": {
+      "bytes": 901,
+      "sha256": "91889997a363fae174cced2875d655bb44d08d9ee629e3c48dc8098bb250c8d7"
+    },
+    "programs/check_package.py": {
+      "bytes": 1053,
+      "sha256": "114cbf205fa6a348e63758cc9ba46ada9be3f982fed7dc01abea1e9e1f006993"
+    },
+    "programs/lumix_hidden_format.py": {
+      "bytes": 12148,
+      "sha256": "67959c8b2f0a9fb34bc4e50a2abda19b47d7a2dc051d49835ff29caf727cede8"
+    },
+    "programs/test_lumix_hidden_format.py": {
+      "bytes": 4870,
+      "sha256": "6d47c5c3f78721e087d04bfff01ff51f2aa83b385ec0b0240ddc6bb6a02687f0"
+    },
+    "programs/verify_recording.py": {
+      "bytes": 2066,
+      "sha256": "1520f8f22177fe7cefce73047383f5d765088a442e3683a5f5b15f20a20839a8"
+    },
+    "tests_result.txt": {
+      "bytes": 818,
+      "sha256": "d13e331859988d4d9e3a541557d9f9c58b0b2d2c09346122baaf035599acbc16"
+    },
+    "复现操作手册.md": {
+      "bytes": 5506,
+      "sha256": "de900f5ed54f19ab41a03b1514d3ee97dee7dfb4ed8d8826541b6cbddb447367"
+    },
+    "研究报告.md": {
+      "bytes": 13352,
+      "sha256": "9d412124a6d7d69f4390c1c9ffaa44d83672db47bcbd99344f43b269f33fd6e8"
+    },
+    "evidence/s1h_activation/allmenu.xml": {
+      "bytes": 346686,
+      "sha256": "37d35296bd760324d5728c431c49744268e2ada823306b7a69567aa658e47fdf"
+    }
+  }
+}

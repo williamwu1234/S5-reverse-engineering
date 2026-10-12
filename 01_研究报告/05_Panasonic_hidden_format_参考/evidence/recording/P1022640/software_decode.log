@@ -1,0 +1,33 @@
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x142619e20] st: 0 edit list: 1 Missing key frame while searching for timestamp: 3600
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x142619e20] st: 0 edit list 1 Cannot find an index entry before timestamp: 3600.
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'outputs/s1h_readonly/wifi_captures/latest_record_20261012_010739/P1022640.MP4':
+  Metadata:
+    major_brand     : mp42
+    minor_version   : 1
+    compatible_brands: mp42avc1
+    creation_time   : 2026-10-12T01:07:48.000000Z
+  Duration: 00:00:07.20, start: 0.000000, bitrate: 986 kb/s
+  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuvj420p(pc, bt709, progressive), 1280x720 [SAR 1:1 DAR 16:9], 569 kb/s, 25 fps, 25 tbr, 90k tbn (default)
+      Metadata:
+        creation_time   : 2026-10-12T01:07:48.000000Z
+        vendor_id       : [0][0][0][0]
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 124 kb/s (default)
+      Metadata:
+        creation_time   : 2026-10-12T01:07:48.000000Z
+        vendor_id       : [0][0][0][0]
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (native) -> wrapped_avframe (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : mp42
+    minor_version   : 1
+    compatible_brands: mp42avc1
+    encoder         : Lavf61.7.100
+  Stream #0:0(und): Video: wrapped_avframe, yuvj420p(pc, bt709, progressive), 1280x720 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 25 fps, 25 tbn (default)
+      Metadata:
+        creation_time   : 2026-10-12T01:07:48.000000Z
+        vendor_id       : [0][0][0][0]
+        encoder         : Lavc61.19.100 wrapped_avframe
+[out#0/null @ 0x1427158a0] video:77KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=  180 fps=0.0 q=-0.0 Lsize=N/A time=00:00:07.20 bitrate=N/A speed= 285x    

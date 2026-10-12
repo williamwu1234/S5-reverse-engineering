@@ -1,0 +1,24 @@
+== ble_pair evidence (2026-10-12 21:18:21 +0000) ==
+[*] scanning…
+[HIT] ? rssi=-49
+[*] connecting…
+[+] connected ?
+[*] discovered 21 characteristics; subscribing notify CCCDs one by one
+    4CF487C0: no descriptor (0 found) -> setNotifyValue
+    37701B80: no descriptor (0 found) -> setNotifyValue
+    18345BE1: no descriptor (0 found) -> setNotifyValue
+    48669DA0: no descriptor (0 found) -> setNotifyValue
+    E182EC43: no descriptor (0 found) -> setNotifyValue
+    DA534D0A: no descriptor (0 found) -> setNotifyValue
+    D611B4A0: no descriptor (0 found) -> setNotifyValue
+    E182EC41: no descriptor (0 found) -> setNotifyValue
+    E182EC42: no descriptor (0 found) -> setNotifyValue
+    7BE5FE6E: no descriptor (0 found) -> setNotifyValue
+    A31A7A87: characteristic absent
+    D009F95F: characteristic absent
+[*] notify subscription pass done (0 ok); reading INITIAL_INFORM
+[!] disconnected: The specified device has disconnected from us.
+[*] window ended without completion
+session_key = 0x00000000
+SSID = (none)
+WIFI_PASSWORD = (none)

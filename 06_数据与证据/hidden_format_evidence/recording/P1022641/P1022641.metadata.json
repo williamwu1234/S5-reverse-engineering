@@ -1,0 +1,59 @@
+{
+  "file": "./P1022641.MP4",
+  "bytes": 223826574,
+  "sha256": "a579a0ff325ed380ac8f6162421f8a382a19c9597e997fd6cf53aed072f19059",
+  "tracks": [
+    {
+      "handler": "vide",
+      "codec": "avc1",
+      "timescale": 90000,
+      "duration_ticks": 604800,
+      "duration_seconds": 6.72,
+      "sample_count": 168,
+      "sample_rate_average": 25.0,
+      "timing_runs": [
+        [
+          168,
+          3600
+        ]
+      ],
+      "width": 3840,
+      "height": 2160,
+      "avc_profile_idc": 122,
+      "avc_level_idc": 51,
+      "avcc_hex": "017a1033ffe1001b677a1033b6cf00f0010fb01e30101014000003000400000300ca1001004368ce3133881120812102c806c04208016705016822c2dc2983683a8280b411616e14c1b41d088248d790899447f210a588c444e100401cc220840a105905b059fff823fefafa00"
+    },
+    {
+      "handler": "soun",
+      "codec": "twos",
+      "timescale": 48000,
+      "duration_ticks": 322560,
+      "duration_seconds": 6.72,
+      "sample_count": 322560,
+      "sample_rate_average": 48000.0,
+      "timing_runs": [
+        [
+          322560,
+          1
+        ]
+      ]
+    },
+    {
+      "handler": "tmcd",
+      "codec": "tmcd",
+      "timescale": 90000,
+      "duration_ticks": 604800,
+      "duration_seconds": 6.72,
+      "sample_count": 168,
+      "sample_rate_average": 25.0,
+      "timing_runs": [
+        [
+          168,
+          3600
+        ]
+      ]
+    }
+  ],
+  "file_average_bitrate": 266460207.14285716,
+  "verification": "MP4 sample descriptions and sample timing parsed; not yet decoded"
+}

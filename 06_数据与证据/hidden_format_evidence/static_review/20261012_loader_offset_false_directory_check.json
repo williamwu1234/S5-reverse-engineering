@@ -1,0 +1,206 @@
+{
+  "title": "S1H V2.8 loader offsets and false loader2 directory verification",
+  "sample": {
+    "path": "[research-host]/Desktop/s1h固件/S1H__V28.bin",
+    "size": 91012608,
+    "sha256": "a3cc5c88cde50f5980acb67f849a33d74432effc9a8e4d3ab95b56b7e13f0514"
+  },
+  "partition_table": {
+    "absolute_start": "0x2dc",
+    "entry_bytes": 92,
+    "entries": 53,
+    "calculated_end": "0x15e8",
+    "table_end_calculation": "0x2DC + 53*92 = 0x15E8",
+    "loader1_table_row": {
+      "index": 0,
+      "name": "loader1",
+      "size": 4096,
+      "offset_field": 0,
+      "flags": 3,
+      "generic_0x200": 512,
+      "loader_cluster_0x1600": 5632
+    },
+    "loader2_table_row": {
+      "index": 1,
+      "name": "loader2",
+      "size": 38912,
+      "offset_field": 4096,
+      "flags": 3,
+      "generic_0x200": 4608,
+      "loader_cluster_0x1600": 9728
+    },
+    "loader3_table_row": {
+      "index": 2,
+      "name": "loader3",
+      "size": 49152,
+      "offset_field": 43008,
+      "flags": 3,
+      "generic_0x200": 43520,
+      "loader_cluster_0x1600": 48640
+    }
+  },
+  "verified_loader_cluster": {
+    "inferred_payload_base": "0x1600",
+    "evidence": "Using offset-field + 0x1600 places loader1/2/3 contiguously and yields full-size high-entropy partitions. The actual bytes at the generic offset+0x200 positions for loader1/2/3 overlap the header/table area.",
+    "contiguity": {
+      "loader1_to_loader2": true,
+      "loader2_to_loader3": true
+    },
+    "partitions": [
+      {
+        "name": "loader1",
+        "offset_field": "0x0",
+        "chosen_absolute_start": "0x1600",
+        "size": 4096,
+        "absolute_end": "0x2600",
+        "sha256": "0eafbc7bcb0bb695faa35b57c52f6bedcd86837eb7bb97200608e9b0c323a9b7",
+        "entropy": 7.956431,
+        "printable_marker_nr_data": -1,
+        "printable_marker_hr_c_ddr": -1
+      },
+      {
+        "name": "loader2",
+        "offset_field": "0x1000",
+        "chosen_absolute_start": "0x2600",
+        "size": 38912,
+        "absolute_end": "0xbe00",
+        "sha256": "dbec19818dcb9f3be00a24db9b3763dc327e6289379ccf0312e966b0b65dbd8e",
+        "entropy": 7.995619,
+        "printable_marker_nr_data": -1,
+        "printable_marker_hr_c_ddr": -1
+      },
+      {
+        "name": "loader3",
+        "offset_field": "0xa800",
+        "chosen_absolute_start": "0xbe00",
+        "size": 49152,
+        "absolute_end": "0x17e00",
+        "sha256": "de75de4c610a7b2785af34973a41f1377e18595b1add600132c7f03ef71a0c92",
+        "entropy": 7.995642,
+        "printable_marker_nr_data": -1,
+        "printable_marker_hr_c_ddr": -1
+      }
+    ],
+    "loader2_actual_entropy_bits_per_byte": 7.995619,
+    "loader2_actual_printable_directory_strings": {
+      "nr_data": -1,
+      "hr_c_ddr": -1
+    }
+  },
+  "false_positive": {
+    "generic_base_loader2_start": "0x1200",
+    "actual_loader2_start": "0x2600",
+    "table_tail_from": "0x1200",
+    "table_end": "0x15e8",
+    "table_tail_bytes": 1000,
+    "table_tail_equals_candidate_loader2_prefix": true,
+    "meaning": "At wrong-base position 0x1200, rows 42-52 parse as readable entries because those bytes are the primary table tail. The field-by-field equality check confirms this. Correct loader2 starts at 0x2600.",
+    "candidate_rows_match_outer_rows": {
+      "row_indices": "42..52",
+      "all_fields_match": true,
+      "checks": [
+        {
+          "row": 42,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 43,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 44,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 45,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 46,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 47,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 48,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 49,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 50,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 51,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        },
+        {
+          "row": 52,
+          "name_matches": true,
+          "load_address_matches": true,
+          "size_matches": true,
+          "offset_matches": true,
+          "flags_match": true,
+          "digest_matches": true
+        }
+      ]
+    }
+  },
+  "third_party_unpacker": "The reviewed public parser slices offset:offset+size with no loader-specific base handling. This misplaces loader1/loader2/loader3 and causes the table-tail false positive. For remaining partitions the +0x200 convention is supported by image-end and plaintext hash checks, but loader1-3 are a special contiguous cluster beginning at 0x1600. Do not infer that one offset base applies to all entries.",
+  "conclusion": "Corrected static extraction identifies loader1/2/3 data locations and falsifies the purported cleartext loader2 manifest. This is a package-layout correction, not decryption. No code semantics, cryptographic key, execution path, or firmware modification is recovered."
+}

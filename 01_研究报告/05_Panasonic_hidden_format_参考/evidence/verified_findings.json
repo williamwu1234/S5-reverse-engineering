@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "S1H_firmware": "2.8",
+  "primary_candidate": "mp4ed_25p_400mbps_4k_10bit",
+  "exact_readback": true,
+  "actual_media_verified": true,
+  "native_menu_verified": true,
+  "normal_restart_retention_user_confirmed_once": true,
+  "normal_format_selector_entry_added": false,
+  "format_selector_empty_dialog_observed": true,
+  "my_list_saved_reentry_verified": false,
+  "S5_hardware_verified": false,
+  "new_distribution_program_hardware_retested": false,
+  "firmware_patched": false,
+  "RCE_or_decryption_demonstrated": false,
+  "evidence_images": [
+    "native_menu.png",
+    "reboot_contact.png"
+  ],
+  "menu_video_source_sha256": "b9e5d74bd1601fd33d64667b3ab9800b365be0300ee03f8530cdcd65309fa4a6",
+  "restart_video_source_sha256": "8d93662a02cf75a864a5db2fc3ddf948d7d965ed04e3ae51681bfe75b70670e3",
+  "original_phone_videos_included": false,
+  "snapshot_binary_included": false
+}

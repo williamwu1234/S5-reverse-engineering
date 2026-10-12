@@ -1,0 +1,398 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		163FF126C623B58BBA794F13 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB4B9355A76157554E06B7A0 /* Assets.xcassets */; };
+		19F7602817C7F4EF9B9B3D94 /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB8DCB05D94F0BEA0973BC2 /* ConnectView.swift */; };
+		2EB92DD787EF0FB2E8DEDFF6 /* CameraDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202BF0E3A7733E172D166937 /* CameraDiscovery.swift */; };
+		5B68DF8FC4324F28524E83B7 /* LumixFastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0D7D83743983F019358579 /* LumixFastApp.swift */; };
+		5E77854B3576B9AC5DC957AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8088B1AF24DD01879D87AB4E /* Localizable.strings */; };
+		7350DEB09B4B3A939A8AC865 /* LumixDLNA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3995BD3920687602039BCE4C /* LumixDLNA.swift */; };
+		7ABD7BCE79F00A0B9CEFB201 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8F25C05B1A676BB36AAB70 /* SettingsScreen.swift */; };
+		7C36F9903242D3EEC2819723 /* LumixClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D5D7FF7D7901E0A773DCFB /* LumixClient.swift */; };
+		8704A507F8CAEA25E44E0906 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE913F4B82CB3A3538D39E0F /* RootView.swift */; };
+		92CD13305820D7FA5AB55370 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CA7F37B14C569F3B42933EB /* AppModel.swift */; };
+		A66C2ACB3C7E72A1A88E265E /* LiveViewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 446D533665658A66E1685B19 /* LiveViewScreen.swift */; };
+		D299ED0343387097FB0865A2 /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596289A4CD4D29BBB5CA7BDB /* GalleryView.swift */; };
+		D8D3977EE3D304BF27E6F84C /* LumixUDPLiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F63995231BBB0027EBA90D6A /* LumixUDPLiveView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0E0D7D83743983F019358579 /* LumixFastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumixFastApp.swift; sourceTree = "<group>"; };
+		1FB8DCB05D94F0BEA0973BC2 /* ConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectView.swift; sourceTree = "<group>"; };
+		202BF0E3A7733E172D166937 /* CameraDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraDiscovery.swift; sourceTree = "<group>"; };
+		3995BD3920687602039BCE4C /* LumixDLNA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumixDLNA.swift; sourceTree = "<group>"; };
+		3CA7F37B14C569F3B42933EB /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		446D533665658A66E1685B19 /* LiveViewScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewScreen.swift; sourceTree = "<group>"; };
+		51C8FA1E0023E5B26F3B9C5B /* LumixFast.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LumixFast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		596289A4CD4D29BBB5CA7BDB /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		91513D5426E48D09CB685E46 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B7FEBD918A7FB8F600A174B9 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		D0D5D7FF7D7901E0A773DCFB /* LumixClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumixClient.swift; sourceTree = "<group>"; };
+		DE913F4B82CB3A3538D39E0F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		EB4B9355A76157554E06B7A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F63995231BBB0027EBA90D6A /* LumixUDPLiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumixUDPLiveView.swift; sourceTree = "<group>"; };
+		FA8F25C05B1A676BB36AAB70 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0DBD91699EE46ABD298079F9 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				0E0D7D83743983F019358579 /* LumixFastApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		387FDDB074D3D84E277A924E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1FB8DCB05D94F0BEA0973BC2 /* ConnectView.swift */,
+				596289A4CD4D29BBB5CA7BDB /* GalleryView.swift */,
+				446D533665658A66E1685B19 /* LiveViewScreen.swift */,
+				DE913F4B82CB3A3538D39E0F /* RootView.swift */,
+				FA8F25C05B1A676BB36AAB70 /* SettingsScreen.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		39905A8B13F2E9D3142C1EDE /* LumixFast */ = {
+			isa = PBXGroup;
+			children = (
+				0DBD91699EE46ABD298079F9 /* App */,
+				F3F51B0AA9178302273EA52E /* Model */,
+				B5F9157D15F6D1AF1CE0F87E /* Resources */,
+				387FDDB074D3D84E277A924E /* Views */,
+			);
+			path = LumixFast;
+			sourceTree = "<group>";
+		};
+		B30E7B86459AE737538D029F = {
+			isa = PBXGroup;
+			children = (
+				39905A8B13F2E9D3142C1EDE /* LumixFast */,
+				CC6472D2322C4550571E4DF2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B5F9157D15F6D1AF1CE0F87E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EB4B9355A76157554E06B7A0 /* Assets.xcassets */,
+				8088B1AF24DD01879D87AB4E /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CC6472D2322C4550571E4DF2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				51C8FA1E0023E5B26F3B9C5B /* LumixFast.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F3F51B0AA9178302273EA52E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3CA7F37B14C569F3B42933EB /* AppModel.swift */,
+				202BF0E3A7733E172D166937 /* CameraDiscovery.swift */,
+				D0D5D7FF7D7901E0A773DCFB /* LumixClient.swift */,
+				3995BD3920687602039BCE4C /* LumixDLNA.swift */,
+				F63995231BBB0027EBA90D6A /* LumixUDPLiveView.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B0CCDD451DE42EF15DB826E4 /* LumixFast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7426EB44D677A8102F6E9A31 /* Build configuration list for PBXNativeTarget "LumixFast" */;
+			buildPhases = (
+				858C9D9A132BB37222ED8ED0 /* Sources */,
+				AE46AB47E5618F82AA4E269E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LumixFast;
+			packageProductDependencies = (
+			);
+			productName = LumixFast;
+			productReference = 51C8FA1E0023E5B26F3B9C5B /* LumixFast.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1E3882A0AC9930D242A06F89 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					B0CCDD451DE42EF15DB826E4 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 8ADA4953069EDE6C2A5EFB72 /* Build configuration list for PBXProject "LumixFast" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				"zh-Hans",
+			);
+			mainGroup = B30E7B86459AE737538D029F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CC6472D2322C4550571E4DF2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B0CCDD451DE42EF15DB826E4 /* LumixFast */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AE46AB47E5618F82AA4E269E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				163FF126C623B58BBA794F13 /* Assets.xcassets in Resources */,
+				5E77854B3576B9AC5DC957AF /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		858C9D9A132BB37222ED8ED0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				92CD13305820D7FA5AB55370 /* AppModel.swift in Sources */,
+				2EB92DD787EF0FB2E8DEDFF6 /* CameraDiscovery.swift in Sources */,
+				19F7602817C7F4EF9B9B3D94 /* ConnectView.swift in Sources */,
+				D299ED0343387097FB0865A2 /* GalleryView.swift in Sources */,
+				A66C2ACB3C7E72A1A88E265E /* LiveViewScreen.swift in Sources */,
+				7C36F9903242D3EEC2819723 /* LumixClient.swift in Sources */,
+				7350DEB09B4B3A939A8AC865 /* LumixDLNA.swift in Sources */,
+				5B68DF8FC4324F28524E83B7 /* LumixFastApp.swift in Sources */,
+				D8D3977EE3D304BF27E6F84C /* LumixUDPLiveView.swift in Sources */,
+				8704A507F8CAEA25E44E0906 /* RootView.swift in Sources */,
+				7ABD7BCE79F00A0B9CEFB201 /* SettingsScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8088B1AF24DD01879D87AB4E /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				91513D5426E48D09CB685E46 /* en */,
+				B7FEBD918A7FB8F600A174B9 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		34E99947AD74CFCE122D543A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumixFast/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumixfast.ios;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7D6A30E12D4A0F1F0096140D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		8EF2FF78C5D776231A450FE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LumixFast/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumixfast.ios;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C62121A49D2A300EA9880364 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7426EB44D677A8102F6E9A31 /* Build configuration list for PBXNativeTarget "LumixFast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8EF2FF78C5D776231A450FE6 /* Debug */,
+				34E99947AD74CFCE122D543A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8ADA4953069EDE6C2A5EFB72 /* Build configuration list for PBXProject "LumixFast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7D6A30E12D4A0F1F0096140D /* Debug */,
+				C62121A49D2A300EA9880364 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1E3882A0AC9930D242A06F89 /* Project object */;
+}
