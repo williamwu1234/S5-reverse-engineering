@@ -90,6 +90,7 @@ final class Pair: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     var key: UInt32 = 0
     var disconnected = false
     var ssid: String?, pass: String?
+    var passTries = 0
 
     func log(_ s: String) { print("[\(ts())] \(s)") }
 
@@ -179,6 +180,13 @@ final class Pair: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             if let c = chars[CH_PASS], let pp = target {
                 log("步骤5: 立即读 CAMERA_WIFI_PASSWORD (idx6)")
                 pp.readValue(for: c)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    if self.pass == nil && self.passTries < 4 && !self.disconnected {
+                        self.passTries += 1
+                        self.log("  密码为空，重试第 \(self.passTries) 次")
+                        pp.readValue(for: c)
+                    }
+                }
             }
         } else if u == CH_PASS {
             let nul = CharacterSet(charactersIn: "\0")
@@ -187,7 +195,14 @@ final class Pair: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
             let dec = String(bytes: decode(b, key: key), encoding: .utf8)?
                 .trimmingCharacters(in: .whitespacesAndNewlines)
             pass = (raw?.isEmpty == false ? raw : nil) ?? dec
-            log("     >>> WIFI PASSWORD raw-ascii=\(raw ?? "-")  key-decoded=\(dec ?? "-")")
+            log("     >>> WIFI PASSWORD hex=\(hex(v)) raw-ascii=\(raw ?? "-")  key-decoded=\(dec ?? "-")")
+            if pass == nil && passTries < 4 {
+                passTries += 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.log("  空值，重试第 \(self.passTries) 次")
+                    if let c = self.chars[CH_PASS] { p.readValue(for: c) }
+                }
+            }
         }
     }
 }

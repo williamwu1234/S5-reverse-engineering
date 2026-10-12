@@ -81,3 +81,18 @@ venv/
 .env.*
 *.pem
 *.key
+
+# ---------- 编译产物：Mach-O 可执行文件（无扩展名）----------
+# 源码为同名 .swift / .c，可自行重新编译；不纳入版本控制
+ble_diag
+ble_pair
+ble_read
+ble_scan
+ble_wr
+ble_lan_pair
+ble_wifi_pair
+s5_ptp_dump
+s5_ptp_raw
+
+# ---------- 运行时输出（日志 / pid / 抓包临时目录）----------
+04_工具与脚本/campaign2/out/

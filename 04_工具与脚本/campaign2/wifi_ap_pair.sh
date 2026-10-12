@@ -65,6 +65,12 @@ sleep "${GRACE}"
 
 echo ""
 echo "=============== 切换网络 $(date '+%F %T') ==============="
+# 本机射频重置：解决反复 -3970/-3906（关联状态机卡住）
+echo "[ap] 重置 Wi-Fi 射频（off → on）以清掉卡住的关联状态"
+networksetup -setairportpower ${IFACE} off >/dev/null 2>&1
+sleep 3
+networksetup -setairportpower ${IFACE} on >/dev/null 2>&1
+sleep 5
 CAM_IP=""
 ATTEMPT=0
 for ATTEMPT in $(seq 1 15); do
@@ -79,11 +85,11 @@ for ATTEMPT in $(seq 1 15); do
 done
 CAM_GW=$(netstat -rn -f inet 2>/dev/null | awk '/^default/{print $2; exit}')
 echo "[ap] SSID=${CAM_SSID} ip=${CAM_IP:-none} gw=${CAM_GW:-none}"
-if [ -n "${CAM_IP}" ] && [ "${CAM_IP}" != "${ORIG_IP}" ]; then LEFT_HOME=1; fi
+if [ -n "${CAM_IP}" ] && { [ "${CAM_GW}" != "${ORIG_GW}" ] || [ "${CAM_GW}" = "192.168.54.1" ]; }; then LEFT_HOME=1; fi
 echo "[ap] LEFT_HOME=${LEFT_HOME}"
 
-if [ -z "${CAM_IP}" ]; then
-  echo "[ap] !! 未取得 IP（相机热点可能已关闭）"
+if [ -z "${CAM_IP}" ] || [ "${LEFT_HOME}" = "0" ]; then
+  echo "[ap] !! 未能切到相机热点（LEFT_HOME=${LEFT_HOME} ip=${CAM_IP:-none}）—— 直接退出，不做无意义探测"
   /tmp/wifiscan 2>&1 | head -15
   exit 1
 fi
