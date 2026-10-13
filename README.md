@@ -46,16 +46,20 @@ F1/F2（SC2006A 实机验证，可利用性低 = DoS + 弱泄露，S5 需单独�
 
 ## 目录地图
 
-| 目录 | 内容 |
-|---|---|
-| `00_项目总结/` | 整合版执行摘要、成果总表、项目时间线（本包的核心"总结"） |
-| `01_研究报告/` | 六套报告：固件 AES 绕过调研(10-10)、研究总报告(10-11)、隐藏格式可分发版(10-12)、持久化成果、Panasonic hidden-format 参考实现、**S1R2 两项成果移交(10-12，含结合点 + AES 路径总结)** |
-| `02_固件二进制/` | 去重后的固件：`DC-S5/`(V29 主体+.sig+parts+layout)、`DC-S5_版本历史/`(V11/V20/V23/V24)、`DC-S1/`(V24)、`DC-S1H/`(V28) |
-| `03_解包_APK/` | 手机 App 解包：`com.panasonic.jp.lumixsync/`(jadx_out 反编译 + app.apk + res + lib + dex) 与 `Lumix-Fast/`(+.apk) |
-| `04_工具与脚本/` | `campaign2/`(隐藏格式/持久化/崩溃/RCE 探测全工具集)、`firmware_crypto/`(AES/密钥/UPD 解析)、`ptp/`(s5_ptp_dump)、`交付包_tools/` |
-| `05_源码/` | `usb-scsi/`、`LumixMonitor-iOS/`、`LumixFast-iOS/` |
-| `06_数据与证据/` | `camera_settings/`(camsetting.bin + allmenu/curmenu/capability.xml + surface_map)、`ptp_dumps/`、`captures/`(pcap+设备信息)、`hidden_format_evidence/`(实拍录像+截图+verified_findings) |
-| `07_参考仓库/` | `s1m2-research/`（S1M2 研究仓库，已去 .git；另一份 fork 为重复，未收录） |
+| 目录 | 内容 | 本仓库 |
+|---|---|---|
+| `00_项目总结/` | 执行摘要、成果总表、项目时间线、**思路总结全文**、**定因与工具链成果**、环境与依赖 | ✓ |
+| `01_研究报告/` | 报告 **01–27**：固件 AES 绕过调研(10-10)、研究总报告(10-11)、隐藏格式可分发版与持久化(10-12)、S1R2 移交、BLE 系列、exFAT 系列、长文件名定因、操作风险手册、ROM BACKUP(10-13) | ✓ |
+| `02_固件二进制/` | 去重后的固件：`DC-S5/`(V29)、`DC-S5_版本历史/`(V11/V20/V23/V24)、`DC-S1/`(V24)、`DC-S1H/`(V28) | ✗ 版权·体积 |
+| `03_解包_APK/` | 手机 App 解包（jadx 反编译 + apk + res + lib + dex） | ✗ 版权·体积 |
+| `04_工具与脚本/` | `campaign2/`(**含 exFAT 工具链**)、`ble_win/`、`firmware_crypto/`、`ptp/`、`交付包_tools/`、`TOOLS.md` | ✓ |
+| `05_源码/` | `usb-scsi/`、`LumixMonitor-iOS/`、`LumixFast-iOS/` | ✓ |
+| `06_数据与证据/` | `camera_settings/`、`ptp_dumps/`、`captures/`、`service_mode_evidence/`、`hidden_format_evidence/`、`ble_evidence/`、**`exfat/`**、`rombackup_20261013/` | ✓ |
+| `07_参考仓库/` | `s1m2-research/`（S1M2 研究仓库，第三方） | ✗ 非本项目 |
+| `08_`/`09_`/`10_…成果包/` | 三个自包含交付包**已去重并库**（95%–99% 与上述目录重复），各留一份并库说明 | 指针 |
+
+> 收录范围、去重与排除原因详见 [`REPO_CONTENTS.md`](REPO_CONTENTS.md)。
+
 
 ## 核心结论速览
 
@@ -68,12 +72,19 @@ F1/F2（SC2006A 实机验证，可利用性低 = DoS + 弱泄露，S5 需单独�
 - PTP length-DoS：唯一可复现挂死
 - 服务器为 Panasonic 定制 CGI（GoAhead 系，XHTML 错误页指纹）
 - CAMSET 校验和可反推、可伪造：`byte[65532] = (256 − Σ(byte[0..65531])) mod 256`
+- 内核对 exFAT 簇号**不做归属校验**，释放路径跟随卡上被篡改的 FAT 链值（10-13 位图实机比对）
+- **360 个 240 字符长文件名 → DC-S5 开机反复重启**（四组对照定因，阈值 58–86 KB，疑为定长缓冲未校验长度）
 
 **已证伪 / 不可行（✗ 不要再走）**
 - 固件 AES 密钥提取（密钥在芯片内，离线不可恢复）
 - 改 `comm_proto_ver` 版本号绕过版本门（字段方向 + 无比较逻辑）
 - 网络层 RCE：GoAhead 溢出、`LD_PRELOAD`、各 mode/getinfo 的 file-op/exec/dynamic-load，全部失败
 - 反复 "invalid login / 需重启" 的根因 = 陈旧 pending 请求（已修复，非漏洞）
+- **exFAT 内核越界写提权（10-13 撤回）**：越界索引处**存在 NULL 检查、会提前返回**；
+  原判据「相机报写入错误 ⇒ 内存写已执行」**不成立**（NULL 提前返回表现完全一样）。
+  该判据亦见于所引用的 S1R2 报告，**不应照抄**。详见
+  [`01_研究报告/23_S5_exFAT越界写实机确认_20261013.md`](01_研究报告/23_S5_exFAT越界写实机确认_20261013.md) 与
+  [`00_项目总结/04_定因与工具链成果_20261013.md`](00_项目总结/04_定因与工具链成果_20261013.md)
 
 **仍开放**
 - 固件升级写路径：卡在最终部分块 flash 定址（~31s 定址超时/磨损），尚未见过一次成功 `endsenddata`
@@ -119,3 +130,15 @@ python3 persist.py verify                     # 拔电池重启后再跑，判�
 - `research_repos` 两份 S1M2 仓库（fork + 上游，近乎重复）→ 仅留上游一份
 - 各研究文件夹的 `.zip` 打包文件 → 仅留解开的文件夹
 - 无关项目 `dsh-our-free-model`（LLM 免费模型插件）→ 整体排除
+
+**2026-10-13 成果包去重**：三个自包含交付包（`08_总结与工具箱`、`09_exFAT越界写成果包`、
+`10_定因与工具链成果包`）共 1347 个文件，经内容哈希比对，**95%–99% 与上述目录逐字节相同**
+且包间结论互相覆盖（10 撤回 09 的两条结论）。已并库移除，独有内容迁入：
+
+- `00_项目总结/`（思路总结、定因与工具链成果、环境与依赖）
+- `04_工具与脚本/`（`TOOLS.md`、`TOOLS_工具箱总览.md`）
+- `06_数据与证据/exfat/`（位图快照、卡指纹、注入记录、原值备份）
+- `01_研究报告/`（报告 24、25、26）
+
+包目录现仅保留一份并库说明。仓库跟踪文件 **2188 → 864**，唯一内容 583 份。
+完整对照见 [`REPO_CONTENTS.md`](REPO_CONTENTS.md)。
