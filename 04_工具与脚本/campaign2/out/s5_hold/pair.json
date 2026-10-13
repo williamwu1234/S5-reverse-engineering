@@ -1,0 +1,103 @@
+{
+  "log": [
+    "### SoftAP 配对复现 @ 2026-10-13 08:00:14   cam=192.168.54.1",
+    "    身份 UUID = 4D454930-0100-1000-8001-020000025AD6   name = MacBLE",
+    "\n[0] 基线 req_acc -> ok_under_research,S5-70E253,remote,open",
+    "\n[1] 尝试取加密密钥 req_acc_g",
+    "    裸 req_acc_g        -> HTTP 200 | <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "    带 value            -> HTTP 200 | <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "    req_acc_g+value2   -> HTTP 200 | <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "\n[2] 60606 / 50001 服务探测",
+    "  -- port 60606 --",
+    "     /                            -> 404 | Server=- | ",
+    "     /Lumix/Server0/ddd           -> 200 | Server=- | <?xml version=\"1.0\"?><root xmlns=\"urn:schemas-upnp-org:device-1-0\" xmlns:pana=\"urn:schemas-panasonic-com:pana\"><specVers",
+    "     /Lumix/                      -> 404 | Server=- | ",
+    "     /Lumix/Server0/              -> 404 | Server=- | ",
+    "     /Lumix/Server0/ddd/          -> 404 | Server=- | ",
+    "     /Server0/ddd                 -> 404 | Server=- | ",
+    "     POST /Lumix/Server0/ddd -> 403 | ",
+    "  -- port 50001 --",
+    "     /                            -> 无响应 (Remote end closed connection without response)",
+    "     /Lumix/Server0/ddd           -> 无响应 (Remote end closed connection without response)",
+    "     POST /Lumix/Server0/ddd -> None | [Errno 54] Connection reset by peer",
+    "\n[3] 发起授权请求 req_acc（明文路径，UUID=4D454930-0100-1000-8001-020000025AD6）",
+    "    -> HTTP 200 | err_others_requesting,S5-70E253,remote,open",
+    "\n[4] 轮询授权状态（最长 150s）——请留意机身屏幕并点“允许”",
+    "    +  0s  err_user_refused,S5-70E253,remote,open",
+    "    -> 相机报告【用户拒绝】",
+    "    -> 出现拒绝/无效登录，立即停止轮询（避免触发相机锁定）",
+    "\n[5] 复测读端点（无论是否判定授权都测，看真实门状态）",
+    "    getstate                 -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getinfo capability       -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getinfo allmenu          -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getinfo curmenu          -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getinfo lens             -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getsetting videoformat   -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    startsenddata            -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "\n[6] req_acc_can 清理",
+    "    -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>ok</result></camrply>"
+  ],
+  "results": {
+    "baseline": "ok_under_research,S5-70E253,remote,open",
+    "req_acc_g_裸 req_acc_g": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "req_acc_g_带 value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "req_acc_g_req_acc_g+value2": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "p60606_": {
+      "status": 404,
+      "body": "",
+      "hdrs": {
+        "CONNECTION": "close"
+      }
+    },
+    "p60606_Lumix_Server0_ddd": {
+      "status": 200,
+      "body": "<?xml version=\"1.0\"?><root xmlns=\"urn:schemas-upnp-org:device-1-0\" xmlns:pana=\"urn:schemas-panasonic-com:pana\"><specVersion><major>1</major><minor>0</minor></specVersion><device><deviceType>urn:schemas-upnp-org:device:MediaServer:1</deviceType><friendlyName>S5-70E253</friendlyName><manufacturer>Panasonic</manufacturer><modelName>LUMIX</modelName><modelNumber>DMC-MC801</modelNumber><modelDescriptio",
+      "hdrs": {
+        "CONTENT-LENGTH": "1622",
+        "CONTENT-TYPE": "text/xml; charset=\"utf-8\"",
+        "DATE": "Tue, 13 Oct 2026 00:00:12 GMT",
+        "CONNECTION": "close"
+      }
+    },
+    "p60606_Lumix_": {
+      "status": 404,
+      "body": "",
+      "hdrs": {
+        "CONNECTION": "close"
+      }
+    },
+    "p60606_Lumix_Server0_": {
+      "status": 404,
+      "body": "",
+      "hdrs": {
+        "CONNECTION": "close"
+      }
+    },
+    "p60606_Lumix_Server0_ddd_": {
+      "status": 404,
+      "body": "",
+      "hdrs": {
+        "CONNECTION": "close"
+      }
+    },
+    "p60606_Server0_ddd": {
+      "status": 404,
+      "body": "",
+      "hdrs": {
+        "CONNECTION": "close"
+      }
+    },
+    "p60606_POST": "",
+    "p50001_POST": "[Errno 54] Connection reset by peer",
+    "req_acc_send": "err_others_requesting,S5-70E253,remote,open",
+    "poll_0": "err_user_refused,S5-70E253,remote,open",
+    "after_getstate": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "after_getinfo capability": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "after_getinfo allmenu": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "after_getinfo curmenu": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "after_getinfo lens": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "after_getsetting videoformat": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "after_startsenddata": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "granted": false
+  }
+}

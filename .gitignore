@@ -90,14 +90,14 @@ venv/
 *.key
 
 # ---------- 编译产物：Mach-O 可执行文件（无扩展名）----------
-# 源码为同名 .swift / .c，可自行重新编译；不纳入版本控制
-ble_diag
-ble_pair
-ble_read
-ble_scan
-ble_wr
-ble_lan_pair
-ble_wifi_pair
+# campaign2 里 Swift 源码编译出的同名可执行文件。
+# 用 ble_* 通配 + 反选保留源码，将来新增的 ble_* 工具会自动被忽略，
+# 不必每次手工往名单里加（曾因显式名单漏掉 ble_hold）。
+ble_*
+!ble_*.swift
+!ble_*.sh
+!ble_*.py
+# 其他编译产物
 s5_ptp_dump
 s5_ptp_raw
 

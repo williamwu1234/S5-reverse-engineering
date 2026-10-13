@@ -34,7 +34,7 @@ LOG = []
 OUT = {}
 UUID_SEED = "020000025AD6"          # 与项目既有记录一致的 seed（可换）
 UUID = "4D454930-0100-1000-8001-" + UUID_SEED
-NAME = "MacProbe"
+NAME = "MacBLE"          # 必须与 BLE 侧写入的设备名完全一致
 
 
 def say(s):
@@ -118,7 +118,7 @@ def main():
     say("\n[4] 轮询授权状态（最长 150s）——请留意机身屏幕并点“允许”")
     granted = False
     t0 = time.time()
-    while time.time() - t0 < 150:
+    while time.time() - t0 < 75:
         st, _, b = http(base + "?mode=accctrl&type=req_acc", timeout=6, read=400)
         txt = brief(b, 140)
         el = int(time.time() - t0)
@@ -127,7 +127,14 @@ def main():
         low = txt.lower()
         if "err_user_refused" in low:
             say("    -> 相机报告【用户拒绝】")
-        if low.startswith("ok") and "err_" not in low:
+        if "err_others_requesting" in low:
+            say("    -> 相机报告【已有其它设备在请求】")
+        if "err_user_refused" in low or "invalid" in low:
+            say("    -> 出现拒绝/无效登录，立即停止轮询（避免触发相机锁定）")
+            break
+        # 只有裸 ok（或 ok, 开头且不含 under_research）才算真正授权；
+        # ok_under_research 只是空闲状态，不是授权
+        if (low.startswith("ok,") or low.strip() == "ok") and "under_research" not in low and "err_" not in low:
             granted = True
             say("    -> 状态 ok，判定已授权")
             break
