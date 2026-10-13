@@ -42,7 +42,6 @@
 S5___V*.bin
 S1___V*.bin
 S1H__V*.bin
-*.sig
 *.DAT
 *.dat
 *.apk
@@ -90,13 +89,19 @@ venv/
 *.key
 
 # ---------- 编译产物：Mach-O 可执行文件（无扩展名）----------
-# campaign2 里 Swift 源码编译出的同名可执行文件。
-# 用 ble_* 通配 + 反选保留源码，将来新增的 ble_* 工具会自动被忽略，
-# 不必每次手工往名单里加（曾因显式名单漏掉 ble_hold）。
-ble_*
-!ble_*.swift
-!ble_*.sh
-!ble_*.py
+# 用目录锚定，只匹配 ble/ 与 campaign2/ 内的 ble_* 文件。
+# 不能写成裸的 ble_*：那会把 ble_win/、ble_evidence/ 这类同前缀
+# 目录整个排除掉（git 无法重新包含已排除目录内的文件），
+# 曾因此静默丢掉 BLE 工具源码与证据。
+**/ble/ble_*
+**/campaign2/ble_*
+# 反选保留源码
+!**/ble/ble_*.swift
+!**/ble/ble_*.sh
+!**/ble/ble_*.py
+!**/campaign2/ble_*.swift
+!**/campaign2/ble_*.sh
+!**/campaign2/ble_*.py
 # 其他编译产物
 s5_ptp_dump
 s5_ptp_raw
