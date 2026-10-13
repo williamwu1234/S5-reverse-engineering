@@ -173,6 +173,43 @@ case "${MODE}" in
   go2)
     ${PY} "${TOOL}" go2 "${DEV}" "${3:-auto}" "${4:-524290}"
     ;;
+  sessionA)
+    ${PY} "${TOOL}" sessionA "${DEV}" "${3:-auto}" "${4:-14}"
+    RC=$?
+    if [ "${RC}" != "0" ]; then
+      echo "!!! sessionA 未成功（RC=${RC}）—— 不要去相机 !!!"; exit 1
+    fi
+    read -r _ENTER
+    echo ""
+    echo "=== 收到回车，开始比对 ==="
+    NEWDEV=$(detect_lumix_exfat) || true
+    [ -n "${NEWDEV:-}" ] && DEV="/dev/${NEWDEV}"
+    diskutil unmount force "${DEV}" >/dev/null 2>&1 || true
+    sleep 1
+    ${PY} "${TOOL}" verdict "${DEV}"
+    ;;
+  hijack)
+    [ $# -lt 4 ] && { echo "用法: hijack <dev> <文件名> <新num_ext>"; exit 2; }
+    ${PY} "${TOOL}" hijack "${DEV}" "$3" "$4"
+    ;;
+  checkalloc)
+    ${PY} "${TOOL}" checkalloc "${DEV}"
+    ;;
+  mkdeleted)
+    [ $# -lt 3 ] && { echo "用法: mkdeleted <dev> <数量>"; exit 2; }
+    ${PY} "${TOOL}" mkdeleted "${DEV}" "$3"
+    ;;
+  trimdir)
+    [ $# -lt 3 ] && { echo "用法: trimdir <dev> <保留槽位数>"; exit 2; }
+    ${PY} "${TOOL}" trimdir "${DEV}" "$3"
+    ;;
+  mkentries)
+    [ $# -lt 4 ] && { echo "用法: mkentries <dev> <数量> <名字长度> [起始序号]"; exit 2; }
+    ${PY} "${TOOL}" mkentries "${DEV}" "$3" "$4" "${5:-0}"
+    ;;
+  mkspray)
+    ${PY} "${TOOL}" mkspray "${DEV}" "${3:-120}" "${4:-14}" "${5:-0}"
+    ;;
   verdict)
     ${PY} "${TOOL}" verdict "${DEV}"
     ;;

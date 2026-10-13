@@ -173,6 +173,28 @@ case "${MODE}" in
   go2)
     ${PY} "${TOOL}" go2 "${DEV}" "${3:-auto}" "${4:-524290}"
     ;;
+  sessionA)
+    ${PY} "${TOOL}" sessionA "${DEV}" "${3:-auto}" "${4:-14}"
+    RC=$?
+    if [ "${RC}" != "0" ]; then
+      echo "!!! sessionA 未成功（RC=${RC}）—— 不要去相机 !!!"; exit 1
+    fi
+    read -r _ENTER
+    echo ""
+    echo "=== 收到回车，开始比对 ==="
+    NEWDEV=$(detect_lumix_exfat) || true
+    [ -n "${NEWDEV:-}" ] && DEV="/dev/${NEWDEV}"
+    diskutil unmount force "${DEV}" >/dev/null 2>&1 || true
+    sleep 1
+    ${PY} "${TOOL}" verdict "${DEV}"
+    ;;
+  hijack)
+    [ $# -lt 4 ] && { echo "用法: hijack <dev> <文件名> <新num_ext>"; exit 2; }
+    ${PY} "${TOOL}" hijack "${DEV}" "$3" "$4"
+    ;;
+  mkspray)
+    ${PY} "${TOOL}" mkspray "${DEV}" "${3:-120}" "${4:-14}" "${5:-0}"
+    ;;
   verdict)
     ${PY} "${TOOL}" verdict "${DEV}"
     ;;

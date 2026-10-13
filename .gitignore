@@ -47,6 +47,7 @@ S1H__V*.bin
 *.apk
 *.ipa
 *.so
+*.o
 *.dex
 *.arsc
 *.dylib
