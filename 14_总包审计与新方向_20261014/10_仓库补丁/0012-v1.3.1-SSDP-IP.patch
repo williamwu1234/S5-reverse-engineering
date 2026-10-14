@@ -1,0 +1,147 @@
+From e4b3a40eca6bb0cde4ec85bcb7666e8e637b947e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 23:56:44 +0800
+Subject: [PATCH 12/15] =?UTF-8?q?v1.3.1:=20=E2=98=85=20=E4=BF=AE=E5=A4=8D?=
+ =?UTF-8?q?=20SSDP=20=E5=85=AC=E5=B8=83=E9=94=99=E8=AF=AF=20IP=20+=20?=
+ =?UTF-8?q?=E6=92=A4=E5=9B=9E=E6=9C=89=E5=AE=B3=E7=9A=84=E5=90=AF=E5=8A=A8?=
+ =?UTF-8?q?=E6=B8=85=E7=90=86=20=E2=87=92=20=E7=83=AD=E7=82=B9=E7=9B=B4?=
+ =?UTF-8?q?=E8=BF=9E=E9=9B=B6=E9=87=8D=E6=92=AD?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+一、真 bug：SSDP 公布的 LOCATION 用了错误的网卡地址
+  _detect_ip() 硬编码 connect(("192.168.1.1", 80)) 探测本机 IP。
+  本机可能同时有有线（家网 192.168.1.x）与无线（相机热点 192.168.54.x）：
+  按家网探测就会公布 192.168.1.148 —— 相机在热点网段**够不到**这个地址，
+  表现为：相机能看到我们的 SSDP 广播，却始终连不上（卡在"选择设备"）。
+  修复：按【相机地址】探测路由，热点网关优先，家网兜底。
+  实测：公布地址由 192.168.1.148 变为 192.168.54.10（相机可达）
+
+二、撤回有害改动：启动时不做 req_acc_can
+  项目 safe_handshake.py 只在【结束】时清理，从不在启动时清。
+  启动时紧跟 req_acc 的 can 会被相机当成"第二个请求者" ⇒ err_others_requesting。
+  实测：加了启动清理后热点模式 90 秒拿不到 ok；去掉后 10 秒拿到 ok。
+
+三、搞清了 err_others_requesting 的真正机制（重要）
+  相机维护"已注册设备表"：
+    · 已注册 UUID  → 直接受理（返回 ok / ok_under_research_no_msg）
+    · 全新 UUID    → 创建"待批复"请求 ⇒ 之后**所有**请求都看到 err_others_requesting
+    · 匿名（不带 value）→ 同样会污染
+  ⇒ 之前监视器屡次失败，全是因为调试时用新 UUID/匿名请求污染了那个唯一的槽位。
+  ⇒ 铁律：**永远只用监视器自己那一个 UUID**；调试时不要发裸 req_acc。
+
+实测对比（同一台相机、同一套参数 fixed/18fps）
+  热点直连：18.1fps  空窗口 0/79  最长空档 0.00s  **新画面 40/40（重复率 0%）**  延迟 53ms
+  经路由器：18.1fps  空窗口 0     帧间隔同样平滑   新画面 18/30（重复率 40%）     延迟 400-700ms
+  RTT stddev：热点 6.6ms  vs  经路由器 258ms（差 39 倍）
+---
+ s5monitor.py | 63 ++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 39 insertions(+), 24 deletions(-)
+
+diff --git a/s5monitor.py b/s5monitor.py
+index c8d9b82..f5a8329 100644
+--- a/s5monitor.py
++++ b/s5monitor.py
+@@ -270,17 +270,14 @@ class Lumix:
+                 return True
+             print("[accctrl] 当前为受限授权（%s）—— 需在相机上批准一次" % self.access_mode)
+ 
+-        # ★ 先清陈旧 pending：否则本次 req_acc 会撞上它 ⇒ err_others_requesting /
+-        #   err_unsuitable_app（startstream 被拒、画面不动）。这是 safe_handshake.py
+-        #   的实战结论，本工具此前缺了这一步。
+-        cur = (self.access_raw or "").lower()
+-        if "others" in cur:
+-            print("[accctrl] 检测到 err_others_requesting（别的客户端占着会话）——按规则不清理，")
+-            print("[accctrl]   请先在手机 LUMIX Sync 上断开，或重启相机。")
+-        elif not cur.startswith("ok"):
+-            c = self.req_acc_can()
+-            print("[accctrl] 清理陈旧 pending（req_acc_can，同一 UUID）-> %s" % (c or "").strip())
+-            time.sleep(1.0)
++        # ★ 启动时【绝不】发 req_acc_can —— 项目 safe_handshake.py 的实战结论：
++        #   清理只在【结束】时做。启动时紧跟 req_acc 的 can 会让相机把它当成
++        #   "第二个请求者" ⇒ err_others_requesting ⇒ 会话建立不起来。
++        #   （实测 2026-10-14：加了启动清理后，热点模式下 90 秒都拿不到 ok；
++        #     去掉后单次 req_acc 直接拿 ok。）
++        if "others" in (self.access_raw or "").lower():
++            print("[accctrl] 当前 err_others_requesting —— 先等 5 秒让相机清掉上一个请求")
++            time.sleep(5.0)
+ 
+         print("[accctrl] 👉 若相机屏幕出现「允许连接？」请点【允许 / 是】（多数固件不弹，内部自校验）")
+         self.req_acc()                      # ★ 第 1 次（也是唯一一次主动请求）
+@@ -650,25 +647,41 @@ SSDP_ADDR = ("239.255.255.250", 1900)
+ 
+ 
+ class SSDPAdvertiser:
+-    def __init__(self, uuid, port, verbose=True, interval=20.0):
++    def __init__(self, uuid, port, verbose=True, interval=20.0, camera_host=None):
+         self.uuid = uuid
+         self.port = port
+         self.verbose = verbose
+         self.interval = interval
+         self.running = False
+         self.sent = 0
+-        self.local_ip = self._detect_ip()
++        self.camera_host = camera_host
++        self.local_ip = self._detect_ip(camera_host)
+ 
+     @staticmethod
+-    def _detect_ip():
+-        try:
+-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+-            s.connect(("192.168.1.1", 80))
+-            ip = s.getsockname()[0]
+-            s.close()
+-            return ip
+-        except Exception:
+-            return "127.0.0.1"
++    def _detect_ip(camera_host=None):
++        """探测**应当对外公布的本机 IP**。
++
++        ★ 必须按【相机地址】探测路由，不能硬编码路由器地址：
++          本机可能同时有有线（家网 192.168.1.x）与无线（相机热点 192.168.54.x），
++          若按家网探测就会公布 192.168.1.x —— 而相机在热点网段**够不到这个地址**，
++          表现为：相机能看到我们的 SSDP 广播，却无法回连（卡在"选择设备"）。
++          实测 2026-10-14：硬编码 192.168.1.1 时公布 192.168.1.148，相机连不上。
++        """
++        targets = []
++        if camera_host:
++            targets.append((camera_host, 80))
++        targets += [("192.168.54.1", 80), ("192.168.1.1", 80)]   # 热点网关优先，再退家网
++        for host, port in targets:
++            try:
++                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
++                s.connect((host, port))
++                ip = s.getsockname()[0]
++                s.close()
++                if ip and not ip.startswith("127."):
++                    return ip
++            except Exception:
++                continue
++        return "127.0.0.1"
+ 
+     def _msg(self, nts="ssdp:alive"):
+         ip = self.local_ip
+@@ -1247,7 +1260,8 @@ def main():
+     print(" （iPhone/iPad/Android/电脑均可，无需装 App）")
+     print("=" * 62)
+ 
+-    ssdp = SSDPAdvertiser(a.device_id, a.port)
++    ssdp = SSDPAdvertiser(a.device_id, a.port,
++                          camera_host=getattr(a, 'host', None))
+     ssdp.start()                       # ★ 官方 App 的 "alive" 上报
+ 
+     Handler.cam = cam
+@@ -1354,7 +1368,8 @@ def main():
+ 
+ if __name__ == "__main__":
+     main()
+-    ssdp = SSDPAdvertiser(a.device_id, a.port)
++    ssdp = SSDPAdvertiser(a.device_id, a.port,
++                          camera_host=getattr(a, 'host', None))
+     ssdp.start()                       # ★ 官方 App 的 "alive" 上报
+ 
+     Handler.cam = cam
+-- 
+2.54.0 (Apple Git-157)
+

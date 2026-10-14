@@ -1,0 +1,486 @@
+From 786d48c7ef4ea4c34f6df48bfdfe15a83e99cb36 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Thu, 15 Oct 2026 00:21:55 +0800
+Subject: [PATCH 15/15] =?UTF-8?q?v1.5:=20=E4=BF=AE=E5=A4=8D=20LUT=20?=
+ =?UTF-8?q?=E5=AE=8C=E5=85=A8=E4=B8=8D=E7=94=9F=E6=95=88=E7=9A=84=E7=9C=9F?=
+ =?UTF-8?q?=20bug=20+=20=E7=A7=92=E5=88=87=20+=20=E5=BC=BA=E5=BA=A6?=
+ =?UTF-8?q?=E6=BB=91=E6=9D=86=20+=20UI=20=E9=87=8D=E5=81=9A?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+一、★ 真 bug：LUT 明明 enabled 却完全不生效（用户报「胶片 LUT 不生效」）
+  重构 select() 后改为只存 256³ 查表 `_tbl`（不再保留浮点网格 `_lut`），
+  但 apply_jpeg() 仍在检查旧的 `self._lut is None` ⇒ **永远原样返回**。
+  症状极具迷惑性：/api/luts 显示 enabled=true，但画面毫无变化、last_ms 恒为 0。
+  修复：判据改为 `self._tbl is None`。实测 last_ms 由 0 → 6.9，画面差 0.0 → 31.5。
+
+二、「LUT 更改不实时」的真因：构建 256³ 查表要 3–7 秒
+  · 新增**表缓存**（键 name|base）⇒ 已构建过的组合**秒切（1 ms）**
+  · 新增 select_async()**后台构建**：HTTP 立刻返回，构建期间沿用旧表，
+    **推流全程不中断**（实测换 LUT 时帧间隔中位 56ms、max 97ms）
+  · 界面显示「⏳ 后台构建中（3–7 秒，推流不受影响）」
+
+三、新增「LUT 强度」滑杆（0–100%）
+  胶片模拟 LUT 本身很轻微（实测仅 9.6/255），实时取景下肉眼难辨。
+  强度 = 逐帧线性混合 原件·(1-s)+LUT·s，成本 +3~5 ms（预算 55.6 ms）。
+  实测 1.0/0.6/0.3/0.0 差异 0/14.3/27.5/34.1，平滑可控。
+
+四、UI 重做
+  · 删除「🎯 对焦状态」面板（已确证：远程改不了 focusmode，拨杆优先）
+  · LUT 面板改版：**A/B 分段控件置顶**（原始画面 / 套 LUT）、主操作前置、
+    长说明收进 <details>、状态行独立、导入区做成文件按钮 + 支持拖拽
+  · **修正一处错误提示**：原来写「请在相机屏幕上点允许/是」——
+    项目早已实测更正「相机不会弹任何授权对话框」，改为显示真实授权状态
+  · 修掉删除勾选框后遗留的 $q('#lutOn') 引用（会抛 JS 异常）
+---
+ s5_lut.py      |  93 +++++++++++++++++++----
+ s5monitor.py   |  21 +++++-
+ www/index.html | 200 ++++++++++++++++++++++++++++++++++---------------
+ 3 files changed, 236 insertions(+), 78 deletions(-)
+
+diff --git a/s5_lut.py b/s5_lut.py
+index 886c3c5..1da44a5 100644
+--- a/s5_lut.py
++++ b/s5_lut.py
+@@ -182,6 +182,10 @@ class LutLibrary:
+         self._lock = threading.Lock()
+         self._name = None
+         self._base = ""
++        self._strength = 1.0
++        self._cache = {}            # "name|base" -> 256³ uint8 表（避免重复构建）
++        self._building = False
++        self._pending = None
+         self._lut = None
+         self._tbl = None            # 256³ uint8 精确查表（select 时构建）
+         self._N = 0
+@@ -222,21 +226,69 @@ class LutLibrary:
+         """
+         if not _HAVE:
+             raise RuntimeError("缺少 numpy/Pillow，无法套用 LUT")
++        key = f"{name}|{base}"
+         t0 = time.time()
+-        N, lut, tbl = self._load_table(name)
+-        base_name = ""
+-        if base:
+-            N2, lut2, tbl2 = self._load_table(base)
+-            # 复合：把 base 的输出当作 creative 的输入
+-            tbl = tbl[tbl2[..., 0], tbl2[..., 1], tbl2[..., 2]]
+-            base_name = base
+-        build_ms = (time.time() - t0) * 1000.0
++        cached = self._cache.get(key)
++        if cached is not None:
++            N, tbl = cached
++            build_ms = 0.0
++        else:
++            N, lut, tbl = self._load_table(name)
++            if base:
++                N2, lut2, tbl2 = self._load_table(base)
++                # 复合：把 base 的输出当作 creative 的输入
++                tbl = tbl[tbl2[..., 0], tbl2[..., 1], tbl2[..., 2]]
++            self._cache[key] = (N, tbl)
++            build_ms = (time.time() - t0) * 1000.0
+         with self._lock:
+-            self._lut, self._tbl, self._N, self._name = lut, tbl, N, name
+-            self._base = base_name
++            self._lut, self._tbl, self._N, self._name = None, tbl, N, name
++            self._base = base or ""
+             self.enabled = True
+         return dict(name=name, size=N, points=int(N ** 3),
+-                    base=base_name, build_ms=round(build_ms, 1))
++                    base=base or "", build_ms=round(build_ms, 1),
++                    cached=build_ms == 0.0)
++
++    def select_async(self, name: str, base: str = ""):
++        """后台构建：立刻返回，不阻塞 HTTP（构建 3-7 秒，期间沿用旧表）。"""
++        key = f"{name}|{base}"
++        if key in self._cache:
++            return self.select(name, base)
++        with self._lock:
++            if self._building:
++                self._pending = (name, base)
++                return dict(queued=True, name=name, base=base)
++            self._building = True
++        def work():
++            try:
++                self.select(name, base)
++            finally:
++                with self._lock:
++                    self._building = False
++                    pend = self._pending
++                    self._pending = None
++                if pend:
++                    try:
++                        self.select_async(*pend)
++                    except Exception:
++                        pass
++        threading.Thread(target=work, daemon=True).start()
++        return dict(building=True, name=name, base=base)
++
++    @property
++    def strength(self):
++        return getattr(self, "_strength", 1.0)
++
++    def set_strength(self, v: float):
++        self._strength = max(0.0, min(1.0, float(v)))
++        return self._strength
++
++    @property
++    def building(self):
++        return getattr(self, "_building", False)
++
++    @property
++    def cached_keys(self):
++        return list(getattr(self, "_cache", {}).keys())
+ 
+     @property
+     def name(self):
+@@ -285,15 +337,28 @@ class LutLibrary:
+             tbl, lut, N = self._tbl, self._lut, self._N
+         if tbl is not None:
+             # ★ 快路径：256³ 精确查表，一次 gather（输入是 8-bit，位位精确）
+-            return tbl[rgb[..., 0], rgb[..., 1], rgb[..., 2]]
++            out = tbl[rgb[..., 0], rgb[..., 1], rgb[..., 2]]
++            st = self._strength
++            if st < 0.999:
++                # 强度混合：原件·(1-s) + LUT·s。胶片类 LUT 很轻微，滑杆让它可调可见。
++                if st <= 0.001:
++                    return rgb
++                return (rgb.astype(np.int16) * (1.0 - st) + out.astype(np.int16) * st
++                        ).round().clip(0, 255).astype(np.uint8)
++            return out
+         if lut is None:
+             return rgb
+         out = _trilinear(lut, N, rgb)
+         return (np.clip(out, 0.0, 1.0) * 255.0 + 0.5).astype(np.uint8)
+ 
+     def apply_jpeg(self, jpg: bytes) -> bytes:
+-        """bytes(JPEG) → bytes(JPEG)，套上当前 LUT。未启用/无 LUT 时原样返回。"""
+-        if not self.enabled or self._lut is None or not _HAVE:
++        """bytes(JPEG) → bytes(JPEG)，套上当前 LUT。未启用/无 LUT 时原样返回。
++
++        ⚠️ 判据必须是 `self._tbl`（256³ 查表）——重构后 `_lut`（浮点网格）
++        已经不再保存，若仍检查 `_lut is None` 会**永远原样返回**，
++        表现为「LUT 明明 enabled 却完全没效果」（2026-10-15 踩过）。
++        """
++        if not self.enabled or self._tbl is None or not _HAVE:
+             return jpg
+         t0 = time.time()
+         try:
+diff --git a/s5monitor.py b/s5monitor.py
+index 907d2f2..e5d0d73 100644
+--- a/s5monitor.py
++++ b/s5monitor.py
+@@ -986,6 +986,9 @@ class Handler(BaseHTTPRequestHandler):
+                 self._json({"error": "s5_lut 不可用（缺 numpy/Pillow）"}, 503); return
+             self._json({"files": LUTLIB.list(), "current": LUTLIB.name,
+                         "base": LUTLIB.base,
++                        "strength": round(LUTLIB.strength, 2),
++                        "building": LUTLIB.building,
++                        "cached": LUTLIB.cached_keys,
+                         "enabled": LUTLIB.enabled, "size": LUTLIB.size,
+                         "last_ms": round(LUTLIB.last_ms, 1)})
+             return
+@@ -995,11 +998,23 @@ class Handler(BaseHTTPRequestHandler):
+                 self._json({"error": "s5_lut 不可用"}, 503); return
+             name = (q.get("name") or [""])[0]
+             base = (q.get("base") or [""])[0]
++            st = (q.get("strength") or [None])[0]
++            if st is not None:
++                try: LUTLIB.set_strength(float(st))
++                except Exception: pass
+             if not name or name == "off":
+-                LUTLIB.disable(); self._json({"enabled": False}); return
++                if st is None:
++                    LUTLIB.disable(); self._json({"enabled": False}); return
++                self._json({"strength": round(LUTLIB.strength, 2), "unchanged": True}); return
+             try:
+-                info = LUTLIB.select(name, base=base)
+-                self._json(dict(info, enabled=True))
++                # ★ 默认后台构建：立刻返回，不阻塞推流（构建 3-7 s，期间沿用旧表）。
++                #   已缓存过则秒切。?wait=1 可强制同步等构建完。
++                if (q.get("wait") or ["0"])[0] == "1":
++                    info = LUTLIB.select(name, base=base)
++                else:
++                    info = LUTLIB.select_async(name, base=base)
++                self._json(dict(info, enabled=True,
++                                strength=round(LUTLIB.strength, 2)))
+             except Exception as e:
+                 self._json({"error": str(e)}, 400)
+             return
+diff --git a/www/index.html b/www/index.html
+index e283814..68ca57d 100644
+--- a/www/index.html
++++ b/www/index.html
+@@ -141,6 +141,43 @@ html,body{margin:0;height:100%;background:#000;color:var(--fg);
+   .citem{font-size:12px;padding:5px 7px;border-bottom:1px solid #1e252e;display:flex;gap:8px;
+     justify-content:space-between;align-items:center}
+   .citem button{font-size:11px;padding:2px 7px}
++
++  /* ---- LUT 面板 v2 ---- */
++  #lutpanel{background:#11151bf7;border:1px solid #263040;border-radius:14px;
++    box-shadow:0 16px 48px #000b;padding:0;overflow:hidden}
++  .lhead{display:flex;justify-content:space-between;align-items:center;
++    padding:12px 14px;background:#161c25;border-bottom:1px solid #263040;
++    font-size:14px;font-weight:600;color:#e8f0f8}
++  .lhead.sub{padding:8px 0 4px;background:none;border:0;font-size:13px;color:#9fb0c4}
++  .lclose{background:none;border:0;color:#8a97a6;font-size:16px;cursor:pointer;padding:2px 6px}
++  .lclose:hover{color:#fff}
++  .lsec{padding:10px 14px;border-bottom:1px solid #1c242e}
++  .lrow{display:flex;gap:8px;align-items:center;margin:7px 0}
++  .lb{flex:0 0 68px;font-size:12.5px;color:#93a3b6}
++  .lrow select{flex:1;min-width:0}
++  .lrow input[type=range]{flex:1;min-width:0;accent-color:#4ea1ff}
++  .val{font-size:12px;color:#7ee0a1;min-width:42px;text-align:right}
++  .lstatus{font-size:12px;color:#8fc7ff;margin-top:6px;line-height:1.5;word-break:break-all}
++  .lhint{font-size:11.5px;color:#7c8899;line-height:1.6;margin-top:4px}
++  .mini{font-size:12px;padding:4px 9px;border-radius:7px;border:1px solid #2a3340;
++    background:#1b2129;color:#dbe6f2;cursor:pointer}
++  .mini:hover{background:#232c37}
++  .mini.danger:hover{background:#3a1d1d;border-color:#6b2b2b;color:#ffb4b4}
++  .filebtn{flex:1;text-align:center;font-size:12.5px;padding:7px;border-radius:8px;
++    border:1px dashed #33415a;background:#161d26;color:#9fb0c4;cursor:pointer}
++  .filebtn:hover{border-color:#4ea1ff;color:#cfe3ff}
++  .filebtn input{display:none}
++  .seg{display:flex;margin:12px 14px 4px;border:1px solid #2a3340;border-radius:9px;overflow:hidden}
++  .seg button{flex:1;padding:9px;font-size:13px;border:0;background:#161d26;color:#93a3b6;cursor:pointer}
++  .seg button.on{background:#1d4b86;color:#fff;font-weight:600}
++  .seg button:hover:not(.on){background:#1d2530}
++  .lhelp{margin:0 14px 12px;font-size:12px;color:#93a3b6}
++  .lhelp summary{cursor:pointer;padding:6px 0;color:#8fc7ff}
++  .lhelp div{padding:8px 10px;background:#0d1218;border-radius:8px;line-height:1.7}
++  .lhelp code{background:#1a2330;padding:1px 5px;border-radius:4px;font-size:11.5px}
++  #lutpanel{counter-reset:none}
++  #lutpanel > hr{border:0;border-top:1px solid #1c242e;margin:0}
++  #lutpanel .lrow:last-child{margin-bottom:2px}
+ </style>
+ </head>
+ <body>
+@@ -167,53 +204,73 @@ html,body{margin:0;height:100%;background:#000;color:var(--fg);
+       <div id="diagBody"></div>
+     </div>
+     <div id="lutpanel">
+-      <h3>🎨 LUT 实时套用 <button id="lutClose">关闭</button></h3>
+-      <div class="lrow">
+-        <label>LUT 文件</label>
+-        <select id="lutSel"></select>
+-        <button id="lutReload">刷新</button>
+-        <button id="lutDel" title="删除选中的 LUT">🗑</button>
+-      </div>
+-      <div class="lrow">
+-        <label>前置还原</label>
+-        <select id="lutBase">
+-          <option value="">（不串联，直接用）</option>
+-          <option value="vlog_to_709_33.cube">V-Log → Rec.709（33³，推荐）</option>
+-          <option value="vlog_to_709_17.cube">V-Log → Rec.709（17³，机内同规格）</option>
+-        </select>
++      <div class="lhead">
++        <span>🎨 LUT 实时套用</span>
++        <button class="lclose" id="lutClose">✕</button>
+       </div>
+-      <div class="lrow" style="font-size:12px;color:#9fb0c4">
+-        胶片模拟类 LUT（Fuji NC / Kodak Gold 等）是给<b>普通对比度</b>素材做的；
+-        拍 V-Log 时请把「前置还原」选上，链路 = <b>V-Log →(还原)→ 709 →(风格化)→ 胶片</b>。
+-        串联不增加逐帧开销（会复合成单表）。
+-      </div>
+-      <div class="lrow">
+-        <label>导入自己的 LUT</label>
+-        <input type="file" id="lutFile" accept=".cube,.vlt" style="font-size:12px;color:#9fb0c4">
+-        <span id="lutUp" class="lstat"></span>
++
++      <!-- 主操作：A/B 切换（最常用，放最上） -->
++      <div class="seg" id="lutSeg">
++        <button data-mode="raw">原始画面</button>
++        <button data-mode="lut" class="on">套 LUT</button>
+       </div>
+-      <div class="lrow">
+-        <label><input type="checkbox" id="lutOn"> 启用（取景流实时套用）</label>
+-        <span id="lutStat" class="lstat">--</span>
++
++      <div class="lsec">
++        <div class="lrow">
++          <label class="lb">LUT 文件</label>
++          <select id="lutSel"></select>
++          <button class="mini" id="lutReload" title="刷新列表">⟳</button>
++          <button class="mini danger" id="lutDel" title="删除这个 LUT">🗑</button>
++        </div>
++        <div class="lrow">
++          <label class="lb">前置还原</label>
++          <select id="lutBase">
++            <option value="">（不串联，直接用）</option>
++            <option value="vlog_to_709_33.cube">V-Log → Rec.709（33³，推荐）</option>
++            <option value="vlog_to_709_17.cube">V-Log → Rec.709（17³，机内同规格）</option>
++          </select>
++        </div>
++        <div class="lrow">
++          <label class="lb">强度</label>
++          <input type="range" id="lutStr" min="0" max="100" value="100">
++          <span id="lutStrVal" class="val">100%</span>
++        </div>
++        <div class="lstatus" id="lutStat">—</div>
+       </div>
+-      <div class="lrow">
+-        <button id="lutToStream">把取景切到「套 LUT」画面</button>
+-        <button id="lutToRaw">切回原始画面</button>
++
++      <div class="lsec">
++        <div class="lrow">
++          <label class="lb">导入</label>
++          <label class="filebtn">选择 .cube / .vlt
++            <input type="file" id="lutFile" accept=".cube,.vlt">
++          </label>
++          <span id="lutUp" class="val"></span>
++        </div>
++        <div class="lhint">也可以直接把文件<b>拖进本面板</b>导入。</div>
+       </div>
++
++      <details class="lhelp">
++        <summary>什么时候需要「前置还原」？</summary>
++        <div>
++          胶片模拟类 LUT（Fuji NC / Kodak Gold / GR4 Cine 等）是给<b>普通对比度</b>素材做的。
++          相机拍 <b>V-Log</b> 时画面灰平，直接套会发灰 ⇒ 请把「前置还原」选上：<br>
++          <code>V-Log →(还原 709)→ →(风格化)→ 胶片</code><br>
++          串联会把两级复合成单表，<b>不增加逐帧开销</b>；已构建过的组合<b>秒切</b>。
++        </div>
++      </details>
++
+       <hr>
+-      <h3>🎯 对焦状态 <button id="foReload">刷新</button></h3>
+-      <div class="lrow" style="font-size:12px;color:#9fb0c4" id="foBody">（点刷新读取）</div>
+-      <hr>
+-      <h3>📁 机身存储访问</h3>
++      <div class="lhead sub"><span>📁 机身存储访问</span></div>
+       <div class="lrow">
+-        <button id="cDiag">运行访问诊断</button>
+-        <button id="cList">列举相机内容</button>
++        <button class="mini" id="cDiag">运行诊断</button>
++        <button class="mini" id="cList">列举相机内容</button>
+       </div>
+-      <div class="lrow" style="font-size:12px;color:#9fb0c4">⚠️ 列举内容会把相机切到<b>回放模式</b>（此时<b>没有实时取景</b>），用完会自动切回拍摄模式。</div>
++      <div class="lhint">列举会把相机切到<b>回放模式</b>（此时没有实时取景），用完自动切回。</div>
+       <pre id="cOut" class="cout">（点上面的按钮开始）</pre>
+       <div id="cList"></div>
+     </div>
+-    <div id="authbar">⚠️ 相机未完整授权 —— 请在<b>相机屏幕上点「允许/是」</b>批准连接
++    <div id="authbar">⚠️ 相机未完整授权（<span id="authmode">--</span>）—— 这会让触摸对焦等被拒；
++      实时取景与拍照通常不受影响
+       <button id="authCheck">重新检查</button></div>
+     <div id="playmask">
+       <h3>📷 回放模式</h3>
+@@ -522,7 +579,8 @@ $('#tStream').onclick = async () => {
+ async function poll() {
+   const st = await api('/api/state');
+   if (st) {
+-    $('#fps').textContent = st.fps != null ? st.fps.toFixed(1) : '--';
++    if (typeof paintAuth==='function') paintAuth(d.access_mode);
++  $('#fps').textContent = st.fps != null ? st.fps.toFixed(1) : '--';
+     if (st.batt) {
+       let b = String(st.batt);
+       let pct = null;
+@@ -629,7 +687,14 @@ async function loadLuts(){
+       sel.appendChild(o);
+     });
+     if ($q('#lutBase') && r.base !== undefined) $q('#lutBase').value = r.base || '';
+-    $q('#lutOn').checked = !!r.enabled;
++    if (r.strength !== undefined){
++      const pct = Math.round(r.strength * 100);
++      if (document.activeElement !== $q('#lutStr')){
++        $q('#lutStr').value = pct; $q('#lutStrVal').textContent = pct + '%';
++      }
++    }
++    if (r.building) $q('#lutStat').textContent = '⏳ 正在构建查表（3–7 秒，推流不受影响）…';
++    setSeg(r.enabled ? 'lut' : 'raw');
+     $q('#lutStat').textContent = r.enabled
+       ? `已启用 · ${r.current} · N=${r.size} · ${r.last_ms||0} ms/帧`
+       : (r.current ? `已加载 ${r.current}（未启用）` : '未选择');
+@@ -641,7 +706,10 @@ async function setLut(name, base){
+                               '&base=' + encodeURIComponent(base||''))).json();
+   if (r.error){ $q('#lutStat').textContent = r.error; return; }
+   const chain = r.base ? `${r.base} → ${r.name}` : r.name;
+-  $q('#lutStat').textContent = `已加载 ${chain} · N=${r.size} · 构建 ${r.build_ms||0} ms`;
++  if (r.cached)      $q('#lutStat').textContent = `已切换（缓存命中，0 ms）· ${chain}`;
++  else if (r.building) $q('#lutStat').textContent = `⏳ 后台构建中（3–7 秒，推流不中断）…`;
++  else if (r.queued)   $q('#lutStat').textContent = `⏳ 已排队，等上一个构建完成…`;
++  else               $q('#lutStat').textContent = `已加载 ${chain} · N=${r.size} · 构建 ${r.build_ms||0} ms`;
+ }
+ async function uploadLut(file){
+   if (!file) return;
+@@ -665,6 +733,12 @@ async function deleteLut(){
+   if (r.error){ $q('#lutStat').textContent = r.error; return; }
+   await loadLuts();
+ }
++function paintAuth(mode){
++  const sp = $q('#authmode');
++  if (sp) sp.textContent = mode || '--';
++  const bar = $q('#authbar');
++  if (bar) bar.style.display = (mode && mode.startsWith('ok')) ? 'none' : '';
++}
+ function streamWithLut(on){
+   const base = '/stream?t=' + Date.now() + (on ? '&lut=1' : '');
+   $q('#live').src = base;
+@@ -710,6 +784,13 @@ $q('#lutSel').onchange = (e) => setLut(e.target.value);
+ $q('#lutBase').onchange = () => { const n = $q('#lutSel').value; if (n) setLut(n); };
+ $q('#lutFile').onchange = (e) => uploadLut(e.target.files[0]);
+ $q('#lutDel').onclick = deleteLut;
++let strTimer = null;
++$q('#lutStr').oninput = (e) => {
++  const v = e.target.value;
++  $q('#lutStrVal').textContent = v + '%';
++  clearTimeout(strTimer);
++  strTimer = setTimeout(() => { fetch('/api/lut?strength=' + (v/100)).catch(()=>{}); }, 120);
++};
+ // 支持拖拽到面板导入
+ const lp = $q('#lutpanel');
+ lp.addEventListener('dragover', (e) => { e.preventDefault(); lp.style.borderColor = '#4ea1ff'; });
+@@ -718,30 +799,27 @@ lp.addEventListener('drop', (e) => {
+   e.preventDefault(); lp.style.borderColor = '#2a3340';
+   if (e.dataTransfer.files && e.dataTransfer.files[0]) uploadLut(e.dataTransfer.files[0]);
+ });
+-$q('#lutOn').onchange = async (e) => {
+-  const cur = $q('#lutSel').value;
+-  await fetch('/api/lut?name=' + encodeURIComponent(e.target.checked ? cur : 'off'));
+-  await loadLuts();
+-  if (S.streaming) streamWithLut(e.target.checked);
+-};
+-$q('#lutToStream').onclick = () => streamWithLut(true);
+-$q('#lutToRaw').onclick = () => streamWithLut(false);
+-async function loadFocus(){
+-  const el = $q('#foBody');
+-  el.textContent = '读取中…';
+-  try{
+-    const r = await (await fetch('/api/focus_status')).json();
+-    el.innerHTML =
+-      `<div>对焦模式 <b>${r.focusmode||'?'}</b>　AF 识别 <b>${r.afmode||'?'}</b>　峰值 <b>${r.peaking||'?'}</b></div>` +
+-      `<div style="margin-top:6px">${r.advice||''}</div>` +
+-      `<div style="margin-top:6px;color:#8a97a6">${r.camctrl_note||''}</div>`;
+-  }catch(e){ el.textContent = '读取失败：' + e; }
++function setSeg(mode){
++  document.querySelectorAll('#lutSeg button').forEach(b =>
++    b.classList.toggle('on', b.dataset.mode === mode));
+ }
+-$q('#foReload').onclick = loadFocus;
+-setTimeout(loadFocus, 800);
++document.querySelectorAll('#lutSeg button').forEach(b => {
++  b.onclick = async () => {
++    const wantLut = b.dataset.mode === 'lut';
++    setSeg(b.dataset.mode);
++    if (wantLut) {
++      const n = $q('#lutSel').value;
++      if (n) await setLut(n);            // 会置 enabled=true
++    } else {
++      await fetch('/api/lut?name=off').catch(()=>{});
++    }
++    await loadLuts();
++    streamWithLut(wantLut);
++  };
++});
+ $q('#cDiag').onclick = runContentDiag;
+ $q('#cList').onclick = listContent;
+-setInterval(() => { if ($q('#lutpanel').classList.contains('show')) loadLuts(); }, 3000);
++setInterval(() => { if ($q('#lutpanel').classList.contains('show')) loadLuts(); }, 5000);
+ </script>
+ </body>
+ </html>
+-- 
+2.54.0 (Apple Git-157)
+

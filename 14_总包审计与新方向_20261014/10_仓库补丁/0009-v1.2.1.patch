@@ -1,0 +1,108 @@
+From bb1abdf3a92015dbe7f7fec2b17e52b1f330493d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 23:03:06 +0800
+Subject: [PATCH 09/15] =?UTF-8?q?v1.2.1:=20=E4=BF=AE=E5=A4=8D=E7=9B=B8?=
+ =?UTF-8?q?=E5=86=8C=E5=AF=BC=E8=87=B4=E5=8F=96=E6=99=AF=E6=B5=81=E5=8D=A1?=
+ =?UTF-8?q?=E9=A1=BF=20=E2=80=94=E2=80=94=20=E7=94=A8=E5=AE=8C=E8=87=AA?=
+ =?UTF-8?q?=E5=8A=A8=E5=88=87=E5=9B=9E=E6=8B=8D=E6=91=84=E6=A8=A1=E5=BC=8F?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+现象：用过「列举相机内容」后，实时取景出现明显卡顿（相机侧空档 700-880ms）。
+
+定因：
+- 列举 DLNA 内容**必须**让相机处于回放模式（这是取片的必要条件）
+- 但回放模式下**没有实时取景**，相机只会零星推帧
+- 原实现切过去就不管了 ⇒ 相机一直停在回放模式 ⇒ 取景流持续卡顿
+
+修复：
+- /api/gallery 与 /api/download 办完在后台线程自动 camcmd recmode（?restore=0 可关）
+- 界面加提示：列举会切回放、此时无取景、用完自动切回
+
+实测（修复后）：18.1-18.2 fps 稳定，250ms 窗口均匀 4-5 帧，**空档 0 次**，
+             抓 10 帧 **10/10 不重复**（画面确实在更新）
+
+另注：诊断面板的 max_camera_gap_ms 是**累计值**，含流重启时的一次 10.7s 空档，
+     看是否还在卡应看**近期窗口**而非累计最大值 —— 曾因此误判为卡顿未解决。
+---
+ s5monitor.py   | 31 +++++++++++++++++++++++++++----
+ www/index.html |  1 +
+ 2 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/s5monitor.py b/s5monitor.py
+index c26943b..c8d9b82 100644
+--- a/s5monitor.py
++++ b/s5monitor.py
+@@ -1031,15 +1031,23 @@ class Handler(BaseHTTPRequestHandler):
+             if s5_content is None:
+                 self._json({"error": "s5_content 不可用"}, 503); return
+             oid = (q.get("id") or ["0"])[0]
+-            # ★ 关键：DLNA 内容树只在**回放模式**下有内容（实测定因）。
+-            #   默认自动切到 playmode；?play=0 可关闭（避免打断正在进行的取景）。
+-            if (q.get("play") or ["1"])[0] == "1":
++            # ★ DLNA 内容树只在**回放模式**下有内容（实测定因）。
++            #   本进程原为拍摄模式（推流用），所以这里临时切回放，
++            #   **办完必须切回 rec** —— 否则实时取景会一直卡（曾因此误判为"卡顿复发"）。
++            auto = (q.get("play") or ["1"])[0] == "1"
++            restore = (q.get("restore") or ["1"])[0] == "1"
++            if auto:
+                 try:
+                     s5_content.cam_cgi(self.cam.host, "camcmd", value="playmode")
+                     time.sleep(3.0)
+                 except Exception:
+                     pass
+-            st, body = s5_content.browse(self.cam.host, oid)
++            try:
++                st, body = s5_content.browse(self.cam.host, oid)
++            finally:
++                if auto and restore:
++                    # 后台切回拍摄模式，不阻塞本次响应
++                    threading.Thread(target=self._restore_recmode, daemon=True).start()
+             items = s5_content.parse_items(body) if body else []
+             fault = s5_content.parse_fault(body)
+             if st == 200 and items:
+@@ -1076,6 +1084,9 @@ class Handler(BaseHTTPRequestHandler):
+                 self._json({"error": "缺 res 参数"}, 400); return
+             outdir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "downloads")
+             dst = os.path.join(outdir, os.path.basename(name))
++            auto = (q.get("play") or ["1"])[0] == "1"
++            if auto and (q.get("restore") or ["1"])[0] == "1":
++                threading.Thread(target=self._restore_recmode, daemon=True).start()
+             ok, n = s5_content.download(self.cam.host, res, dst)
+             if not ok:
+                 self._json({"error": "下载失败"}, 502); return
+@@ -1120,6 +1131,18 @@ class Handler(BaseHTTPRequestHandler):
+         self.do_GET()
+ 
+     # ---- MJPEG 推送 ----
++    def _restore_recmode(self):
++        """把相机切回拍摄模式 —— 相册用完必须调用，否则实时取景会卡住。
++        延迟 1.5s 再切，给 DLNA/下载留出余量。"""
++        try:
++            time.sleep(1.5)
++            self.cam.camcmd("recmode")
++            time.sleep(2.0)
++            if LUTLIB is not None and getattr(LUTLIB, "enabled", False):
++                pass
++        except Exception:
++            pass
++
+     def _mjpeg(self):
+         # ?lut=1 时对每一帧套用当前 LUT（实时监看级；单帧约 20–26 ms @640x432）
+         use_lut = False
+diff --git a/www/index.html b/www/index.html
+index c2b6056..861b898 100644
+--- a/www/index.html
++++ b/www/index.html
+@@ -187,6 +187,7 @@ html,body{margin:0;height:100%;background:#000;color:var(--fg);
+         <button id="cDiag">运行访问诊断</button>
+         <button id="cList">列举相机内容</button>
+       </div>
++      <div class="lrow" style="font-size:12px;color:#9fb0c4">⚠️ 列举内容会把相机切到<b>回放模式</b>（此时<b>没有实时取景</b>），用完会自动切回拍摄模式。</div>
+       <pre id="cOut" class="cout">（点上面的按钮开始）</pre>
+       <div id="cList"></div>
+     </div>
+-- 
+2.54.0 (Apple Git-157)
+

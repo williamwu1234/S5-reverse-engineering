@@ -1,0 +1,187 @@
+From 59175a1d592b97bf4503612b7bac191a507d8d0c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 22:03:22 +0800
+Subject: [PATCH 03/15] =?UTF-8?q?v1.1.2:=20=E2=98=85=20=E7=AA=81=E7=A0=B4?=
+ =?UTF-8?q?=20=E2=80=94=E2=80=94=20DLNA=20=E6=8E=A7=E5=88=B6=E9=9D=A2?=
+ =?UTF-8?q?=E7=9A=84=E9=97=A8=E5=B0=B1=E6=98=AF=20accctrl=20=E7=9A=84=20ok?=
+ =?UTF-8?q?=20=E7=8A=B6=E6=80=81?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+实机 A/B 确证（2026-10-14）：
+  accctrl = ok                       ⇒ Browse 返回 500 + UPnP Fault 701（服务已处理请求）
+  accctrl = ok_under_research_no_msg ⇒ Browse 返回 403（门关着）
+  ⇒ 此前判断的『相机对 DLNA 控制做了单独限制』**错误**，真正原因只是未达 ok。
+
+新增：
+- parse_fault()       解析 UPnP SOAP Fault（能收到 Fault 本身即证明已放行）
+- sweep_object_ids()  扫 ObjectID（Panasonic 内容树根不是标准 UPnP 的 "0"，0 返回 701）
+- accctrl_cleanup()   用**同一 UUID** 发 req_acc_can 清陈旧 pending
+                      ⇒ 解决「智能手机应用程序需要更新 / invalid login」，**不必重启相机**
+- 子命令 sweep / cleanup
+- diagnose 结论段改写，写入 ok 门机制与频率保护警告
+
+安全规则（来自 04_工具与脚本/campaign2/safe_handshake.py 实战结论）：
+- 清理必须用发起时那个同一 UUID
+- err_others_requesting 时**不清理**（避免误伤他人请求）
+- 已 ok 的会话**不清理**（避免打断可用会话）
+- req_acc 只发一次；反复重发触发相机频率保护
+---
+ s5_content.py | 113 ++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 106 insertions(+), 7 deletions(-)
+
+diff --git a/s5_content.py b/s5_content.py
+index 5b2cb1a..dcd7bf8 100644
+--- a/s5_content.py
++++ b/s5_content.py
+@@ -131,6 +131,76 @@ def download(cam, res_url, dst_path, timeout=120):
+     return False, 0
+ 
+ 
++# ---------------------------------------------------------------- UPnP Fault
++def parse_fault(xml: str):
++    """解析 UPnP SOAP Fault。返回 (errorCode, errorDescription) 或 None。
++    ★ 能收到 Fault 本身就是**好消息**：说明控制面已放行（403 时根本没有响应体）。"""
++    m = re.search(r"<errorCode>(\d+)</errorCode>", xml or "")
++    if not m:
++        return None
++    d = re.search(r"<errorDescription>([^<]*)</errorDescription>", xml or "")
++    return int(m.group(1)), (d.group(1) if d else "")
++
++
++# Panasonic LumixLink 的内容树根对象 ID 不是标准 UPnP 的 "0"。
++# 实测 ObjectID=0 在已授权时返回 701 No such object ⇒ 需要扫描。
++CANDIDATE_OBJECT_IDS = ["0", "1", "2", "3", "4", "10", "100",
++                        "Lumix", "LUMIX", "LumixLink", "LumixLink2.0",
++                        "DCIM", "100_PANA", "PRIVATE", "Content", "Browse"]
++
++
++def sweep_object_ids(cam, ids=None, verbose=True, delay=1.2):
++    """在**已授权（ok）**的前提下扫 ObjectID，找出能返回条目/不同错误码的那个。"""
++    ids = ids or CANDIDATE_OBJECT_IDS
++    hits = []
++    for oid in ids:
++        st, body = browse(cam, object_id=oid)
++        fault = parse_fault(body)
++        n = len(parse_items(body))
++        if verbose:
++            desc = f"HTTP {st}"
++            if fault:
++                desc += f"  UPnP {fault[0]} {fault[1]}"
++            if n:
++                desc += f"  ★条目 {n}"
++            print(f"    ObjectID={oid:<12s} {desc}")
++        if n or (fault and fault[0] != 701):
++            hits.append((oid, st, fault, n))
++        time.sleep(delay)
++    return hits
++
++
++def accctrl_cleanup(cam, uuid, verbose=True):
++    """★ 清理陈旧 pending 请求 —— 解决相机报「智能手机应用程序需要更新 / invalid login」。
++    规则（来自本项目 04_工具与脚本/campaign2/safe_handshake.py 的实战结论）：
++      · 必须用**发起请求时那个同一 UUID**
++      · **绝不**在 err_others_requesting（别人占着会话）时发，避免误伤他人请求
++      · **绝不**用它去打断一个已 ok 的会话
++    """
++    st, _, b = cam_cgi(cam, "accctrl", type="req_acc")
++    cur = txt(b).strip()
++    if verbose:
++        print(f"   清理前 accctrl = {cur}")
++    if "others" in cur.lower():
++        if verbose:
++            print("   ⚠️ 检测到 err_others_requesting（别的客户端占着会话）—— 按规则**不清理**，")
++            print("      请在手机/其它工具上断开连接后重试。")
++        return False, cur
++    if cur.startswith("ok,"):
++        if verbose:
++            print("   当前已是完整授权 ok —— 按规则**不清理**（以免打断可用会话）。")
++        return True, cur
++    st2, _, b2 = cam_cgi(cam, "accctrl", type="req_acc_can", value=uuid, value2="")
++    if verbose:
++        print(f"   req_acc_can({uuid}) -> {result_of(txt(b2))}")
++    time.sleep(2)
++    st3, _, b3 = cam_cgi(cam, "accctrl", type="req_acc")
++    after = txt(b3).strip()
++    if verbose:
++        print(f"   清理后 accctrl = {after}")
++    return after.startswith("ok,"), after
++
++
+ # ---------------------------------------------------------------- 诊断
+ def diagnose(cam, verbose=True):
+     """逐项测所有可能影响"能否访问机身存储"的因素，返回结构化结论。"""
+@@ -212,7 +282,14 @@ def diagnose(cam, verbose=True):
+             log(f"        [{it['id']:>6}] {it['title'][:36]:38s} {it['cls'][:26]}")
+         R["verdict"] = "可访问机身存储"
+         return R
+-    log("    ❌ 控制面被拒（静态资源却 200 ⇒ 相机对 DLNA 控制做了单独限制）")
++    fault = parse_fault(body_c)
++    if st_c == 500 and fault:
++        log(f"    ★★ 控制面已放行！UPnP Fault {fault[0]} {fault[1]}")
++        log("        （能收到 Fault 就说明相机在**处理**我们的请求；403 时是连处理都不处理）")
++        log(f"        {fault[0]} = No such object ⇒ 需要换 ObjectID，见 sweep_object_ids()")
++        R["verdict"] = "控制面已放行（ok 授权生效），待确定 ObjectID"
++        return R
++    log("    ❌ 控制面被拒（静态资源却 200）")
+ 
+     # 5) 结论
+     log("\n=== 结论 ===")
+@@ -221,11 +298,16 @@ def diagnose(cam, verbose=True):
+         log("  ★ **先退出机身菜单再重测** —— `err_reject` 是本项目记载的菜单开启特征，")
+         log("     而它同时影响 get_content_info 等多个端点。这是最可能、且零成本的一步。")
+     else:
+-        R["verdict"] = "station 模式下 DLNA 控制面被相机拒绝（非格式问题）"
+-        log("  · 已用**官方 App 的逐字节请求**（含 pana:X_FromCP=LumixLink2.0）复测，仍 403 ⇒ 非格式问题。")
+-        log("  · 下一步可选：① 切到相机 **SoftAP 模式**（手机同款路径）重测；")
+-        log("               ② 相机菜单里的 **Wi-Fi → 发送图像 / DLNA 服务** 是否需手动启动；")
+-        log("               ③ 走 USB（Tether/存储）或读卡器，用 watch_bake.py 批量烧。")
++        R["verdict"] = "accctrl 未达 ok ⇒ DLNA 控制面 403（门未开）"
++        log("  ★ **已实测确证的机制**：DLNA 控制面的门就是 accctrl 的 `ok` 状态 ——")
++        log("      · accctrl = ok                      ⇒ Browse 返回 500 + UPnP Fault（服务已处理）")
++        log("      · accctrl = ok_under_research_no_msg ⇒ Browse 返回 403（门关着）")
++        log("  ⇒ 要先拿到 `ok`：见 accctrl_cleanup()（用同一 UUID 发 req_acc_can 清陈旧 pending），")
++        log("     然后**只发一次** req_acc。❗切勿反复重发 req_acc —— 会触发")
++        log("     「智能手机应用程序需要更新 / invalid login」（相机的频率保护）。")
++        log("  拿到 ok 后：sweep_object_ids() 找内容树根对象（0 返回 701 No such object）。")
++        log("  另注：相机侧有 **DMS（Digital Media Server）** 开关（APK 字符串 DMS Enabled/Disabled），")
++        log("      若内容树为空也可能需要让相机进入 DLNA 服务状态。")
+     return R
+ 
+ 
+@@ -259,13 +341,30 @@ def sample(cam, port=49152, timeout=12):
+ if __name__ == "__main__":
+     import argparse, json
+     ap = argparse.ArgumentParser()
+-    ap.add_argument("cmd", nargs="?", default="diagnose", choices=["diagnose", "list", "sample"])
++    ap.add_argument("cmd", nargs="?", default="diagnose",
++                    choices=["diagnose", "list", "sample", "sweep", "cleanup"])
+     ap.add_argument("--cam", default="192.168.1.131")
+     ap.add_argument("--out", default=".")
++    ap.add_argument("--uuid", default="4D454930-0100-1000-8001-020A0003BD13",
++                    help="清理用的 UUID —— 必须是**当初发起 req_acc 时用的那个**")
+     a = ap.parse_args()
+     if a.cmd == "diagnose":
+         r = diagnose(a.cam)
+         print("\n(JSON) " + json.dumps(r, ensure_ascii=False))
++    elif a.cmd == "cleanup":
++        # 用**同一 UUID**清理陈旧 pending，解决「需要更新app / invalid login」
++        uid = a.uuid
++        ok, cur = accctrl_cleanup(a.cam, uid)
++        print("\n结果：", "✅ 已是/已恢复 ok" if ok else f"⚠️ {cur}")
++        print("提示：清理成功后，请**只发一次** req_acc 再取 ok；切勿反复重发。")
++    elif a.cmd == "sweep":
++        st, _ = browse(a.cam)
++        if st == 403:
++            print("❌ 控制面 403 ⇒ accctrl 未达 ok。先跑 `cleanup`，再跑 `diagnose`。")
++        else:
++            print(f"控制面 HTTP {st} ⇒ 已放行，开始扫 ObjectID：")
++            hits = sweep_object_ids(a.cam)
++            print("\n命中：", hits if hits else "（无；可能内容树为空 / DMS 未启动）")
+     elif a.cmd == "list":
+         st, body = browse(a.cam)
+         print("HTTP", st, len(body), "B")
+-- 
+2.54.0 (Apple Git-157)
+

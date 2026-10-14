@@ -1,0 +1,37 @@
+{
+  "firmware": [
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5/S5___V29.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V24.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V23.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V20.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V11.bin"
+  ],
+  "gmpy2": true,
+  "signature_field": "last 512 bytes",
+  "profile": "all",
+  "candidates_total": 815,
+  "candidates_curated": 815,
+  "paddings": [
+    "p15_di",
+    "raw",
+    "p15_simple",
+    "raw_le"
+  ],
+  "log": [
+    {
+      "e": 65537,
+      "candidates": 815,
+      "elapsed_s": 3011.8,
+      "notes": [
+        "e=65537 BE: 达到候选上限 24, 共 815 个候选未跑完",
+        "e=65537 LE: 达到候选上限 24, 共 815 个候选未跑完"
+      ],
+      "found": []
+    }
+  ],
+  "found": [],
+  "notes": [
+    "e=65537 BE: 达到候选上限 24, 共 815 个候选未跑完",
+    "e=65537 LE: 达到候选上限 24, 共 815 个候选未跑完"
+  ]
+}

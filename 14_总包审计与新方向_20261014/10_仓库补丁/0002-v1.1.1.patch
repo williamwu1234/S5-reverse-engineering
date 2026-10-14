@@ -1,0 +1,124 @@
+From 77a29a841d5e5727556fcad7213a1cfb85780689 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 22:00:57 +0800
+Subject: [PATCH 02/15] =?UTF-8?q?v1.1.1:=20=E5=90=AF=E5=8A=A8=E8=84=9A?=
+ =?UTF-8?q?=E6=9C=AC=20+=20=E5=B7=B2=E6=8E=88=E6=9D=83=E4=BC=9A=E8=AF=9D?=
+ =?UTF-8?q?=E5=86=85=E7=9A=84=E5=86=85=E5=AE=B9=E6=9F=A5=E8=AF=A2=E7=AB=AF?=
+ =?UTF-8?q?=E7=82=B9?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- 启动_含LUT.command  自动挑选带 numpy/Pillow 的解释器（系统 python3.9 没有）
+- /api/content_info   在**本进程自己的已授权会话内**调 get_content_info
+                      （外部 curl 无授权身份，只会拿到 err_unsuitable_app）
+- /api/accctrl_refresh 查看当前 accctrl 状态
+
+实测澄清（重要）：
+- 相机 accctrl 状态会**快速振荡**；反复发 req_acc 会自行扰动状态
+  （项目 25 号手册已警告），因此用轮询方式测出的读数不可靠
+- 干净测得：无竞争客户端时 getstate=ok；
+  但 get_content_info=err_reject、DLNA Browse=403 依旧
+  ⇒ 内容访问那道门与「会话被占」「推流占用」均无关
+---
+ s5monitor.py       | 25 +++++++++++++++++++++++++
+ 启动_含LUT.command | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 69 insertions(+)
+ create mode 100755 启动_含LUT.command
+
+diff --git a/s5monitor.py b/s5monitor.py
+index 512b4d6..452e42e 100644
+--- a/s5monitor.py
++++ b/s5monitor.py
+@@ -37,6 +37,7 @@ import collections
+ import atexit
+ import json
+ import os
++import re
+ import signal
+ import socket
+ import sys
+@@ -972,6 +973,30 @@ class Handler(BaseHTTPRequestHandler):
+                 self._json({"error": str(e)}, 500)
+             return
+ 
++        if p == "/api/content_info":
++            # ★ 关键实验：**在本进程自己的已授权会话内**调 get_content_info。
++            #   外部 curl 没有授权身份，只会拿到 err_unsuitable_app；
++            #   必须由持有 ok 的本进程来问，才能判定"完整授权是否解锁内容列举"。
++            val = (q.get("value") or ["0"])[0]
++            try:
++                body = self.cam._get("get_content_info", value=val)
++            except Exception as e:
++                body = "exception: %s" % e
++            self._json({"value": val, "access": self.cam.access_raw,
++                        "body": body,
++                        "result": (re.search(r"<result>([^<]*)</result>", body or "") or [None, "?"])[1]
++                                  if re else "?"})
++            return
++
++        if p == "/api/accctrl_refresh":
++            try:
++                self.cam.req_acc()
++            except Exception as e:
++                pass
++            self._json({"access_raw": self.cam.access_raw,
++                        "access_mode": self.cam.access_mode})
++            return
++
+         if p == "/api/gallery":
+             if s5_content is None:
+                 self._json({"error": "s5_content 不可用"}, 503); return
+diff --git a/启动_含LUT.command b/启动_含LUT.command
+new file mode 100755
+index 0000000..a094396
+--- /dev/null
++++ b/启动_含LUT.command
+@@ -0,0 +1,44 @@
++#!/bin/bash
++# 启动 DC-S5 无线监看（含 LUT 实时套用）
++#
++# 为什么需要这个脚本：
++#   macOS 自带的 /usr/bin/python3 或 Xcode 的 python3.9 **没有 numpy/Pillow**，
++#   LUT 实时套用面板会因此被禁用。本脚本按优先级挑一个带依赖的解释器。
++
++cd "$(dirname "$0")" || exit 1
++
++CAM="${1:-192.168.1.131}"     # 第一个参数：相机 IP
++PORT="${2:-8080}"             # 第二个参数：本机端口
++
++# 按优先级找解释器（第一个能 import numpy+PIL 的胜出）
++CANDIDATES=(
++  "/Users/wuwilliam/.dsh/dsh-runtimes/dsh-primary-runtime/dependencies/python/bin/python3"
++  "$(command -v python3)"
++  "/opt/homebrew/bin/python3"
++  "/usr/local/bin/python3"
++  "/usr/bin/python3"
++)
++
++PY=""
++for c in "${CANDIDATES[@]}"; do
++  [ -x "$c" ] || continue
++  if "$c" -c "import numpy, PIL" >/dev/null 2>&1; then PY="$c"; break; fi
++  [ -z "$PY" ] && PY="$c"          # 记下第一个可用的作为兜底
++done
++
++if [ -z "$PY" ]; then
++  echo "❌ 找不到可用的 python3"; exit 1
++fi
++
++if "$PY" -c "import numpy, PIL" >/dev/null 2>&1; then
++  echo "✅ 解释器：$PY（含 numpy/Pillow ⇒ LUT 面板可用）"
++else
++  echo "⚠️  解释器：$PY（缺 numpy/Pillow ⇒ LUT 面板将禁用，监看/对焦/拍照不受影响）"
++  echo "    想启用 LUT：$PY -m pip install numpy pillow"
++fi
++
++echo "🎥 相机 $CAM    本机 http://127.0.0.1:$PORT"
++echo "   ↳ 启动后请【盯着相机屏幕】：若弹出「允许连接？」请按【允许】"
++echo
++
++exec "$PY" -u s5monitor.py --host "$CAM" --port "$PORT" --device-name "LUMIX Sync"
+-- 
+2.54.0 (Apple Git-157)
+

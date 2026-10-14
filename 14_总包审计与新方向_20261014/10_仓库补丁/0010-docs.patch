@@ -1,0 +1,88 @@
+From bb8284f68c1e395c4f1ea070e3d37db1d1885fdd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 23:05:09 +0800
+Subject: [PATCH 10/15] =?UTF-8?q?docs:=20=E7=9B=B8=E5=86=8C=E4=B8=8E?=
+ =?UTF-8?q?=E5=8F=96=E6=99=AF=E4=BA=92=E6=96=A5=E7=9A=84=E5=AE=9A=E5=9B=A0?=
+ =?UTF-8?q?=20+=20=E6=AD=A3=E7=A1=AE=E7=9A=84=E6=B5=81=E7=95=85=E5=BA=A6?=
+ =?UTF-8?q?=E6=B5=8B=E9=87=8F=E6=B3=95?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- 卡顿真因：取片必须回放模式，而回放模式没有实时取景，原实现切过去不切回
+- ★ 诊断面板 max_camera_gap_ms 是累计值，含流重启的 10.7s 空档，
+  会让人误判为一直没修好；应看近期窗口
+- 附一段可复制的 20 秒流畅度测量脚本与健康标准
+- 链路质量对照：路由器 RTT stddev 2.8ms vs 相机 254ms ⇒ 相机侧无线链路是外部因素
+- 排除 ClashX：ExceptionsList 含 192.168.0.0/16，局域网流量绕过代理
+---
+ README.md | 56 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/README.md b/README.md
+index 34e1721..c8b97f5 100644
+--- a/README.md
++++ b/README.md
+@@ -351,3 +351,59 @@ SOAP 把 DIDL 放在 `<Result>` 里**转义**了（`&lt;item id=&quot;...&quot;&
+ 
+ > ⚠️ 回放模式下**没有实时取景**（DLNA 内容与取景流互斥）。
+ > 看完相册想回到监看，点界面上的「拍摄」按钮即可。
++
++
++---
++
++# ⚠️ 相册与取景互斥（卡顿的真相）
++
++## 现象与定因
++
++用过「列举相机内容」后，实时取景出现明显卡顿（诊断面板显示相机侧空档 700–880ms）。
++
++**定因（三层）**：
++
++1. **取片的必要条件**：DLNA 内容树**只在回放模式下有内容** ⇒ 列举必须先切 `playmode`
++2. **回放模式下没有实时取景** ⇒ 相机只会零星推帧 ⇒ 画面卡顿
++3. **原实现切过去就不管了** ⇒ 相机一直停在回放模式 ⇒ 取景持续卡顿
++
++## 修复
++
++`/api/gallery` 与 `/api/download` 办完会在**后台线程自动 `camcmd recmode`** 切回拍摄模式
++（`?restore=0` 可关闭）。界面上也加了提示。
++
++## ★ 怎么正确判断"是否还在卡"
++
++诊断面板的 `max_camera_gap_ms` 是**累计值**——它会把「流重启时的一次 10.7 秒空档」
++和「回放模式期间的零星推帧」永远算在里面，**看起来像是一直没修好**。
++
++**应看近期窗口**，别信累计最大值：
++
++```bash
++# 每 250ms 采一次帧计数，连采 20 秒
++python3 - <<'EOF'
++import urllib.request, json, time
++def st():
++    with urllib.request.urlopen("http://127.0.0.1:8080/api/state", timeout=5) as r:
++        return json.load(r)
++prev = st()['frames']; t0 = time.time(); s = []
++while time.time() - t0 < 20:
++    time.sleep(0.25); f = st()['frames']; s.append(f - prev); prev = f
++run = mx = 0
++for x in s:
++    if x == 0: run += 1; mx = max(mx, run)
++    else: run = 0
++print(f"{sum(s)/20:.1f} fps   空窗口 {sum(1 for x in s if x==0)}/{len(s)}   最长空档 {mx*0.25:.2f}s")
++EOF
++```
++
++**健康标准**：18 fps 左右、250ms 窗口均匀 4–5 帧、空窗口 0、最长空档 0.00s。
++
++## 另：链路质量是外部因素
++
++实测到**路由器** RTT 3.6/5.4/16.0ms（stddev **2.8ms**，极稳），
++到**相机** RTT 7.4/232/743ms（stddev **254ms**）⇒ 抖动来自**相机侧无线链路**。
++相机是 2.4GHz-only，若与路由器距离远/隔墙，取景帧率会明显下降——
++这属于环境因素，软件层无法根治（可用 `--pacing-fps` 调低目标帧率让节奏更稳）。
++
++顺带排除：ClashX 代理的 `ExceptionsList` 含 `192.168.0.0/16`，**局域网流量绕过代理**，与本问题无关。
+-- 
+2.54.0 (Apple Git-157)
+

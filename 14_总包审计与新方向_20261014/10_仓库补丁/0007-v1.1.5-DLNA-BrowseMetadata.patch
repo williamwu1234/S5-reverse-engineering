@@ -1,0 +1,190 @@
+From 9f5cfedafb7c01783ea6aa5a1b2e459be48f2558 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 22:54:32 +0800
+Subject: [PATCH 07/15] =?UTF-8?q?v1.1.5:=20=E2=98=85=20DLNA=20=E4=B8=89?=
+ =?UTF-8?q?=E5=B1=82=E5=88=A4=E5=AE=9A=20=E2=80=94=E2=80=94=20BrowseMetada?=
+ =?UTF-8?q?ta=20=E6=8F=AD=E7=A4=BA=E6=A0=B9=E5=AD=98=E5=9C=A8=E4=BD=86?=
+ =?UTF-8?q?=E5=86=85=E5=AE=B9=E6=A0=91=E4=B8=BA=E7=A9=BA?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+关键发现（2026-10-14 实测）：
+- BrowseMetadata id=0  → 200 + <container id="0"><dc:title>root</dc:title>  ★ 根存在
+- BrowseDirectChildren id=0 → 500 + 701（4 种变体全试：含去掉 pana 扩展、改 RequestedCount、Filter 留空）
+- BrowseMetadata id=1/2/3/DCIM/100_PANA → 701（都不存在）
+- GetSystemUpdateID → <Id>1</Id>
+- GetSearchCapabilities / GetSortCapabilities → 空
+⇒ 门已开（非 403）、根容器存在、但**内容树为空**：
+  固件对「空根」返回 701 而不是空列表，这正是此前误判为「无解」的原因。
+
+新增：
+- browse(..., flag=) 支持 BrowseFlag 切换
+- service_action() 调任意 CDS/CMS action
+- probe_root() 三层判定：门开没开 / 根存不存在 / 有没有内容
+- 新子命令 probe
+
+更正：p182x5/a.java 的 "DMS Enabled/Disabled" 指的是**手机端** DMS
+     （InitDMS(localIP,name,phoneStorage)），不是相机的 —— 此前推断方向错误。
+
+最可能原因：卡上只有 2 个 MP4、**没有 JPEG**；Panasonic DLNA 图库主要服务静态照片。
+⇒ 下一步：在相机上拍一张照片后重测。
+---
+ s5_content.py | 73 ++++++++++++++++++++++++++++++++++++++++++++++++---
+ s5monitor.py  | 32 +++++++++++++++++-----
+ 2 files changed, 95 insertions(+), 10 deletions(-)
+
+diff --git a/s5_content.py b/s5_content.py
+index dcd7bf8..ab5f496 100644
+--- a/s5_content.py
++++ b/s5_content.py
+@@ -88,8 +88,15 @@ def official_browse_body(object_id="0", start=0, count=0,
+             '</u:Browse></s:Body></s:Envelope>')
+ 
+ 
+-def browse(cam, object_id="0", start=0, count=0, timeout=20):
+-    """返回 (status, body_text)。status==200 时 body 为 DIDL-Lite XML。"""
++def browse(cam, object_id="0", start=0, count=0, timeout=20,
++           flag="BrowseDirectChildren"):
++    """返回 (status, body_text)。status==200 时 body 为 DIDL-Lite XML。
++
++    ★ flag='BrowseMetadata' 是关键补充（2026-10-14 实测）：
++      · BrowseDirectChildren id=0 → **500 + 701**（固件对"空根"返回 701 而非空列表）
++      · BrowseMetadata      id=0 → **200 + <container id="0"><dc:title>root</dc:title>**
++      ⇒ 用 BrowseMetadata 才能区分「门没开(403)」/「根不存在(701)」/「根存在但无子项」。
++    """
+     st, hdr, body = _http(
+         f"http://{cam}:{DLNA_PORT}/Server0/CDS_control", "POST",
+         {"Accept-Charset": "UTF-8",
+@@ -97,10 +104,60 @@ def browse(cam, object_id="0", start=0, count=0, timeout=20):
+          "SOAPAction": "urn:schemas-upnp-org:service:ContentDirectory:1#Browse",
+          "User-Agent": UA_DLNA,
+          "Host": f"{cam}:{DLNA_PORT}"},
+-        official_browse_body(object_id, start, count), timeout)
++        official_browse_body(object_id, start, count, flag=flag), timeout)
+     return st, txt(body)
+ 
+ 
++def service_action(cam, action, inner="", service="ContentDirectory",
++                   control="CDS_control", timeout=15):
++    """调任意 CDS/CMS action（GetSystemUpdateID / GetProtocolInfo 等）。"""
++    st, hdr, body = _http(
++        f"http://{cam}:{DLNA_PORT}/Server0/{control}", "POST",
++        {"Accept-Charset": "UTF-8",
++         "Content-Type": 'text/xml; charset="utf-8"',
++         "SOAPAction": f'"urn:schemas-upnp-org:service:{service}:1#{action}"',
++         "User-Agent": UA_DLNA,
++         "Host": f"{cam}:{DLNA_PORT}"},
++        '<?xml version="1.0" encoding="utf-8"?>'
++        '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" '
++        's:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body>'
++        f'<u:{action} xmlns:u="urn:schemas-upnp-org:service:{service}:1" '
++        'xmlns:pana="urn:schemas-panasonic-com:pana">'
++        f'{inner}</u:{action}></s:Body></s:Envelope>', timeout)
++    return st, txt(body)
++
++
++def probe_root(cam):
++    """★ 三层判定：门开没开 / 根存不存在 / 有没有内容。"""
++    out = {}
++    st, body = browse(cam, "0", flag="BrowseDirectChildren")
++    out["children_http"], out["children_fault"] = st, parse_fault(body)
++    out["children"] = parse_items(body)
++    time.sleep(1.0)
++    st2, body2 = browse(cam, "0", flag="BrowseMetadata")
++    out["meta_http"], out["meta_fault"] = st2, parse_fault(body2)
++    m = re.search(r"&lt;dc:title&gt;([^&]*)", body2)
++    out["root_title"] = m.group(1) if m else None
++    time.sleep(1.0)
++    st3, body3 = service_action(cam, "GetSystemUpdateID")
++    m3 = re.search(r"<Id>(\d+)</Id>", body3)
++    out["system_update_id"] = int(m3.group(1)) if m3 else None
++    out["gate_open"] = (st != 403)
++    out["root_exists"] = (st2 == 200 and out["root_title"] is not None)
++    out["has_children"] = bool(out["children"])
++    if not out["gate_open"]:
++        out["verdict"] = "accctrl 未达 ok ⇒ 403（门关着）"
++    elif out["root_exists"] and not out["has_children"]:
++        out["verdict"] = ("★ 门已开、根容器存在，但**内容树为空** ⇒ 相机没向 DLNA 导出任何内容。"
++                          "最可能：卡上没有 JPEG 照片（Panasonic DLNA 图库主要服务静态照片）。"
++                          "请先在相机上拍一张照片再重测。")
++    elif out["has_children"]:
++        out["verdict"] = f"✅ 可访问，%d 项" % len(out["children"])
++    else:
++        out["verdict"] = "根容器不存在或响应异常"
++    return out
++
++
+ def parse_items(xml: str):
+     """解析 DIDL-Lite：兼容 <D-Item> / <item> / <container>。"""
+     out = []
+@@ -342,7 +399,7 @@ if __name__ == "__main__":
+     import argparse, json
+     ap = argparse.ArgumentParser()
+     ap.add_argument("cmd", nargs="?", default="diagnose",
+-                    choices=["diagnose", "list", "sample", "sweep", "cleanup"])
++                    choices=["diagnose", "list", "sample", "sweep", "cleanup", "probe"])
+     ap.add_argument("--cam", default="192.168.1.131")
+     ap.add_argument("--out", default=".")
+     ap.add_argument("--uuid", default="4D454930-0100-1000-8001-020A0003BD13",
+@@ -351,6 +408,14 @@ if __name__ == "__main__":
+     if a.cmd == "diagnose":
+         r = diagnose(a.cam)
+         print("\n(JSON) " + json.dumps(r, ensure_ascii=False))
++    elif a.cmd == "probe":
++        r = probe_root(a.cam)
++        print("=== DLNA 根对象三层判定 ===")
++        print(f"  门是否开   : {'✅' if r['gate_open'] else '❌'} (children HTTP {r['children_http']})")
++        print(f"  根是否存在 : {'✅' if r['root_exists'] else '❌'} title={r['root_title']!r} (HTTP {r['meta_http']})")
++        print(f"  SystemUpdateID = {r['system_update_id']}")
++        print(f"  子项数     : {len(r['children'])}")
++        print(f"\n  ⇒ {r['verdict']}")
+     elif a.cmd == "cleanup":
+         # 用**同一 UUID**清理陈旧 pending，解决「需要更新app / invalid login」
+         uid = a.uuid
+diff --git a/s5monitor.py b/s5monitor.py
+index 23df577..24db112 100644
+--- a/s5monitor.py
++++ b/s5monitor.py
+@@ -1032,12 +1032,32 @@ class Handler(BaseHTTPRequestHandler):
+                 self._json({"error": "s5_content 不可用"}, 503); return
+             oid = (q.get("id") or ["0"])[0]
+             st, body = s5_content.browse(self.cam.host, oid)
+-            if st != 200:
+-                self._json({"http": st, "error": "DLNA 控制面被拒",
+-                            "hint": "先跑 /api/content_diag；若 accctrl 是 err_others_requesting，"
+-                                    "请在相机上处理待批复对话框"}, 502)
+-                return
+-            self._json({"http": st, "items": s5_content.parse_items(body)})
++            items = s5_content.parse_items(body) if body else []
++            fault = s5_content.parse_fault(body)
++            if st == 200 and items:
++                self._json({"http": st, "items": items}); return
++            # ---- 三态判定（403 与 500 含义完全不同，不能混为一谈）----
++            if st == 403:
++                self._json({"http": st, "items": [],
++                            "state": "gate_closed",
++                            "error": "accctrl 未达 ok ⇒ DLNA 控制面 403（门关着）",
++                            "hint": "先让 accctrl 变 ok（顶栏 access=ok）。实测："
++                                    "accctrl=ok ⇒ Browse 返回 500+Fault；"
++                                    "accctrl=ok_under_research_no_msg ⇒ 403。"}, 200)
++            elif fault and fault[0] == 701:
++                self._json({"http": st, "items": [], "fault": fault,
++                            "state": "no_such_object",
++                            "error": "控制面已放行，但内容树为空（701 No such object）",
++                            "hint": "相机的 DMS（媒体服务器）没有内容。最可能原因："
++                                    "**卡上没有 JPEG 照片**（本机卡上只有 MP4）——"
++                                    "DLNA 的『发送图像』通常只索引静态照片。"
++                                    "请先拍一张照片再重试；若仍 701，则需在相机菜单里"
++                                    "进入 Wi-Fi → 发送图像 让 DMS 启动。"}, 200)
++            else:
++                self._json({"http": st, "items": [], "fault": fault,
++                            "state": "other",
++                            "error": f"未预期的响应（HTTP {st}）",
++                            "body": (body or "")[:400]}, 200)
+             return
+ 
+         if p == "/api/download":
+-- 
+2.54.0 (Apple Git-157)
+

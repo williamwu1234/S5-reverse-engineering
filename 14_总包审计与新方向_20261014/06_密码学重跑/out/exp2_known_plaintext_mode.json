@@ -1,0 +1,79 @@
+{
+  "B_keystream": {
+    "pt_nonzero_wrong": 508,
+    "pt_nonzero_correct": 0,
+    "ent_ks_wrong": 7.999335457432886,
+    "ent_ks_correct": 7.999343531774379,
+    "eq_rate_wrong_vs_correct": 0.0040283203125,
+    "shift_relation_rate": 1.0,
+    "ct_equals_ks_correct": true,
+    "ct_equals_ks_wrong": false
+  },
+  "C_mode": {
+    "blocks_correct": 16384,
+    "uniq_blocks_correct": 16384,
+    "blocks_wrong": 16384,
+    "uniq_blocks_wrong": 16384,
+    "pairs": [
+      {
+        "pair": "eep_ow_a/eep_ow_b",
+        "arm": "错误偏移",
+        "same_sha": true,
+        "same_iv": false,
+        "size": 131072,
+        "eq_rate": 0.00371551513671875,
+        "ct_identical": false,
+        "xor_entropy": 7.998683370476997,
+        "xor_zero_ratio": 0.00371551513671875
+      },
+      {
+        "pair": "eep_ow_a/eep_ow_b",
+        "arm": "正确偏移",
+        "same_sha": true,
+        "same_iv": false,
+        "size": 131072,
+        "eq_rate": 0.00371551513671875,
+        "ct_identical": false,
+        "xor_entropy": 7.998687879999495,
+        "xor_zero_ratio": 0.00371551513671875
+      },
+      {
+        "pair": "eep_act_a/eep_act_b",
+        "arm": "错误偏移",
+        "same_sha": true,
+        "same_iv": false,
+        "size": 2048,
+        "eq_rate": 0.00390625,
+        "ct_identical": false,
+        "xor_entropy": 7.9152155910773105,
+        "xor_zero_ratio": 0.00390625
+      },
+      {
+        "pair": "eep_act_a/eep_act_b",
+        "arm": "正确偏移",
+        "same_sha": true,
+        "same_iv": false,
+        "size": 2048,
+        "eq_rate": 0.0029296875,
+        "ct_identical": false,
+        "xor_entropy": 7.918411630513076,
+        "xor_zero_ratio": 0.0029296875
+      }
+    ],
+    "size_mod16_all_zero": true
+  },
+  "A_known_plaintext": {
+    "hits": [
+      {
+        "name": "ipu_data",
+        "idx": 33,
+        "size": 262144,
+        "found": [
+          "全零 0x00",
+          "== history 的内容"
+        ]
+      }
+    ],
+    "n_enc": 41
+  }
+}

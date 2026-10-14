@@ -1,0 +1,792 @@
+{
+  "firmware": [
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5/S5___V29.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V24.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V23.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V20.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V11.bin"
+  ],
+  "firmware_len": {
+    "V29": 90238464,
+    "V24": 90238464,
+    "V23": 90238464,
+    "V20": 88702464,
+    "V11": 88178176
+  },
+  "python_ecdsa_available": true,
+  "curves": [
+    "NIST256p",
+    "SECP256k1",
+    "BRAINPOOLP256r1"
+  ],
+  "hash_sets": {
+    "core": [
+      "sha256",
+      "sha256d",
+      "sha384_trunc32",
+      "sha512_trunc32",
+      "sha384_full",
+      "sha512_full",
+      "sha1",
+      "sha224"
+    ],
+    "extended": [
+      "sha256",
+      "sha256d",
+      "sha384_trunc32",
+      "sha512_trunc32",
+      "sha3_256",
+      "blake2s"
+    ],
+    "direct": [
+      "_raw",
+      "sha256",
+      "sha256d",
+      "sha384_trunc32",
+      "sha512_trunc32"
+    ],
+    "extra_available": [
+      "sha3_256",
+      "blake2s",
+      "blake2b32"
+    ]
+  },
+  "profile": "core",
+  "signature_field": [
+    544,
+    608
+  ],
+  "stats": {
+    "msgs": 35,
+    "combos": 3360,
+    "msg_empty": 0,
+    "bytes_hashed": 50131357344
+  },
+  "msg_len_shape": {
+    "raw": [
+      90238464,
+      90238464,
+      90238464,
+      88702464,
+      88178176
+    ],
+    "raw +签名区清零": [
+      90238464,
+      90238464,
+      90238464,
+      88702464,
+      88178176
+    ],
+    "raw[0x200:]": [
+      90237952,
+      90237952,
+      90237952,
+      88701952,
+      88177664
+    ],
+    "raw[0x200:] +签名区清零": [
+      90237952,
+      90237952,
+      90237952,
+      88701952,
+      88177664
+    ],
+    "raw[0x2A0:]": [
+      90237792,
+      90237792,
+      90237792,
+      88701792,
+      88177504
+    ],
+    "raw[0x2E0:]": [
+      90237728,
+      90237728,
+      90237728,
+      88701728,
+      88177440
+    ],
+    "raw[0x142C:]": [
+      90233300,
+      90233300,
+      90233300,
+      88697300,
+      88173012
+    ],
+    "raw[:-512]": [
+      90237952,
+      90237952,
+      90237952,
+      88701952,
+      88177664
+    ],
+    "raw[:-512] +签名区清零": [
+      90237952,
+      90237952,
+      90237952,
+      88701952,
+      88177664
+    ],
+    "raw[0x200:-512]": [
+      90237440,
+      90237440,
+      90237440,
+      88701440,
+      88177152
+    ],
+    "raw[0x200:-512] +签名区清零": [
+      90237440,
+      90237440,
+      90237440,
+      88701440,
+      88177152
+    ],
+    "raw[0x2A0:-512]": [
+      90237280,
+      90237280,
+      90237280,
+      88701280,
+      88176992
+    ],
+    "raw[0x2E0:-512]": [
+      90237216,
+      90237216,
+      90237216,
+      88701216,
+      88176928
+    ],
+    "raw[0x142C:-512]": [
+      90232788,
+      90232788,
+      90232788,
+      88696788,
+      88172500
+    ],
+    "raw[:0x200]": [
+      512,
+      512,
+      512,
+      512,
+      512
+    ],
+    "raw[:0x2A0]": [
+      672,
+      672,
+      672,
+      672,
+      672
+    ],
+    "raw[:0x2A0] +签名区清零": [
+      672,
+      672,
+      672,
+      672,
+      672
+    ],
+    "raw[:0x2E0]": [
+      736,
+      736,
+      736,
+      736,
+      736
+    ],
+    "raw[:0x2E0] +签名区清零": [
+      736,
+      736,
+      736,
+      736,
+      736
+    ],
+    "raw[:0x142C]": [
+      5164,
+      5164,
+      5164,
+      5164,
+      5164
+    ],
+    "raw[:0x142C] +签名区清零": [
+      5164,
+      5164,
+      5164,
+      5164,
+      5164
+    ],
+    "raw[0x200:0x2A0]": [
+      160,
+      160,
+      160,
+      160,
+      160
+    ],
+    "raw[0x200:0x2A0] +签名区清零": [
+      160,
+      160,
+      160,
+      160,
+      160
+    ],
+    "raw[0x200:0x2E0]": [
+      224,
+      224,
+      224,
+      224,
+      224
+    ],
+    "raw[0x200:0x2E0] +签名区清零": [
+      224,
+      224,
+      224,
+      224,
+      224
+    ],
+    "raw[0x200:0x142C]": [
+      4652,
+      4652,
+      4652,
+      4652,
+      4652
+    ],
+    "raw[0x200:0x142C] +签名区清零": [
+      4652,
+      4652,
+      4652,
+      4652,
+      4652
+    ],
+    "raw[0x200:0x2DC]": [
+      220,
+      220,
+      220,
+      220,
+      220
+    ],
+    "raw[0x200:0x2DC] +签名区清零": [
+      220,
+      220,
+      220,
+      220,
+      220
+    ],
+    "raw[0x2A0:0x2DC]": [
+      60,
+      60,
+      60,
+      60,
+      60
+    ],
+    "raw[0x2A0:0x142C]": [
+      4492,
+      4492,
+      4492,
+      4492,
+      4492
+    ],
+    "raw[0x2E0:0x142C]": [
+      4428,
+      4428,
+      4428,
+      4428,
+      4428
+    ],
+    "raw[:0x40]": [
+      64,
+      64,
+      64,
+      64,
+      64
+    ],
+    "raw[:0x220]": [
+      544,
+      544,
+      544,
+      544,
+      544
+    ],
+    "raw[0x260:0x2A0]": [
+      64,
+      64,
+      64,
+      64,
+      64
+    ]
+  },
+  "msg_catalog": [
+    {
+      "name": "raw",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          "EOF"
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          "EOF"
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:]",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          "EOF"
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          "EOF"
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2A0:]",
+      "profile": "core",
+      "segs": [
+        [
+          672,
+          "EOF"
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2E0:]",
+      "profile": "core",
+      "segs": [
+        [
+          736,
+          "EOF"
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x142C:]",
+      "profile": "core",
+      "segs": [
+        [
+          5164,
+          "EOF"
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:-512]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          -512
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:-512] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          -512
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:-512]",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          -512
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:-512] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          -512
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2A0:-512]",
+      "profile": "core",
+      "segs": [
+        [
+          672,
+          -512
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2E0:-512]",
+      "profile": "core",
+      "segs": [
+        [
+          736,
+          -512
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x142C:-512]",
+      "profile": "core",
+      "segs": [
+        [
+          5164,
+          -512
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x200]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          512
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x2A0]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          672
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x2A0] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          672
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x2E0]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          736
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x2E0] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          736
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x142C]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          5164
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x142C] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          5164
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x2A0]",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          672
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x2A0] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          672
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x2E0]",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          736
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x2E0] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          736
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x142C]",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          5164
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x142C] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          5164
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x2DC]",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          732
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x200:0x2DC] +签名区清零",
+      "profile": "core",
+      "segs": [
+        [
+          512,
+          732
+        ]
+      ],
+      "zero": [
+        [
+          544,
+          608
+        ]
+      ],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2A0:0x2DC]",
+      "profile": "core",
+      "segs": [
+        [
+          672,
+          732
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2A0:0x142C]",
+      "profile": "core",
+      "segs": [
+        [
+          672,
+          5164
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x2E0:0x142C]",
+      "profile": "core",
+      "segs": [
+        [
+          736,
+          5164
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x40]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          64
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[:0x220]",
+      "profile": "core",
+      "segs": [
+        [
+          0,
+          544
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    },
+    {
+      "name": "raw[0x260:0x2A0]",
+      "profile": "core",
+      "segs": [
+        [
+          608,
+          672
+        ]
+      ],
+      "zero": [],
+      "direct": null
+    }
+  ],
+  "signature_region_distinct": true,
+  "converged": [],
+  "direct_digest_probe_hits": []
+}

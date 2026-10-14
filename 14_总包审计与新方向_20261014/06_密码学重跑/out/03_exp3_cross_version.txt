@@ -1,0 +1,155 @@
+====================================================================================================
+实验 3：跨版本密文一致性
+====================================================================================================
+
+[0] 各版本先跑偏移模型判决实验（type=2 分区 sha256(data)==记录sha）
+  V11: 7/7  verdict=PASS  条目数=48  文件=88178176
+  V20: 7/7  verdict=PASS  条目数=48  文件=88702464
+  V23: 7/7  verdict=PASS  条目数=48  文件=90238464
+  V24: 7/7  verdict=PASS  条目数=48  文件=90238464
+  V29: 7/7  verdict=PASS  条目数=48  文件=90238464
+  ⇒ 偏移模型在全部版本上成立（单源 upd_table 跨版本自洽）
+
+[1] V29 vs V24：共同分区名 48 个
+
+分区            type      对比字节    IV跨版本同      记录SHA同(明文同)        密文相等率(错偏移)         密文相等率(正确偏移)
+loader1          3      4096     False             True          12.3291%             0.2930%
+loader2          3     38912     False             True           0.4060%             0.4035%
+loader3          3     49152     False             True           0.3723%             0.3703%
+program          3  16674816     False            False           0.3917%             0.3917%
+storage          2         0      True             True         100.0000%           100.0000%
+postboot1        3   4718592     False            False           0.3871%             0.3871%
+postboot2        3    131072     False             True           0.4143%             0.4158%
+postboot3        3   8257536     False            False           0.3886%             0.3885%
+postboot4        3    131072     False             True           0.3792%             0.3807%
+postboot5        3    917504     False            False           0.3910%             0.3908%
+dram_sleep       3      6144     False             True           0.2279%             0.2441%
+eep_ow_a         3    131072     False             True           0.3685%             0.3685%
+eep_ow_b         3    131072     False             True           0.3944%             0.3937%
+eep_adj          3    131072     False             True           0.3769%             0.3784%
+eep_fix          3    131072     False            False           0.3929%             0.3922%
+eep_act_a        3      2048     False             True           0.3418%             0.3418%
+eep_act_b        3      2048     False             True           0.6836%             0.5859%
+history          2    262144      True             True          99.8047%           100.0000%
+lens_hist        2    393216      True             True         100.0000%           100.0000%
+music            3   3538944     False             True           0.4084%             0.3941%
+osdover          3  10485760     False            False           0.3914%             0.3914%
+osddata          3  11010048     False             True           0.3913%             0.3913%
+fileinfo         2    917504      True             True          99.9443%           100.0000%
+ninsho_db        2    655360      True             True         100.0000%           100.0000%
+koutei_kao       3    114688     False             True           0.8414%             0.3976%
+wifi_info        2    131072      True             True          99.6117%           100.0000%
+menu_save        2    131072      True             True         100.0000%           100.0000%
+zboot            3      2048     False             True          25.0977%             0.1465%
+dtb              3      4096     False             True           0.4150%             0.4395%
+zimage           3   2621440     False            False           0.3911%             0.3911%
+rootfs1          3   3145728     False            False           0.3947%             0.3947%
+rootfs2          3  10485760     False            False           0.3905%             0.3905%
+usbcharge        3    131072     False             True           0.4196%             0.4196%
+ipu_data         3    262144     False             True           0.3891%             0.3887%
+ipu_code         3     65536     False             True           0.4059%             0.4089%
+rc_data          3    262144     False             True           0.3788%             0.3780%
+rc_code          3     65536     False             True           0.4120%             0.4135%
+nr_data          3    262144     False             True           0.3822%             0.3830%
+nr_code          3     65536     False             True           0.4425%             0.4364%
+hm_c_prog        3     65536     False             True           0.4242%             0.4272%
+hm_d_prog        3    262144     False             True           0.4009%             0.4017%
+hm_c_ddr         3   3145728     False             True           0.3918%             0.3918%
+hm_d_ddr         3   1048576     False             True           0.3877%             0.3876%
+hm_d_nw          3   4194304     False             True           0.3873%             0.3872%
+hm_d_nw_sng      3   4194304     False             True           0.3934%             0.3935%
+hr_c_prog        3     65536     False             True           0.3769%             0.3754%
+hr_d_prog        3    262144     False             True           0.3841%             0.3849%
+hr_c_ddr         3    524288     False             True           0.3815%             0.3811%
+
+  IV 跨版本相同: 7/48   记录SHA(明文)跨版本相同: 39/48
+  明文&IV 均跨版本相同（可直接判定密钥）: 7 个 → 密钥相同 7 / 密钥不同 0
+     storage: 密文相同 ⇒ 密钥跨版本相同
+     history: 密文相同 ⇒ 密钥跨版本相同
+     lens_hist: 密文相同 ⇒ 密钥跨版本相同
+     fileinfo: 密文相同 ⇒ 密钥跨版本相同
+     ninsho_db: 密文相同 ⇒ 密钥跨版本相同
+     wifi_info: 密文相同 ⇒ 密钥跨版本相同
+     menu_save: 密文相同 ⇒ 密钥跨版本相同
+
+[2] 重点加密分区：同『分区内相对偏移』处密文的逐字节相等率（V29 vs V24）
+分区                minsz         错误偏移(原表口径)         正确偏移     ≈随机基线1/256
+program        16674816            0.3917%      0.3917%        0.3906%
+zimage          2621440            0.3911%      0.3911%        0.3906%
+rootfs1         3145728            0.3947%      0.3947%        0.3906%
+rootfs2        10485760            0.3905%      0.3905%        0.3906%
+postboot3       8257536            0.3886%      0.3885%        0.3906%
+loader2           38912            0.4060%      0.4035%        0.3906%
+dtb                4096            0.4150%      0.4395%        0.3906%
+eep_ow_a         131072            0.3685%      0.3685%        0.3906%
+eep_ow_b         131072            0.3944%      0.3937%        0.3906%
+eep_act_a          2048            0.3418%      0.3418%        0.3906%
+eep_act_b          2048            0.6836%      0.5859%        0.3906%
+history          262144           99.8047%    100.0000%        0.3906%
+ipu_data         262144            0.3891%      0.3887%        0.3906%
+
+  type=3 且对比长度≥4KB 的分区共 38 个：
+    平均相等率  错误偏移 = 0.7158%   正确偏移 = 0.3881%   随机基线 = 0.3906%
+
+  判读（本项）：
+    * IV 逐版本全变、同偏移密文相等率 ≈0.4%（= 1/256 随机基线）——这两条【推翻 ECB / 版本稳定
+      keystream】的论断【维持】。IV 是元数据，不受 0x200 修正影响；密文相等率修正后数值变化很小
+      （两个版本同时平移 512B ⇒ 对比仍然对齐），量级不变。
+    * 但原表把"相等率≈0.4%"当作"密文与随机不可区分"的证据时，前提是【明文相同】。原脚本用固定的
+      脚本硬编码偏移、且只比前 8KB，属于"位置对得上但语义未证"；现在这一前提由记录 SHA 字段
+      承担，而该字段语义已由 7/7 判决实验确证（记录 SHA = 明文 SHA）。
+    * 附带修正：项目报告称"41 个 IV 逐版本全变"。以 V29/V24 实测（本表）与 5 版 IV 稳定性统计为准。
+
+[写出] /Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/14_总包审计与新方向_20261014/06_密码学重跑/out/exp3_cross_version.json
+
+[3] 附：5 个版本 IV 稳定性（按分区名对齐）
+  dram_sleep    版本数=5 唯一IV=5 全变
+  dtb           版本数=5 唯一IV=5 全变
+  eep_act_a     版本数=5 唯一IV=5 全变
+  eep_act_b     版本数=5 唯一IV=5 全变
+  eep_adj       版本数=5 唯一IV=5 全变
+  eep_fix       版本数=5 唯一IV=5 全变
+  eep_ow_a      版本数=5 唯一IV=5 全变
+  eep_ow_b      版本数=5 唯一IV=5 全变
+  fileinfo      版本数=5 唯一IV=1 全同
+  history       版本数=5 唯一IV=1 全同
+  hm_c_ddr      版本数=5 唯一IV=5 全变
+  hm_c_prog     版本数=5 唯一IV=5 全变
+  hm_d_ddr      版本数=5 唯一IV=5 全变
+  hm_d_nw       版本数=5 唯一IV=5 全变
+  hm_d_nw_sng   版本数=5 唯一IV=5 全变
+  hm_d_prog     版本数=5 唯一IV=5 全变
+  hr_c_ddr      版本数=5 唯一IV=5 全变
+  hr_c_prog     版本数=5 唯一IV=5 全变
+  hr_d_prog     版本数=5 唯一IV=5 全变
+  ipu_code      版本数=5 唯一IV=5 全变
+  ipu_data      版本数=5 唯一IV=5 全变
+  koutei_kao    版本数=5 唯一IV=5 全变
+  lens_hist     版本数=5 唯一IV=1 全同
+  loader1       版本数=5 唯一IV=5 全变
+  loader2       版本数=5 唯一IV=5 全变
+  loader3       版本数=5 唯一IV=5 全变
+  menu_save     版本数=5 唯一IV=1 全同
+  music         版本数=5 唯一IV=5 全变
+  ninsho_db     版本数=5 唯一IV=1 全同
+  nr_code       版本数=5 唯一IV=5 全变
+  nr_data       版本数=5 唯一IV=5 全变
+  osddata       版本数=5 唯一IV=5 全变
+  osdover       版本数=5 唯一IV=5 全变
+  postboot1     版本数=5 唯一IV=5 全变
+  postboot2     版本数=5 唯一IV=5 全变
+  postboot3     版本数=5 唯一IV=5 全变
+  postboot4     版本数=5 唯一IV=5 全变
+  postboot5     版本数=5 唯一IV=5 全变
+  program       版本数=5 唯一IV=5 全变
+  rc_code       版本数=5 唯一IV=5 全变
+  rc_data       版本数=5 唯一IV=5 全变
+  rootfs1       版本数=5 唯一IV=5 全变
+  rootfs2       版本数=5 唯一IV=5 全变
+  storage       版本数=5 唯一IV=1 全同
+  usbcharge     版本数=5 唯一IV=5 全变
+  wifi_info     版本数=5 唯一IV=1 全同
+  zboot         版本数=5 唯一IV=5 全变
+  zimage        版本数=5 唯一IV=5 全变
+
+  统计：IV 逐版本全变 41 个 / 全同 7 个 / 部分变化 0 个

@@ -1,0 +1,59 @@
+{
+  "firmware": [
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5/S5___V29.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V24.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V23.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V20.bin",
+    "/Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V11.bin"
+  ],
+  "gmpy2": true,
+  "signature_field": "last 512 bytes",
+  "profile": "all",
+  "candidates_total": 3620,
+  "candidates_curated": 3193,
+  "paddings": [
+    "p15_di",
+    "raw",
+    "p15_simple",
+    "raw_le"
+  ],
+  "log": [
+    {
+      "e": 3,
+      "candidates": 3620,
+      "elapsed_s": 0.7,
+      "notes": [],
+      "found": []
+    },
+    {
+      "e": 5,
+      "candidates": 3620,
+      "elapsed_s": 1.6,
+      "notes": [],
+      "found": []
+    },
+    {
+      "e": 7,
+      "candidates": 3620,
+      "elapsed_s": 2.9,
+      "notes": [],
+      "found": []
+    },
+    {
+      "e": 17,
+      "candidates": 3620,
+      "elapsed_s": 9.7,
+      "notes": [],
+      "found": []
+    },
+    {
+      "e": 257,
+      "candidates": 3620,
+      "elapsed_s": 457.8,
+      "notes": [],
+      "found": []
+    }
+  ],
+  "found": [],
+  "notes": []
+}

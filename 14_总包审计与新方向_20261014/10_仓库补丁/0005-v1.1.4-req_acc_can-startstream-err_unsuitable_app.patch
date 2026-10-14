@@ -1,0 +1,86 @@
+From c2b286554a9d82f748e577e371a205a578a3e473 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=90=B4=20William?= <2125317697@qq.com>
+Date: Wed, 14 Oct 2026 22:21:19 +0800
+Subject: [PATCH 05/15] =?UTF-8?q?v1.1.4:=20=E8=A1=A5=E4=B8=8A=20req=5Facc?=
+ =?UTF-8?q?=5Fcan=20=E6=B8=85=E7=90=86=20=E2=80=94=E2=80=94=20=E4=BF=AE?=
+ =?UTF-8?q?=E5=A4=8D=20startstream=20err=5Funsuitable=5Fapp?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+现象：监视器停在 ok_under_research_no_msg，startstream 返回 err_unsuitable_app
+      ⇒ fps=0、画面完全不动（用户报「流卡死」）。
+
+根因：相机端 accctrl **只有一个待批复槽**。本工具的 ensure_access 从不做
+      req_acc_can 清理，于是**每次运行都会留下陈旧 pending 污染下一次**
+      （项目 04_工具与脚本/campaign2/safe_handshake.py 早已给出该结论，本工具缺了这步）。
+
+修复：
+- 新增 Lumix.req_acc_can()（同一 UUID 清理）
+- ensure_access 启动前：若当前非 ok 且非 others，先清一次陈旧 pending
+- ensure_access 超时退出前：再清一次，**保证下次启动是干净的**
+- 遵守三条规则：同一 UUID / err_others_requesting 时不清理 / 不打断已 ok 的会话
+---
+ s5monitor.py | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
+
+diff --git a/s5monitor.py b/s5monitor.py
+index 452e42e..23df577 100644
+--- a/s5monitor.py
++++ b/s5monitor.py
+@@ -234,6 +234,20 @@ class Lumix:
+         self.note_access(txt)
+         return txt
+ 
++    def req_acc_can(self):
++        """★ 清理陈旧 pending 请求（对应官方 App 的 dVarG.c(uuid)）。
++        相机端 accctrl **只有一个"待批复"槽**：一次没被清理的 req_acc 会留下陈旧
++        pending，下一次 req_acc 撞上它 ⇒ 会话态被污染 ⇒ 相机报
++        「智能手机应用程序需要更新 / invalid login」，且 startstream 回 err_unsuitable_app。
++        规则（来自 04_工具与脚本/campaign2/safe_handshake.py 的实战结论）：
++          · 必须用**发起请求时那个同一 UUID**
++          · **绝不**在 err_others_requesting 时发（那是别人占着会话，会误伤）
++          · **绝不**用它打断一个已 ok 的会话
++        """
++        txt = self._get("accctrl", type="req_acc_can",
++                        value=self.device_id, value2="")
++        return txt
++
+     def ensure_access(self, wait_approve_sec=180):
+         """★ 正确握手（2026-10-13 实测，血泪教训）：
+ 
+@@ -256,7 +270,19 @@ class Lumix:
+                 return True
+             print("[accctrl] 当前为受限授权（%s）—— 需在相机上批准一次" % self.access_mode)
+ 
+-        print("[accctrl] 👉 相机屏幕上会弹出「允许连接？」—— 请点【允许 / 是】")
++        # ★ 先清陈旧 pending：否则本次 req_acc 会撞上它 ⇒ err_others_requesting /
++        #   err_unsuitable_app（startstream 被拒、画面不动）。这是 safe_handshake.py
++        #   的实战结论，本工具此前缺了这一步。
++        cur = (self.access_raw or "").lower()
++        if "others" in cur:
++            print("[accctrl] 检测到 err_others_requesting（别的客户端占着会话）——按规则不清理，")
++            print("[accctrl]   请先在手机 LUMIX Sync 上断开，或重启相机。")
++        elif not cur.startswith("ok"):
++            c = self.req_acc_can()
++            print("[accctrl] 清理陈旧 pending（req_acc_can，同一 UUID）-> %s" % (c or "").strip())
++            time.sleep(1.0)
++
++        print("[accctrl] 👉 若相机屏幕出现「允许连接？」请点【允许 / 是】（多数固件不弹，内部自校验）")
+         self.req_acc()                      # ★ 第 1 次（也是唯一一次主动请求）
+         t0 = time.time()
+         last_extra = t0
+@@ -280,6 +306,10 @@ class Lumix:
+         print("[accctrl] ⚠️ 等待超时。")
+         print("[accctrl]    取景流 / 拍照 / 录像不受影响；camctrl（触摸对焦等）可能不可用。")
+         print("[accctrl]    ⚠️ 切勿反复重试 req_acc —— 会被相机判为异常 App 并触发 invalid login！")
++        # ★ 退出前清理，保证**下一次启动**是干净的（safe_handshake.py 的核心设计）
++        if "others" not in (self.access_raw or "").lower():
++            c = self.req_acc_can()
++            print("[accctrl] 退出前清理陈旧 pending -> %s" % (c or "").strip())
+         return self.access_mode == "ok"
+ 
+     # -- 取景流 --
+-- 
+2.54.0 (Apple Git-157)
+

@@ -1,0 +1,341 @@
+{
+  "candidates": 5240,
+  "true_key_in_candidates": true,
+  "diagnostics": [
+    {
+      "plaintext": "随机结构明文",
+      "mode": "CBC",
+      "arm": "正确",
+      "sha": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "rec": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "eq": true
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "CBC",
+      "arm": "错误",
+      "sha": "b0f703517ba9c814395864d35abbc60d5cc1fe70baa68587577bb963a2ce32b1",
+      "rec": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "eq": false
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "CTR",
+      "arm": "正确",
+      "sha": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "rec": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "eq": true
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "CTR",
+      "arm": "错误",
+      "sha": "39f38636042120c4de9f31a2dceee602e30db373152317208ba4120665184641",
+      "rec": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "eq": false
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "ECB",
+      "arm": "正确",
+      "sha": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "rec": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "eq": true
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "ECB",
+      "arm": "错误",
+      "sha": "d2b9123b34522db994507b49c13dd6a46e0f982abf4f43368e4b847c2afaeb8e",
+      "rec": "f30d8ad31a99b872fe1f352617c373c5d5c439f0002f081ba131040dc401f4bb",
+      "eq": false
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "CBC",
+      "arm": "正确",
+      "sha": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "rec": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "eq": true
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "CBC",
+      "arm": "错误",
+      "sha": "f8d87a240779b09b5f8a69c0bfe83e70fa216cc883ba1a4b406d483d6010b474",
+      "rec": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "eq": false
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "CTR",
+      "arm": "正确",
+      "sha": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "rec": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "eq": true
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "CTR",
+      "arm": "错误",
+      "sha": "d769db237bdcb784a3d2ba8771d4f0af81544b2ce8c8c677b9db797815437448",
+      "rec": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "eq": false
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "ECB",
+      "arm": "正确",
+      "sha": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "rec": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "eq": true
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "ECB",
+      "arm": "错误",
+      "sha": "045c272783c66feda67262301887de106726faa74f0450669423e6acfa1a4cd1",
+      "rec": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+      "eq": false
+    }
+  ],
+  "subset211": {
+    "wrong": 0,
+    "correct": 6
+  },
+  "matrix": [
+    {
+      "plaintext": "随机结构明文",
+      "mode": "CBC",
+      "sha_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "sha_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      },
+      "prefix_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "prefix_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      }
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "CTR",
+      "sha_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "sha_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      },
+      "prefix_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "prefix_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      }
+    },
+    {
+      "plaintext": "随机结构明文",
+      "mode": "ECB",
+      "sha_correct": {
+        "n_hits": 9,
+        "n_uniq_keys": 1,
+        "n_true_key": 9,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "sha_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      },
+      "prefix_correct": {
+        "n_hits": 9,
+        "n_uniq_keys": 1,
+        "n_true_key": 9,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "prefix_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      }
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "CBC",
+      "sha_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "sha_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      },
+      "prefix_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "prefix_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      }
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "CTR",
+      "sha_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "sha_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      },
+      "prefix_correct": {
+        "n_hits": 6,
+        "n_uniq_keys": 1,
+        "n_true_key": 6,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "prefix_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      }
+    },
+    {
+      "plaintext": "常量全零明文",
+      "mode": "ECB",
+      "sha_correct": {
+        "n_hits": 9,
+        "n_uniq_keys": 1,
+        "n_true_key": 9,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "sha_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      },
+      "prefix_correct": {
+        "n_hits": 9,
+        "n_uniq_keys": 1,
+        "n_true_key": 9,
+        "true_key_found": true,
+        "uniq_keys": [
+          "00112233445566778899aabbccddeeff"
+        ]
+      },
+      "prefix_wrong": {
+        "n_hits": 0,
+        "n_uniq_keys": 0,
+        "n_true_key": 0,
+        "true_key_found": false,
+        "uniq_keys": []
+      }
+    }
+  ],
+  "cbc_zero_block_test": {
+    "CBC": {
+      "blocks": 256,
+      "uniq": 256,
+      "all_same": false
+    },
+    "CTR": {
+      "blocks": 256,
+      "uniq": 256,
+      "all_same": false
+    },
+    "ECB": {
+      "blocks": 256,
+      "uniq": 1,
+      "all_same": true
+    }
+  }
+}

@@ -1,0 +1,89 @@
+================================================================================================
+实验 1：记录 SHA 语义 — 全部 48 分区，错误偏移 vs 正确偏移
+固件: /Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5/S5___V29.bin
+判决实验: type=2 SHA 命中 7/7 (verdict=PASS)
+================================================================================================
+  # name         type      size       错误偏移命中       正确偏移命中
+  0 loader1         3      4096         miss         miss
+  1 loader2         3     38912         miss         miss
+  2 loader3         3     49152         miss         miss
+  3 program         3  16674816         miss         miss
+  4 storage         2         0          HIT          HIT
+  5 postboot1       3   4718592         miss         miss
+  6 postboot2       3    131072         miss         miss
+  7 postboot3       3   8257536         miss         miss
+  8 postboot4       3    131072         miss         miss
+  9 postboot5       3    917504         miss         miss
+ 10 dram_sleep      3      6144         miss         miss
+ 11 eep_ow_a        3    131072         miss         miss
+ 12 eep_ow_b        3    131072         miss         miss
+ 13 eep_adj         3    131072         miss         miss
+ 14 eep_fix         3    131072         miss         miss
+ 15 eep_act_a       3      2048         miss         miss
+ 16 eep_act_b       3      2048         miss         miss
+ 17 history         2    262144         miss          HIT
+ 18 lens_hist       2    393216          HIT          HIT
+ 19 music           3   3538944         miss         miss
+ 20 osdover         3  10485760         miss         miss
+ 21 osddata         3  11010048         miss         miss
+ 22 fileinfo        2    917504         miss          HIT
+ 23 ninsho_db       2    655360         miss          HIT
+ 24 koutei_kao      3    114688         miss         miss
+ 25 wifi_info       2    131072         miss          HIT
+ 26 menu_save       2    131072         miss          HIT
+ 27 zboot           3      2048         miss         miss
+ 28 dtb             3      4096         miss         miss
+ 29 zimage          3   2621440         miss         miss
+ 30 rootfs1         3   3145728         miss         miss
+ 31 rootfs2         3  10485760         miss         miss
+ 32 usbcharge       3    131072         miss         miss
+ 33 ipu_data        3    262144         miss         miss
+ 34 ipu_code        3     65536         miss         miss
+ 35 rc_data         3    262144         miss         miss
+ 36 rc_code         3     65536         miss         miss
+ 37 nr_data         3    262144         miss         miss
+ 38 nr_code         3     65536         miss         miss
+ 39 hm_c_prog       3     65536         miss         miss
+ 40 hm_d_prog       3    262144         miss         miss
+ 41 hm_c_ddr        3   3145728         miss         miss
+ 42 hm_d_ddr        3   1048576         miss         miss
+ 43 hm_d_nw         3   4194304         miss         miss
+ 44 hm_d_nw_sng     3   4194304         miss         miss
+ 45 hr_c_prog       3     65536         miss         miss
+ 46 hr_d_prog       3    262144         miss         miss
+ 47 hr_c_ddr        3    524288         miss         miss
+
+------------------------------------------------------------------------------------------------
+按 type 分组统计
+------------------------------------------------------------------------------------------------
+type    分区数         错误偏移命中         正确偏移命中
+   2      7            2/7            7/7   (明文)
+   3     41           0/41           0/41   (加密)
+  合计     48           2/48           7/48
+
+错误偏移下侥幸命中的分区（解释项目为何看到 2/7）：
+  [ 4] storage      type=2 size=0  （0x200 平移后仍撞上同一段数据）
+  [18] lens_hist    type=2 size=393216  （0x200 平移后仍撞上同一段数据）
+
+------------------------------------------------------------------------------------------------
+记录 SHA 重复组（元数据，与偏移无关）——'记录 SHA = 明文 SHA' 的结构性证据
+------------------------------------------------------------------------------------------------
+  6c4be51bd4c8fb00919ba3460313f31e  ->  eep_ow_a(#11,type=3,sz=131072), eep_ow_b(#12,type=3,sz=131072)
+  59aa79d1fdaa9ed58e3eb53b3bad24ca  ->  eep_act_a(#15,type=3,sz=2048), eep_act_b(#16,type=3,sz=2048)
+  8a39d2abd3999ab73c34db2476849cdd  ->  history(#17,type=2,sz=262144), ipu_data(#33,type=3,sz=262144)
+  重复组数 = 3
+  空分区 storage 的记录 SHA = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  SHA256(b'')               = e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  -> size=0 的分区其记录 SHA 恰好等于空串 SHA256 ⇒ 记录字段就是【明文内容的 SHA-256】
+
+================================================================================================
+判读
+================================================================================================
+  错误偏移（项目现状）: type=2 明文分区命中 2/7；type=3 加密分区命中 0/41
+  正确偏移           : type=2 明文分区命中 7/7；type=3 加密分区命中 0/41
+  结论：type=2 的『记录 SHA ≠ 内容哈希』这一论断【被推翻】——命中 7/7，
+        记录 SHA 就是该分区【明文内容】的 SHA-256。
+        type=3 在两种读法下都不命中，因为其内容被加密；记录 SHA 存的是【加密前明文】的哈希
+        （ipu_data 的记录 SHA 与 type=2 的 history 完全相同，而 history 内容 SHA 已 7/7 验证）。
+
+[写出] /Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/14_总包审计与新方向_20261014/06_密码学重跑/out/exp1_record_sha.json

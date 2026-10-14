@@ -1,0 +1,68 @@
+# upd_table.py 单一真源  DATA_BASE=0x200 TABLE_BASE=0x2ec STRIDE=92
+# 固件: /Users/wuwilliam/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5/S5___V29.bin
+# 大小: 90238464 bytes (0x560ee00)  条目数@0x2e8 = 48
+# 目录头: data_start=0x1400 data_total=0x560d800 entry_field=0x30
+
+  # name              doff      size   abs_off type iv0  sha(rec)[:16]   
+  0 loader1           1400      1000      1600    3 False  e009d688fb152a70
+  1 loader2           2400      9800      2600    3 False  4a925f2e019310a9
+  2 loader3           bc00      c000      be00    3 False  67d44d7c2bb2091b
+  3 program          17c00    fe7000     17e00    3 False  fc496d62a91f6e9b
+  4 storage         ffec00         0    ffee00    2 True  e3b0c44298fc1c14
+  5 postboot1       ffec00    480000    ffee00    3 False  e14b32e80c50d52e
+  6 postboot2      147ec00     20000   147ee00    3 False  76a627dc81362666
+  7 postboot3      149ec00    7e0000   149ee00    3 False  435f3b6a4f2f3368
+  8 postboot4      1c7ec00     20000   1c7ee00    3 False  a328d5508102bdb1
+  9 postboot5      1c9ec00     e0000   1c9ee00    3 False  8912a67ac38cba6e
+ 10 dram_sleep     1d7ec00      1800   1d7ee00    3 False  d2bc9022b49fd9bf
+ 11 eep_ow_a       1d80400     20000   1d80600    3 False  6c4be51bd4c8fb00
+ 12 eep_ow_b       1da0400     20000   1da0600    3 False  6c4be51bd4c8fb00
+ 13 eep_adj        1dc0400     20000   1dc0600    3 False  3a611abac2442339
+ 14 eep_fix        1de0400     20000   1de0600    3 False  725b5876e98704a7
+ 15 eep_act_a      1e00400       800   1e00600    3 False  59aa79d1fdaa9ed5
+ 16 eep_act_b      1e00c00       800   1e00e00    3 False  59aa79d1fdaa9ed5
+ 17 history        1e01400     40000   1e01600    2 True  8a39d2abd3999ab7
+ 18 lens_hist      1e41400     60000   1e41600    2 True  a6619f482fee91a3
+ 19 music          1ea1400    360000   1ea1600    3 False  5dcc34ae10f9d7be
+ 20 osdover        2201400    a00000   2201600    3 False  f0305598ea9cac9b
+ 21 osddata        2c01400    a80000   2c01600    3 False  9581b1d535c8f3eb
+ 22 fileinfo       3681400     e0000   3681600    2 True  03cdeacb6a286652
+ 23 ninsho_db      3761400     a0000   3761600    2 True  ff6335069b6e140e
+ 24 koutei_kao     3801400     1c000   3801600    3 False  0fb19aef2e26fbb5
+ 25 wifi_info      381d400     20000   381d600    2 True  fa43239bcee7b97c
+ 26 menu_save      383d400     20000   383d600    2 True  b5a41c3758763bbe
+ 27 zboot          385d400       800   385d600    3 False  014dad699b15c269
+ 28 dtb            385dc00      1000   385de00    3 False  f1a4d16edaadbda1
+ 29 zimage         385ec00    280000   385ee00    3 False  72b6633d7f20009c
+ 30 rootfs1        3adec00    300000   3adee00    3 False  4a41552e007d5048
+ 31 rootfs2        3ddec00    a00000   3ddee00    3 False  4121e7d7503c68d1
+ 32 usbcharge      47dec00     20000   47dee00    3 False  fc6d177cdc31bd35
+ 33 ipu_data       47fec00     40000   47fee00    3 False  8a39d2abd3999ab7
+ 34 ipu_code       483ec00     10000   483ee00    3 False  c8958782feff1975
+ 35 rc_data        484ec00     40000   484ee00    3 False  736424438c98bbe9
+ 36 rc_code        488ec00     10000   488ee00    3 False  fc306a4463c9784a
+ 37 nr_data        489ec00     40000   489ee00    3 False  e235e38856489970
+ 38 nr_code        48dec00     10000   48dee00    3 False  2553aa1d7cc21e07
+ 39 hm_c_prog      48eec00     10000   48eee00    3 False  06e44fbb2c38f7b3
+ 40 hm_d_prog      48fec00     40000   48fee00    3 False  dc4064303a8eab1b
+ 41 hm_c_ddr       493ec00    300000   493ee00    3 False  b26f3b3d07c411f1
+ 42 hm_d_ddr       4c3ec00    100000   4c3ee00    3 False  e9688a52f4371814
+ 43 hm_d_nw        4d3ec00    400000   4d3ee00    3 False  d74e1f38fa7ce7a4
+ 44 hm_d_nw_sng    513ec00    400000   513ee00    3 False  b510989f1e12fd1e
+ 45 hr_c_prog      553ec00     10000   553ee00    3 False  79ea2664e742c6a0
+ 46 hr_d_prog      554ec00     40000   554ee00    3 False  805be6894a099e74
+ 47 hr_c_ddr       558ec00     80000   558ee00    3 False  d4478e26b8b7b385
+
+=== 判决实验：type=2 分区 sha256(data)==记录sha ===
+  [ 4] storage      size=       0 rec=e3b0c44298fc1c14.. calc=e3b0c44298fc1c14..  OK
+  [17] history      size=  262144 rec=8a39d2abd3999ab7.. calc=8a39d2abd3999ab7..  OK
+  [18] lens_hist    size=  393216 rec=a6619f482fee91a3.. calc=a6619f482fee91a3..  OK
+  [22] fileinfo     size=  917504 rec=03cdeacb6a286652.. calc=03cdeacb6a286652..  OK
+  [23] ninsho_db    size=  655360 rec=ff6335069b6e140e.. calc=ff6335069b6e140e..  OK
+  [25] wifi_info    size=  131072 rec=fa43239bcee7b97c.. calc=fa43239bcee7b97c..  OK
+  [26] menu_save    size=  131072 rec=b5a41c3758763bbe.. calc=b5a41c3758763bbe..  OK
+  命中 7/7  verdict=PASS
+
+=== 按 type 分组 ===
+  type=2: n= 7  iv_zero= 7  iv_unique(非零)= 0  total_size=0x260000
+  type=3: n=41  iv_zero= 0  iv_unique(非零)=41  total_size=0x53ad800
