@@ -1,17 +1,17 @@
 UUID: 4D454930-0100-1000-8001-f85c963d48d9
 req_acc_can -> <?xml version="1.0" encoding="UTF-8"?>
 <camrply><result>ok</result></camrply>
-[1] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted'
-[2] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted'
-[3] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted'
-[4] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted'
-[5] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted'
-[6] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted'
-[7] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted'
-[8] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted'
-[9] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted'
-[10] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted'
-[11] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted'
+[1] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted'
+[2] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted'
+[3] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted'
+[4] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted'
+[5] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted'
+[6] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted'
+[7] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted'
+[8] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted'
+[9] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted'
+[10] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted'
+[11] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted'
 [12] EXC timed out (reconnect)
 [13] EXC timed out (reconnect)
 [14] EXC timed out (reconnect)

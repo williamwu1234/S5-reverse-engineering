@@ -53,7 +53,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 UA = "LUMIX Sync"
 
 # 与 persist.py 保持一致：blob 内质量码偏移与已确认的码表

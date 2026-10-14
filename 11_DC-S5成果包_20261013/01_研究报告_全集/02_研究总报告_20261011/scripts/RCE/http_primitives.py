@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys, common as c
-HOST='192.168.1.131'
+HOST='192.168.1.131'  # ← 相机内网地址，请按你的网络环境修改
 ka=c.KA(HOST,80,timeout=12)
 
 def health():

@@ -120,7 +120,7 @@ swiftc -framework CoreBluetooth -framework Foundation -o ble_scan ble_scan.swift
 
 ## 六、共享约定（所有工具）
 
-- 相机 Wi-Fi 固定 `192.168.1.131`，`cam.cgi` 必须带 **`User-Agent: LUMIX Sync`**
+- 相机 Wi-Fi 固定 `192.168.x.x`，`cam.cgi` 必须带 **`User-Agent: LUMIX Sync`**
 - 读 `camsetting` 前**退出机身菜单**，否则 `err_reject`
 - 写 flash 前**必须 AC 供电**
 - **macOS 原始磁盘设备受 Unix 权限 + TCC 双重保护**：需要 root **且**进程有"完全磁盘访问"

@@ -17,7 +17,7 @@ import sys, os, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import KA, parse_camrply
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 PORT = 80
 BOUNDARY = "====LUMIX"
 BUF = 61192

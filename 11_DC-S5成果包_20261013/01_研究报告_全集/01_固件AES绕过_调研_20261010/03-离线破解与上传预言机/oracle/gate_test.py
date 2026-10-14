@@ -14,7 +14,7 @@ import urllib.parse
 sys.path.insert(0, "/Users/wuwilliam/Downloads/com.panasonic.jp.lumixsync_b0834c31")
 import lumix_handshake as lh
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 UA = "LUMIX Sync"
 VALUES = ("V2.90", "V3.00")
 

@@ -10,7 +10,7 @@
 param(
     [ValidateSet('list', 'pair', 'watch', 'unpair')]
     [string]$Action = 'list',
-    [string]$Name = 'S5-70E253',
+    [string]$Name = 'S5-XXXXXX',
     [int]$Minutes = 30
 )
 

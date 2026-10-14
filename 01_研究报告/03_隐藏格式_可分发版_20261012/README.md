@@ -53,7 +53,7 @@ S5_研究成果_可分发版_20261012/
 **1. 确认相机在线（只读，零风险）：**
 ```bash
 cd scripts
-export S5_IP=192.168.1.131        # 改成你相机的实际 IP
+export S5_IP=192.168.x.x        # 改成你相机的实际 IP
 python3 state_check.py --ip $S5_IP
 ```
 期望输出 `STATE: UP/OK  getstate='ok,...'`。若 `UP/BAD ... err_unsuitable_app`，

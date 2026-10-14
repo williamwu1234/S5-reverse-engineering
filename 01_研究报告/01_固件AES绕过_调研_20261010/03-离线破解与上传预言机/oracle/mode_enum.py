@@ -6,7 +6,7 @@ change, no side-effect modes (no reboot/reset/format/erase/write). Paced."""
 import time, urllib.request, urllib.error
 from xml.etree import ElementTree
 
-IP="192.168.1.131"
+IP="192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 UA={"User-Agent":"LUMIX Sync"}
 PACING=0.4
 

@@ -107,7 +107,7 @@ clang -framework IOKit -framework CoreFoundation -o s5_ptp_raw s5_ptp_raw.c
 
 ## 五、共享约定
 
-- 相机 IP 固定为 `192.168.1.131`（脚本内 `IP` 常量），`cam.cgi` 必须带
+- 相机 IP 固定为 `192.168.x.x`（脚本内 `IP` 常量），`cam.cgi` 必须带
   **`User-Agent: LUMIX Sync`**，否则无响应。
 - 读 `camsetting` 前**必须退出机身菜单**，否则 `err_reject`。
 - 写 flash 前**必须 AC 供电**；脚本会先备份到 `out/`。

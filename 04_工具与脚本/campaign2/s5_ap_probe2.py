@@ -6,7 +6,7 @@ s5_ap_probe2.py — SoftAP 侧第二轮：访问控制握手 + 新端口深挖�
 第一轮结论（out/s5_ap/ap_probe.log）：
   - macOS 能连上相机热点（192.168.54.10 / gw 192.168.54.1）→ Windows MT7921 连不上是主机侧问题
   - 除 accctrl 外所有端点返回 err_critical → API 被访问控制门挡住
-  - accctrl req_acc 返回 ok_under_research,S5-70E253,remote,**open**（家网侧是 encrypted）
+  - accctrl req_acc 返回 ok_under_research,S5-XXXXXX,remote,**open**（家网侧是 encrypted）
   - 端口：80 / 50001 / 60606（家网侧只有 80）
 
 本轮：

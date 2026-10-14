@@ -14,7 +14,7 @@ import json, os, sys, time, hashlib
 import urllib.parse, urllib.request
 from xml.etree import ElementTree as ET
 
-IP = '192.168.1.131'
+IP = '192.168.1.131'  # ← 相机内网地址，请按你的网络环境修改
 OUT = os.path.join('out', 'opengate')
 os.makedirs(OUT, exist_ok=True)
 UA = {'User-Agent': 'LUMIX Sync'}

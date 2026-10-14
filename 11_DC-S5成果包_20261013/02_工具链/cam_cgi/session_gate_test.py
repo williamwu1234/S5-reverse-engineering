@@ -2,7 +2,7 @@
 # Session-gated hidden videoformat test for the DC-S5 (NTSC).
 #
 # Mechanism (confirmed from decompiled LUMIX Sync, c.java:259 T()):
-#   * req_acc handshake on THIS S5 returns "ok,S5-70E253,remote,encrypted"
+#   * req_acc handshake on THIS S5 returns "ok,S5-XXXXXX,remote,encrypted"
 #     (only 4 fields) -> the app never sets X-SESSION_ID.
 #   * Therefore the camera session is keyed by SOURCE IP; a fresh req_acc
 #     re-establishes the session for our IP, and setsetting writes then work
@@ -20,7 +20,7 @@ import random
 import re
 import time
 from common import Net
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 OUT = os.path.join(os.path.dirname(__file__), "out", "session_gate")
 os.makedirs(OUT, exist_ok=True)
 n = Net(IP, 80, 6, 0.15)

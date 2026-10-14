@@ -10,7 +10,7 @@ from xml.etree import ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 OUT = os.path.join("out", "menu_live2")
 os.makedirs(OUT, exist_ok=True)
 

@@ -29,7 +29,7 @@ import urllib.request
 sys.path.insert(0, "/Users/wuwilliam/Documents/ChatGPT/S5逆向/campaign2")
 from common import parse_camrply
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 CHUNK = 61192
 PARTIAL = 41456
 

@@ -6,7 +6,7 @@ import re, sys, time, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out", "hlg_test.log")
 
 def parse_setting(body, key):

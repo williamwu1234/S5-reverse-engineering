@@ -23,7 +23,7 @@ import urllib.request
 sys.path.insert(0, "/Users/wuwilliam/Documents/ChatGPT/S5逆向/campaign2")
 from common import Net, parse_camrply
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 CHUNK = 61192          # app chunk size (bufsize 61460 - 268 overhead)
 TOTALS = [CHUNK, CHUNK * 2, CHUNK * 3]   # 1, 2, 3 chunks
 

@@ -28,7 +28,7 @@
 | `data/s5_parts_v2.json` | **规范分区表**（48 分区，老平台正确偏移：name@+0、off@+0xC） |
 | `data/s5_layout.json` | 旧版解析（off=load_addr 有误，**仅留作历史对照**，勿使用） |
 | `data/s5_config_0x9421_DC-S5_v2.9.bin` | 0x9421 全量配置 dump（65,545 B，sha256 见报告 §5.3） |
-| `data/s5_device_info_DC-S5.bin` | GetDeviceInfo 原始数据（DC-S5 / 2.9 / SN XJL2104270015） |
+| `data/s5_device_info_DC-S5.bin` | GetDeviceInfo 原始数据（DC-S5 / 2.9 / SN XJL########15） |
 | `data/S5___V29.sig` | 官方签名尾块（512 B，RSA-4096 裸签名） |
 | `data/s5_dl.html` | 官方下载页证据（仅 V29 在架，V28/V27 404） |
 | `data/captures/ptp_dump/` | 实机 PTP dump 原始产物（含 capture_log.json） |

@@ -1,5 +1,5 @@
 
-## phase 0 @ 2026-10-10 00:05:27  ip=192.168.1.131
+## phase 0 @ 2026-10-10 00:05:27  ip=192.168.x.x
 - getstate: HTTP None in 15.01s -> b'EXC URLError: <urlopen error timed out>'
 - req_acc: b'EXC URLError: <urlopen error [Errno 64] Host is down>' (0.00s)
 - req_acc_g: b'EXC URLError: <urlopen error [Errno 64] Host is down>' (0.00s)
@@ -9,9 +9,9 @@
 - V0 RESULT: {'result': 'EXC URLError: <urlopen error [Errno 64] Host is down>'}  {}
 - phase complete
 
-## phase 0 @ 2026-10-10 00:22:27  ip=192.168.1.131
+## phase 0 @ 2026-10-10 00:22:27  ip=192.168.x.x
 - getstate: HTTP 200 in 0.74s -> b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>ok</result><state><batt>5/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_m'
-- req_acc: b'ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n' (0.17s)
+- req_acc: b'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n' (0.17s)
 - req_acc_g: b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>err_param</result></camrply>' (0.15s)
 - port scan: OPEN [80, 60606] (tested [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443])
 - uploading V0 (pristine)...
@@ -19,54 +19,54 @@
 - V0 RESULT: {'result': 'err_critical'}  {}
 - phase complete
 
-## phase 0 @ 2026-10-10 00:48:12  ip=192.168.1.131
+## phase 0 @ 2026-10-10 00:48:12  ip=192.168.x.x
 - getstate: HTTP 200 in 0.22s -> b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>ok</result><state><batt>4/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_m'
-- req_acc: b'ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n' (0.18s)
+- req_acc: b'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n' (0.18s)
 - req_acc_g: b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>err_param</result></camrply>' (0.12s)
 - port scan: OPEN [80, 60606] (tested [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443])
 - session gate: req_acc with UUID 4D454930-0100-1000-8001-9768a8a77bc0
--   [1] req_acc -> 'err_others_requesting,S5-70E253,remote,encrypted' (0.04s)
+-   [1] req_acc -> 'err_others_requesting,S5-XXXXXX,remote,encrypted' (0.04s)
 -   another client pending -> req_acc_can
--   [2] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.07s)
--   [3] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (2.05s)
--   [4] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.05s)
--   [5] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.04s)
--   [6] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.04s)
--   [7] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.04s)
--   [8] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.04s)
--   [9] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (3.08s)
--   [10] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.06s)
+-   [2] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.07s)
+-   [3] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (2.05s)
+-   [4] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.05s)
+-   [5] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.04s)
+-   [6] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.04s)
+-   [7] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.04s)
+-   [8] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.04s)
+-   [9] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (3.08s)
+-   [10] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.06s)
 -   [11] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
 -   [12] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
 -   [13] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
--   [14] req_acc -> 'ok_under_research_no_msg,S5-70E253,remote,encrypted' (0.06s)
--   [15] req_acc -> 'ok,S5-70E253,remote,encrypted' (0.66s)
+-   [14] req_acc -> 'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted' (0.06s)
+-   [15] req_acc -> 'ok,S5-XXXXXX,remote,encrypted' (0.66s)
 -   fw_update_mode(V3.00) -> {'result': 'err_critical'} (0.70s)
 - session gate FAILED: fw_update_mode returned err_critical (need ok); try a higher --gate-version
 
-## phase 0 @ 2026-10-10 00:52:21  ip=192.168.1.131
+## phase 0 @ 2026-10-10 00:52:21  ip=192.168.x.x
 - getstate: HTTP 200 in 2.94s -> b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>ok</result><state><batt>4/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_m'
-- req_acc: b'ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n' (0.15s)
+- req_acc: b'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n' (0.15s)
 - req_acc_g: b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>err_param</result></camrply>' (0.16s)
 - port scan: OPEN [80, 60606] (tested [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443])
 - session gate: req_acc with UUID 4D454930-0100-1000-8001-caf622bbb3ef
--   [1] req_acc -> 'err_others_requesting,S5-70E253,remote,encrypted' (0.08s)
+-   [1] req_acc -> 'err_others_requesting,S5-XXXXXX,remote,encrypted' (0.08s)
 -   another client pending -> req_acc_can
--   [2] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.13s)
--   [3] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.05s)
--   [4] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.08s)
--   [5] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.62s)
--   [6] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.07s)
--   [7] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.08s)
--   [8] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.74s)
--   [9] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.06s)
--   [10] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.19s)
+-   [2] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.13s)
+-   [3] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.05s)
+-   [4] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.08s)
+-   [5] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.62s)
+-   [6] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.07s)
+-   [7] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.08s)
+-   [8] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.74s)
+-   [9] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.06s)
+-   [10] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.19s)
 -   [11] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
 -   [12] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
 -   [13] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
--   [14] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (4.09s)
--   [15] req_acc -> 'ok_under_research_no_msg,S5-70E253,remote,encrypted' (0.19s)
--   [16] req_acc -> 'ok,S5-70E253,remote,encrypted' (0.19s)
+-   [14] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (4.09s)
+-   [15] req_acc -> 'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted' (0.19s)
+-   [16] req_acc -> 'ok,S5-XXXXXX,remote,encrypted' (0.19s)
 -   fw_update_mode(V3.00) attempt 1 -> {'result': 'err_critical'} (0.26s)
 -   fw_update_mode(V3.00) attempt 2 -> {'result': 'ok'} (0.17s)
 - session gate OPEN: upload may proceed
@@ -77,30 +77,30 @@
 - V0 RESULT: {'result': 'err_busy'}  {'total_chunks': 1475, 'avg_chunk_ms': 350.8482126462257, 'upload_sec': 589.9782938957214}
 - phase complete
 
-## phase 0 @ 2026-10-10 02:51:30  ip=192.168.1.131
+## phase 0 @ 2026-10-10 02:51:30  ip=192.168.x.x
 - getstate: HTTP 200 in 0.77s -> b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>ok</result><state><batt>5/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_m'
-- req_acc: b'ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n' (0.04s)
+- req_acc: b'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n' (0.04s)
 - req_acc_g: b'<?xml version="1.0" encoding="UTF-8"?>\r\n<camrply><result>err_param</result></camrply>' (0.01s)
 - port scan: OPEN [80, 60606] (tested [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443])
 - session gate: req_acc with UUID 4D454930-0100-1000-8001-09c338459301
--   [1] req_acc -> 'err_others_requesting,S5-70E253,remote,encrypted' (0.04s)
+-   [1] req_acc -> 'err_others_requesting,S5-XXXXXX,remote,encrypted' (0.04s)
 -   another client pending -> req_acc_can
--   [2] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.04s)
--   [3] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.04s)
--   [4] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.82s)
--   [5] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.08s)
--   [6] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.06s)
--   [7] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.63s)
--   [8] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.05s)
--   [9] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.05s)
--   [10] req_acc -> 'ok_under_research,S5-70E253,remote,encrypted' (0.07s)
+-   [2] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.04s)
+-   [3] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.04s)
+-   [4] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.82s)
+-   [5] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.08s)
+-   [6] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.06s)
+-   [7] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.63s)
+-   [8] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.05s)
+-   [9] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.05s)
+-   [10] req_acc -> 'ok_under_research,S5-XXXXXX,remote,encrypted' (0.07s)
 -   [11] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
 -   [12] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
 -   [13] req_acc -> 'EXC URLError: <urlopen error timed out>' (10.00s)
--   [14] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (1.54s)
--   [15] req_acc -> 'err_user_refused,S5-70E253,remote,encrypted' (0.21s)
--   [16] req_acc -> 'ok_under_research_no_msg,S5-70E253,remote,encrypted' (0.87s)
--   [17] req_acc -> 'ok,S5-70E253,remote,encrypted' (0.15s)
+-   [14] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (1.54s)
+-   [15] req_acc -> 'err_user_refused,S5-XXXXXX,remote,encrypted' (0.21s)
+-   [16] req_acc -> 'ok_under_research_no_msg,S5-XXXXXX,remote,encrypted' (0.87s)
+-   [17] req_acc -> 'ok,S5-XXXXXX,remote,encrypted' (0.15s)
 -   fw_update_mode(V3.00) attempt 1 -> {'result': 'err_critical'} (0.47s)
 -   fw_update_mode(V3.00) attempt 2 -> {'result': 'ok'} (0.66s)
 - session gate OPEN: upload may proceed

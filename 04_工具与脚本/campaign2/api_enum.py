@@ -5,7 +5,7 @@ string arguments (RCE surface: sprintf overflow in GoAhead CGI)."""
 import sys, os, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import KA, parse_camrply
-IP="192.168.1.131"; PORT=80
+IP="192.168.1.131"; PORT=80  # ← 相机内网地址，请按你的网络环境修改
 def log(m): print("[%s] %s"%(time.strftime("%H:%M:%S"),m),flush=True)
 ka=KA(IP,port=PORT,timeout=12)
 def q(path):

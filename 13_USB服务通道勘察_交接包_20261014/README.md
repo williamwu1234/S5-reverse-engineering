@@ -67,7 +67,7 @@ clang -O2 -Wall -framework IOKit -framework CoreFoundation -o s5_usb_ep0    s5_u
 2. **服务菜单里除 `DSC→SD`（导出）外一律不碰**
    —— `SD*→DSC`（写回）、`ADJFLAG→ALL F`、`WBADJ→STEPMODE` 都可能**不可逆**
 3. **绝不真刷固件**
-4. **本包与实测记录中含机身序列号**（字符串索引 3，`XJL2104270015`）
+4. **本包与实测记录中含机身序列号**（字符串索引 3，`XJL########15`）
    —— **对外分发前必须脱敏**
 
 ---

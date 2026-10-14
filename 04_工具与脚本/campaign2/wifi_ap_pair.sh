@@ -11,7 +11,7 @@
 
 set -u
 IFACE=en0
-CAM_SSID="S5-70E253"
+CAM_SSID="S5-XXXXXX"
 OUTDIR="${1:-/tmp/s5_ap2}"
 GRACE="${2:-30}"
 mkdir -p "${OUTDIR}"

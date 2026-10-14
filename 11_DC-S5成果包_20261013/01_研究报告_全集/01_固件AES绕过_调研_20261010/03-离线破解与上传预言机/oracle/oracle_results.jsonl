@@ -9,7 +9,7 @@
 {"phase": 0, "done": 1791561942.354829}
 {"phase": 0, "ip": "192.168.1.131", "ts": 1791562947.364877}
 {"op": "getstate", "status": 200, "elapsed": 0.739159107208252, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>ok</result><state><batt>5/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_memory><version>VD4.30</version><play>stop</play><temperature>low</temperature><sd_access>off</sd_access><lens>normal</lens><add_location_data>off</add_location_data><sd2_cardstatus>write_enable</sd2_c"}
-{"op": "req_acc", "status": 200, "elapsed": 0.17417693138122559, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n"}
+{"op": "req_acc", "status": 200, "elapsed": 0.17417693138122559, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n"}
 {"op": "req_acc_g", "status": 200, "elapsed": 0.1493549346923828, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
 {"op": "port_scan", "open": [80, 60606], "tested": [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443]}
 {"op": "upload_start", "variant": "V0-pristine"}
@@ -18,51 +18,51 @@
 {"phase": 0, "done": 1791562948.6292999}
 {"phase": 0, "ip": "192.168.1.131", "ts": 1791564492.3274271}
 {"op": "getstate", "status": 200, "elapsed": 0.21795892715454102, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>ok</result><state><batt>4/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_memory><version>VD4.30</version><play>stop</play><temperature>low</temperature><sd_access>off</sd_access><lens>normal</lens><add_location_data>off</add_location_data><sd2_cardstatus>write_enable</sd2_c"}
-{"op": "req_acc", "status": 200, "elapsed": 0.17708301544189453, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n"}
+{"op": "req_acc", "status": 200, "elapsed": 0.17708301544189453, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n"}
 {"op": "req_acc_g", "status": 200, "elapsed": 0.12228703498840332, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
 {"op": "port_scan", "open": [80, 60606], "tested": [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443]}
 {"op": "gate_start", "uuid": "4D454930-0100-1000-8001-9768a8a77bc0", "gate_version": "V3.00"}
-{"op": "gate_req_acc", "attempt": 1, "status": 200, "body": "err_others_requesting,S5-70E253,remote,encrypted", "elapsed": 0.04153800010681152}
+{"op": "gate_req_acc", "attempt": 1, "status": 200, "body": "err_others_requesting,S5-XXXXXX,remote,encrypted", "elapsed": 0.04153800010681152}
 {"op": "gate_req_acc_can"}
-{"op": "gate_req_acc", "attempt": 2, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.06612873077392578}
-{"op": "gate_req_acc", "attempt": 3, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 2.0540611743927}
-{"op": "gate_req_acc", "attempt": 4, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.04527997970581055}
-{"op": "gate_req_acc", "attempt": 5, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.04439592361450195}
-{"op": "gate_req_acc", "attempt": 6, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.040110111236572266}
-{"op": "gate_req_acc", "attempt": 7, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.044121742248535156}
-{"op": "gate_req_acc", "attempt": 8, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.03930377960205078}
-{"op": "gate_req_acc", "attempt": 9, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 3.0799849033355713}
-{"op": "gate_req_acc", "attempt": 10, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.05859994888305664}
+{"op": "gate_req_acc", "attempt": 2, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.06612873077392578}
+{"op": "gate_req_acc", "attempt": 3, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 2.0540611743927}
+{"op": "gate_req_acc", "attempt": 4, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.04527997970581055}
+{"op": "gate_req_acc", "attempt": 5, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.04439592361450195}
+{"op": "gate_req_acc", "attempt": 6, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.040110111236572266}
+{"op": "gate_req_acc", "attempt": 7, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.044121742248535156}
+{"op": "gate_req_acc", "attempt": 8, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.03930377960205078}
+{"op": "gate_req_acc", "attempt": 9, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 3.0799849033355713}
+{"op": "gate_req_acc", "attempt": 10, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.05859994888305664}
 {"op": "gate_req_acc", "attempt": 11, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.004680871963501}
 {"op": "gate_req_acc", "attempt": 12, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.00328016281128}
 {"op": "gate_req_acc", "attempt": 13, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.004801034927368}
-{"op": "gate_req_acc", "attempt": 14, "status": 200, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted", "elapsed": 0.06121516227722168}
-{"op": "gate_req_acc", "attempt": 15, "status": 200, "body": "ok,S5-70E253,remote,encrypted", "elapsed": 0.6591529846191406}
+{"op": "gate_req_acc", "attempt": 14, "status": 200, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted", "elapsed": 0.06121516227722168}
+{"op": "gate_req_acc", "attempt": 15, "status": 200, "body": "ok,S5-XXXXXX,remote,encrypted", "elapsed": 0.6591529846191406}
 {"op": "gate_fw_update_mode", "status": 200, "elapsed": 0.7039010524749756, "resp": {"result": "err_critical"}}
 {"op": "gate_failed", "reason": "fw_update_mode", "resp": {"result": "err_critical"}}
 {"phase": 0, "ip": "192.168.1.131", "ts": 1791564741.41551}
 {"op": "getstate", "status": 200, "elapsed": 2.942655086517334, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>ok</result><state><batt>4/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_memory><version>VD4.30</version><play>stop</play><temperature>low</temperature><sd_access>off</sd_access><lens>normal</lens><add_location_data>off</add_location_data><sd2_cardstatus>write_enable</sd2_c"}
-{"op": "req_acc", "status": 200, "elapsed": 0.1512308120727539, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n"}
+{"op": "req_acc", "status": 200, "elapsed": 0.1512308120727539, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n"}
 {"op": "req_acc_g", "status": 200, "elapsed": 0.15558695793151855, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
 {"op": "port_scan", "open": [80, 60606], "tested": [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443]}
 {"op": "gate_start", "uuid": "4D454930-0100-1000-8001-caf622bbb3ef", "gate_version": "V3.00"}
-{"op": "gate_req_acc", "attempt": 1, "status": 200, "body": "err_others_requesting,S5-70E253,remote,encrypted", "elapsed": 0.07753801345825195}
+{"op": "gate_req_acc", "attempt": 1, "status": 200, "body": "err_others_requesting,S5-XXXXXX,remote,encrypted", "elapsed": 0.07753801345825195}
 {"op": "gate_req_acc_can"}
-{"op": "gate_req_acc", "attempt": 2, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.13159990310668945}
-{"op": "gate_req_acc", "attempt": 3, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.04797697067260742}
-{"op": "gate_req_acc", "attempt": 4, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.077484130859375}
-{"op": "gate_req_acc", "attempt": 5, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.6192471981048584}
-{"op": "gate_req_acc", "attempt": 6, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.06707286834716797}
-{"op": "gate_req_acc", "attempt": 7, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.08338475227355957}
-{"op": "gate_req_acc", "attempt": 8, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.7392621040344238}
-{"op": "gate_req_acc", "attempt": 9, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.05865478515625}
-{"op": "gate_req_acc", "attempt": 10, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.19010305404663086}
+{"op": "gate_req_acc", "attempt": 2, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.13159990310668945}
+{"op": "gate_req_acc", "attempt": 3, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.04797697067260742}
+{"op": "gate_req_acc", "attempt": 4, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.077484130859375}
+{"op": "gate_req_acc", "attempt": 5, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.6192471981048584}
+{"op": "gate_req_acc", "attempt": 6, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.06707286834716797}
+{"op": "gate_req_acc", "attempt": 7, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.08338475227355957}
+{"op": "gate_req_acc", "attempt": 8, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.7392621040344238}
+{"op": "gate_req_acc", "attempt": 9, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.05865478515625}
+{"op": "gate_req_acc", "attempt": 10, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.19010305404663086}
 {"op": "gate_req_acc", "attempt": 11, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.00390100479126}
 {"op": "gate_req_acc", "attempt": 12, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.002522706985474}
 {"op": "gate_req_acc", "attempt": 13, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.003093957901001}
-{"op": "gate_req_acc", "attempt": 14, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 4.089497089385986}
-{"op": "gate_req_acc", "attempt": 15, "status": 200, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted", "elapsed": 0.19023704528808594}
-{"op": "gate_req_acc", "attempt": 16, "status": 200, "body": "ok,S5-70E253,remote,encrypted", "elapsed": 0.18593502044677734}
+{"op": "gate_req_acc", "attempt": 14, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 4.089497089385986}
+{"op": "gate_req_acc", "attempt": 15, "status": 200, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted", "elapsed": 0.19023704528808594}
+{"op": "gate_req_acc", "attempt": 16, "status": 200, "body": "ok,S5-XXXXXX,remote,encrypted", "elapsed": 0.18593502044677734}
 {"op": "gate_fw_update_mode", "attempt": 1, "status": 200, "elapsed": 0.26197314262390137, "resp": {"result": "err_critical"}}
 {"op": "gate_fw_update_mode", "attempt": 2, "status": 200, "elapsed": 0.17162203788757324, "resp": {"result": "ok"}}
 {"op": "gate_open"}
@@ -73,28 +73,28 @@
 {"phase": 0, "done": 1791565408.801999}
 {"phase": 0, "ip": "192.168.1.131", "ts": 1791571890.3595421}
 {"op": "getstate", "status": 200, "elapsed": 0.7747790813446045, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>ok</result><state><batt>5/5</batt><batt_per>-1</batt_per><cammode>play</cammode><sdcardstatus>write_enable</sdcardstatus><sd_memory>unset</sd_memory><version>VD4.30</version><play>stop</play><temperature>low</temperature><sd_access>off</sd_access><lens>normal</lens><add_location_data>off</add_location_data><sd2_cardstatus>write_enable</sd2_c"}
-{"op": "req_acc", "status": 200, "elapsed": 0.039988040924072266, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n"}
+{"op": "req_acc", "status": 200, "elapsed": 0.039988040924072266, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n"}
 {"op": "req_acc_g", "status": 200, "elapsed": 0.012862920761108398, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
 {"op": "port_scan", "open": [80, 60606], "tested": [21, 22, 23, 80, 443, 8080, 2401, 5155, 5432, 60606, 49152, 49153, 53, 8443]}
 {"op": "gate_start", "uuid": "4D454930-0100-1000-8001-09c338459301", "gate_version": "V3.00"}
-{"op": "gate_req_acc", "attempt": 1, "status": 200, "body": "err_others_requesting,S5-70E253,remote,encrypted", "elapsed": 0.03756904602050781}
+{"op": "gate_req_acc", "attempt": 1, "status": 200, "body": "err_others_requesting,S5-XXXXXX,remote,encrypted", "elapsed": 0.03756904602050781}
 {"op": "gate_req_acc_can"}
-{"op": "gate_req_acc", "attempt": 2, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.04120802879333496}
-{"op": "gate_req_acc", "attempt": 3, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.03791618347167969}
-{"op": "gate_req_acc", "attempt": 4, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.8194530010223389}
-{"op": "gate_req_acc", "attempt": 5, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.07759881019592285}
-{"op": "gate_req_acc", "attempt": 6, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.062187910079956055}
-{"op": "gate_req_acc", "attempt": 7, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.6288950443267822}
-{"op": "gate_req_acc", "attempt": 8, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.04808497428894043}
-{"op": "gate_req_acc", "attempt": 9, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.054986000061035156}
-{"op": "gate_req_acc", "attempt": 10, "status": 200, "body": "ok_under_research,S5-70E253,remote,encrypted", "elapsed": 0.07039427757263184}
+{"op": "gate_req_acc", "attempt": 2, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.04120802879333496}
+{"op": "gate_req_acc", "attempt": 3, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.03791618347167969}
+{"op": "gate_req_acc", "attempt": 4, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.8194530010223389}
+{"op": "gate_req_acc", "attempt": 5, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.07759881019592285}
+{"op": "gate_req_acc", "attempt": 6, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.062187910079956055}
+{"op": "gate_req_acc", "attempt": 7, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.6288950443267822}
+{"op": "gate_req_acc", "attempt": 8, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.04808497428894043}
+{"op": "gate_req_acc", "attempt": 9, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.054986000061035156}
+{"op": "gate_req_acc", "attempt": 10, "status": 200, "body": "ok_under_research,S5-XXXXXX,remote,encrypted", "elapsed": 0.07039427757263184}
 {"op": "gate_req_acc", "attempt": 11, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.002269983291626}
 {"op": "gate_req_acc", "attempt": 12, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.002464056015015}
 {"op": "gate_req_acc", "attempt": 13, "status": null, "body": "EXC URLError: <urlopen error timed out>", "elapsed": 10.003256797790527}
-{"op": "gate_req_acc", "attempt": 14, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 1.5445220470428467}
-{"op": "gate_req_acc", "attempt": 15, "status": 200, "body": "err_user_refused,S5-70E253,remote,encrypted", "elapsed": 0.20788192749023438}
-{"op": "gate_req_acc", "attempt": 16, "status": 200, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted", "elapsed": 0.8730618953704834}
-{"op": "gate_req_acc", "attempt": 17, "status": 200, "body": "ok,S5-70E253,remote,encrypted", "elapsed": 0.15478181838989258}
+{"op": "gate_req_acc", "attempt": 14, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 1.5445220470428467}
+{"op": "gate_req_acc", "attempt": 15, "status": 200, "body": "err_user_refused,S5-XXXXXX,remote,encrypted", "elapsed": 0.20788192749023438}
+{"op": "gate_req_acc", "attempt": 16, "status": 200, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted", "elapsed": 0.8730618953704834}
+{"op": "gate_req_acc", "attempt": 17, "status": 200, "body": "ok,S5-XXXXXX,remote,encrypted", "elapsed": 0.15478181838989258}
 {"op": "gate_fw_update_mode", "attempt": 1, "status": 200, "elapsed": 0.4746401309967041, "resp": {"result": "err_critical"}}
 {"op": "gate_fw_update_mode", "attempt": 2, "status": 200, "elapsed": 0.659290075302124, "resp": {"result": "ok"}}
 {"op": "gate_open"}

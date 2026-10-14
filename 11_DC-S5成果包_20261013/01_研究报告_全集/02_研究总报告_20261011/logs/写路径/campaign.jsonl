@@ -648,7 +648,7 @@
 {"phase": "A", "op": "mode=camctrl type=wifi_info", "result": "err_param", "elapsed": 0.019, "ts": 1791666633.1860108, "http": 200, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
 {"phase": "A", "op": "mode=camctrl type=zboot", "result": "err_param", "elapsed": 0.021, "ts": 1791666633.8946948, "http": 200, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
 {"phase": "A", "op": "mode=camctrl type=zimage", "result": "err_param", "elapsed": 0.023, "ts": 1791666634.606905, "http": 200, "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<camrply><result>err_param</result></camrply>"}
-{"phase": "A", "op": "mode=accctrl type=req_acc", "result": "ok_under_research_no_msg", "elapsed": 0.044, "ts": 1791666635.334788, "http": 200, "body": "ok_under_research_no_msg,S5-70E253,remote,encrypted\r\n"}
+{"phase": "A", "op": "mode=accctrl type=req_acc", "result": "ok_under_research_no_msg", "elapsed": 0.044, "ts": 1791666635.334788, "http": 200, "body": "ok_under_research_no_msg,S5-XXXXXX,remote,encrypted\r\n"}
 {"phase": "A", "type": "health_wait", "tag": "", "ts": 1791666635.66659}
 {"phase": "A", "type": "health_abort", "tag": "", "ts": 1791666816.153449}
 {"phase": "I", "type": "header", "ts": 1791667354.9856682, "note": "VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer"}

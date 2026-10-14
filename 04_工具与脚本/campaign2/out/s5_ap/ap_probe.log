@@ -5,7 +5,7 @@
 [orig] ip=192.168.1.129 gw=192.168.1.1 prefix=192.168.1
 [orig] 首选网络候选:
         2401
-        S5-70E253
+        S5-XXXXXX
         吴的iPhone
         2401-5G
         BHSZ-DT
@@ -98,7 +98,7 @@
         FAST_D97D9A
 
 =============== 切换网络 2026-10-13 06:30:08 ===============
-[ap] 已连 S5-70E253  ip=192.168.54.10  gw=192.168.54.1
+[ap] 已连 S5-XXXXXX  ip=192.168.54.10  gw=192.168.54.1
 op = BOOTREPLY
 htype = 1
 flags = 0x0
@@ -136,7 +136,7 @@ subnet_mask (ip): 255.255.255.0
   getinfo lens             -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
   getsetting videoformat   -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
   getsetting ntcs_pal      -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
-  accctrl req_acc          -> HTTP 200 | ok_under_research,S5-70E253,remote,open
+  accctrl req_acc          -> HTTP 200 | ok_under_research,S5-XXXXXX,remote,open
   camctrl                  -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
 
 == Q3: CSRF（外部 Referer/Origin） ==

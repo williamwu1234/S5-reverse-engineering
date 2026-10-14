@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import Net
 from persist import download_blob, health, SIZE, VF_OFF
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 PORT = 80
 SLOT_LO, SLOT_HI = 3062, 3075          # 0x005e payload bytes (13 slots + trailing 0x00)
 MOV = 0x06

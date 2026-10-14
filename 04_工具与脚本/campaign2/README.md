@@ -2,7 +2,7 @@
 
 > 目标：纯软件（cam.cgi HTTP + DLNA + 原始 TCP）判断能否 **绕过固件校验**
 > （版本门 / 签名）或拿到 **shell（RCE）**。
-> 相机：DC-S5 研究版，MC801 SoC，`192.168.1.131`（2401 热点）。
+> 相机：DC-S5 研究版，MC801 SoC，`192.168.x.x`（2401 热点）。
 > 纯 Python 标准库，流式上传，边传边改字节，不额外占 90MB 磁盘。
 
 ## 关键事实（已离线验证，5 个版本全部一致）
@@ -43,7 +43,7 @@
 
 ## 运行
 
-相机上线后（已连 2401 热点 / `192.168.1.131`），一键跑安全阶段 + 版本预言机：
+相机上线后（已连 2401 热点 / `192.168.x.x`），一键跑安全阶段 + 版本预言机：
 
 ```bash
 cd /Users/wuwilliam/Documents/ChatGPT/S5逆向/campaign2
@@ -56,13 +56,13 @@ bash wait_and_run.sh --no-i
 
 ```bash
 # 安全阶段（只读/可逆）
-python3 campaign.py --ip 192.168.1.131 --phase A-G --out-dir out
+python3 campaign.py --ip 192.168.x.x --phase A-G --out-dir out
 # 核心预言机：版本+1 上传（可恢复；相机若接受会写入并重启）
-python3 upload.py --ip 192.168.1.131 --phase I --confirm --out-dir out
+python3 upload.py --ip 192.168.x.x --phase I --confirm --out-dir out
 # 若 Phase I 返回 err_fw_same（版本门读的是内层字段 0x2BC）：
-python3 upload.py --ip 192.168.1.131 --phase I --ver-field inner --confirm --out-dir out
+python3 upload.py --ip 192.168.x.x --phase I --ver-field inner --confirm --out-dir out
 # 高危：翻数据字节（需明确许可后才跑，可能变砖）
-python3 upload.py --ip 192.168.1.131 --phase J --data-flip 0x5600000 --confirm --out-dir out
+python3 upload.py --ip 192.168.x.x --phase J --data-flip 0x5600000 --confirm --out-dir out
 ```
 
 ## 安全模型（用户硬约束）

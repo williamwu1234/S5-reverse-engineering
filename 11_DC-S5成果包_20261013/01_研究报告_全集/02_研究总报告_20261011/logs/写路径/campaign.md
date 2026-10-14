@@ -1,4 +1,4 @@
-# S5 second-wave campaign @ 2026-10-11 05:01:24 ip=192.168.1.131
+# S5 second-wave campaign @ 2026-10-11 05:01:24 ip=192.168.x.x
 phases=['A', 'B', 'C', 'D', 'E', 'F', 'G'] confirm=False
   [healthstart] getstate=ok
 
@@ -1456,13 +1456,13 @@ phases=['A', 'B', 'C', 'D', 'E', 'F', 'G'] confirm=False
 - [A] mode=getinfo type=camsetting -> `Panasonic         DC-S5                     ��         I I I I I I I I I I I I I                          	                 
                                                                                                                                                                                                                                                                                                                                                     9                 :                 ;                 <                 =                 >                 ?                 @                 C    `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   `                                                                                                   D �       ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������    ��������������������������������F                 G                 I    |||||||||||||J    |||||||||||||K    |||||||||||||L    |||||||||||||M    -------------N    `  non-generic response
 - [A] mode=getsetting type=flash -> `ok`  non-generic response
-# S5 firmware-upload oracle @ 2026-10-11 05:13:36 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 05:13:36 ip=192.168.x.x phase=I
   [healthupload-start] getstate=err_unsuitable_app
-# S5 firmware-upload oracle @ 2026-10-11 05:22:34 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 05:22:34 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 05:22:34  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
-# S5 firmware-upload oracle @ 2026-10-11 05:22:53 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 05:22:53 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 05:22:53  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -1473,7 +1473,7 @@ phases=['A', 'B', 'C', 'D', 'E', 'F', 'G'] confirm=False
 - [UP] gate fw_update_mode(V3.00) #1 -> err_reject -> `err_reject` (0.03s)
   [gate] FAILED: fw_update_mode returned err_reject (need ok). Try a higher gate version.
   [I] gate not open — NOT uploading. (Confirm the connection prompt on the camera screen and re-run Phase I.)
-# S5 firmware-upload oracle @ 2026-10-11 06:07:16 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 06:07:16 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 06:07:16  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -4439,7 +4439,7 @@ phases=['A', 'B', 'C', 'D', 'E', 'F', 'G'] confirm=False
   [I] RESULT: {'result': 'err_critical'}  {'chunks': 1474, 'sent': 90197008, 'upload_sec': 990.4}
 - [I] PHASE-I ORACLE VERDICT -> `err_critical` (0.00s)  [unrecognized result 'err_critical']  **<== unrecognized result 'err_critical'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 06:25:19 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 06:25:19 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 06:25:19  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -7411,7 +7411,7 @@ Phase I complete.
   [I] RESULT: {'result': 'err_critical'}  {'chunks': 1474, 'sent': 90197008, 'upload_sec': 570.9}
 - [I] PHASE-I ORACLE VERDICT -> `err_critical` (0.00s)  [unrecognized result 'err_critical']  **<== unrecognized result 'err_critical'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 06:38:22 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 06:38:22 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 06:38:22  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -7423,7 +7423,7 @@ Phase I complete.
 - [UP] gate fw_update_mode(V3.00) #1 -> err_reject -> `err_reject` (0.05s)
   [gate] FAILED: fw_update_mode returned err_reject. Camera may need a restart; re-run once it is back.
   [I] gate not open — NOT uploading. (Confirm the connection prompt on the camera screen and re-run Phase I.)
-# S5 firmware-upload oracle @ 2026-10-11 06:42:51 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 06:42:51 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 06:42:51  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -7461,7 +7461,7 @@ Phase I complete.
 - [UP] senddata chunk @795496 attempt 1/8 -> ok -> `ok` (0.13s)
 - [UP] requestsenddata after chunk @795496 attempt 1/5 -> `ok` (0.03s)
 - [UP] senddata chunk @856688 attempt 1/8 -> ok -> `ok` (0.17s)
-# S5 firmware-upload oracle @ 2026-10-11 06:45:42 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 06:45:42 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 06:45:42  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -7510,7 +7510,7 @@ Phase I complete.
 - [UP] requestsenddata after chunk @1101456 attempt 1/5 -> `ok` (0.02s)
 - [UP] senddata chunk @1162648 attempt 1/8 -> ok -> `ok` (0.07s)
 - [UP] requestsenddata after chunk @1162648 attempt 1/5 -> `ok` (0.04s)
-# S5 firmware-upload oracle @ 2026-10-11 06:48:27 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 06:48:27 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 06:48:27  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -10499,7 +10499,7 @@ Phase I complete.
   [I] RESULT: {'result': 'err_critical'}  {'chunks': 1474, 'sent': 90197008, 'upload_sec': 951.0}
 - [I] PHASE-I ORACLE VERDICT -> `err_critical` (0.00s)  [unrecognized result 'err_critical']  **<== unrecognized result 'err_critical'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 07:06:47 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 07:06:47 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 07:06:47  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -13489,7 +13489,7 @@ Phase I complete.
   [I] RESULT: {'result': 'err_critical'}  {'chunks': 1474, 'sent': 90177272, 'upload_sec': 766.7}
 - [I] PHASE-I ORACLE VERDICT -> `err_critical` (0.00s)  [unrecognized result 'err_critical']  **<== unrecognized result 'err_critical'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 07:33:28 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 07:33:28 ip=192.168.x.x phase=I
   [healthupload-start] getstate=ok
 
 ## Phase I @ 2026-10-11 07:33:28  VERSION-BUMP upload (LOW risk, recoverable). target=V3.00 field=outer
@@ -16476,7 +16476,7 @@ Phase I complete.
   [I] RESULT: {'result': 'err_critical'}  {'chunks': 1474, 'sent': 90197008, 'upload_sec': 739.2}
 - [I] PHASE-I ORACLE VERDICT -> `err_critical` (0.00s)  [unrecognized result 'err_critical']  **<== unrecognized result 'err_critical'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 08:15:20 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 08:15:20 ip=192.168.x.x phase=I
   MODE: faithful (pace=0, flat 1s backoff) — app-exact timing
   [healthupload-start] getstate=ok
 
@@ -19485,7 +19485,7 @@ Phase I complete.
   [I] RESULT: {'result': 'err_critical'}  {'chunks': 1474, 'sent': 90197008, 'upload_sec': 441.2}
 - [I] PHASE-I ORACLE VERDICT -> `err_critical` (0.00s)  [unrecognized result 'err_critical']  **<== unrecognized result 'err_critical'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 08:34:45 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 08:34:45 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   MODE: calibration (abort after 20 chunks)
   [healthupload-start] getstate=ok
@@ -19544,7 +19544,7 @@ Phase I complete.
   [I] RESULT: {'result': 'calibrate_aborted', 'chunks': 20, 'sent': 1223840}  {'chunks': 20, 'sent': 1223840, 'upload_sec': 3.1}
 - [I] PHASE-I ORACLE VERDICT -> `calibrate_aborted` (0.00s)  [unrecognized result 'calibrate_aborted']  **<== unrecognized result 'calibrate_aborted'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 08:42:08 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 08:42:08 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   [healthupload-start] getstate=ok
 
@@ -22532,7 +22532,7 @@ Phase I complete.
   [upload] method=separate bufsize=61460
 - [UP] senddata FINAL chunk @90238464 attempt 1/12 -> ok -> `ok` (0.00s)
   [upload] endsenddata -> ok  [full upload 0.0s, final chunk @0.0s]
-# S5 firmware-upload oracle @ 2026-10-11 09:10:30 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 09:10:30 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   [healthupload-start] getstate=ok
 
@@ -22583,7 +22583,7 @@ Phase I complete.
   [upload] method=separate bufsize=61460
 - [UP] senddata FINAL chunk @90238464 attempt 1/12 -> ok -> `ok` (0.00s)
   [upload] endsenddata -> ok  [full upload 0.0s, final chunk @0.0s]
-# S5 firmware-upload oracle @ 2026-10-11 09:22:32 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 09:22:32 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   MODE: calibration (abort after 300 chunks)
   MODE: pacing target=120.0ms/chunk -> predicted ~177s for 1475 chunks
@@ -22608,7 +22608,7 @@ Phase I complete.
   [I] RESULT: {'result': 'calibrate_aborted', 'chunks': 300, 'sent': 18357600}  {'chunks': 300, 'sent': 18357600, 'upload_sec': 73.4, 'final_chunk_ts': 0.0}
 - [I] PHASE-I ORACLE VERDICT -> `calibrate_aborted` (0.00s)  [unrecognized result 'calibrate_aborted']  **<== unrecognized result 'calibrate_aborted'**
 Phase I complete.
-# S5 firmware-upload oracle @ 2026-10-11 14:47:13 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 14:47:13 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   [healthupload-start] getstate=ok
 
@@ -22639,7 +22639,7 @@ Phase I complete.
 - [UP] senddata FINAL chunk @90238464 attempt 1/12 -> err_busy -> `err_busy` (0.04s)
     [retry] transient err_busy (FINAL chunk), waiting 2s
 - [UP] senddata FINAL chunk @90238464 attempt 2/12 -> err_critical -> `err_critical` (0.67s)
-# S5 firmware-upload oracle @ 2026-10-11 15:05:09 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 15:05:09 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   [healthupload-start] getstate=ok
 
@@ -22653,9 +22653,9 @@ Phase I complete.
 - [UP] startsenddata(size=90238464) attempt 1/5 -> `ok` (0.08s)
   [upload] method=separate bufsize=61460
     ... 0% (0/90238464) t=3s avg_sd=3363ms
-# S5 firmware-upload oracle @ 2026-10-11 15:12:34 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 15:12:34 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
-# S5 firmware-upload oracle @ 2026-10-11 15:16:19 ip=192.168.1.131 phase=I
+# S5 firmware-upload oracle @ 2026-10-11 15:16:19 ip=192.168.x.x phase=I
   MODE: fast (keep-alive connection reuse, pace=0)
   [healthupload-start] getstate=EXC URLError: <urlopen error timed out>
 

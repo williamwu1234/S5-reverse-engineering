@@ -1,16 +1,16 @@
-# 相机只读隐藏命令探测结果（DC-S5, 192.168.1.131）
+# 相机只读隐藏命令探测结果（DC-S5, 192.168.x.x）
 
 探测时间：2026-10-09（约 22:32–22:34）。全部为 GET 请求，无任何写操作。
 
 ## 1. 可达性
 
-- `ping 192.168.1.131`：可达（2/2 包，RTT 5.9~232ms）。
+- `ping 192.168.x.x`：可达（2/2 包，RTT 5.9~232ms）。
 - `GET /cam.cgi?mode=getstate`：首次返回 `<result>err_reject</result>`；后续变为 `<result>err_unsuitable_app</result>`。
 - 结论：相机在线，但探测过程中状态发生变化（见第 5 节），部分命令由可用变为拒绝。
 
 ## 2. getinfo type 枚举
 
-逐类发送 `curl -s http://192.168.1.131/cam.cgi?mode=getinfo&type=<T>`，完整响应存于 `fw_fetch/probe_results/getinfo_type_<T>.xml`。
+逐类发送 `curl -s http://192.168.x.x/cam.cgi?mode=getinfo&type=<T>`，完整响应存于 `fw_fetch/probe_results/getinfo_type_<T>.xml`。
 
 ### 返回真实数据的 type
 
@@ -33,7 +33,7 @@ errorlog, errlog, history, power, batteryinfo, temperature, temp, media, sdinfo,
 
 ## 3. mode 枚举
 
-逐模式发送 `curl -s http://192.168.1.131/cam.cgi?mode=<M>`，完整响应存于 `fw_fetch/probe_results/mode_<M>.xml`。
+逐模式发送 `curl -s http://192.168.x.x/cam.cgi?mode=<M>`，完整响应存于 `fw_fetch/probe_results/mode_<M>.xml`。
 
 | mode | 结果 |
 |---|---|

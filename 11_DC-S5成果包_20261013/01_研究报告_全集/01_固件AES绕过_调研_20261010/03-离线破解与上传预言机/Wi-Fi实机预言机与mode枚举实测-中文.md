@@ -1,7 +1,7 @@
 # DC-S5（MC801）Wi-Fi 实机预言机 + 隐藏 mode 枚举 —— 实测记录
 
 > 目标：确认相机在 Wi-Fi 侧到底"能验证什么 / 能不能摸到 bootrom 或密钥"。
-> 方法：对已连接热点（`192.168.1.131`）的研究版相机做**纯只读 / 可逆**的实机探测。
+> 方法：对已连接热点（`192.168.x.x`）的研究版相机做**纯只读 / 可逆**的实机探测。
 > 结论先行：**Wi-Fi 是验证型 oracle，不是密钥/明文提取通道；研究版无隐藏调试后门。bootrom 走 Wi-Fi 到不了。**
 > 数据与脚本：本目录 `oracle/`（`camset_write_test.py`、`mode_enum.py`）+ `oracle/burst_183125/`（原始响应）。
 
@@ -12,7 +12,7 @@
 | 问题 | 实测答案 |
 |---|---|
  相机是什么版本？ | 固件 **V2.90**（`fw_update_mode&value=V2.90`→`err_fw_same`）；应用/协议 **VD4.30**（`getstate` 的 `<version>`） |
- 是不是研究版？ | **是**：`req_acc` 回 `ok_under_research_no_msg,S5-70E253,remote,encrypted`（远程访问**免屏提示自动放行**） |
+ 是不是研究版？ | **是**：`req_acc` 回 `ok_under_research_no_msg,S5-XXXXXX,remote,encrypted`（远程访问**免屏提示自动放行**） |
  Wi-Fi 能验证什么？ | 3 个**验证型**预言机：版本门、固件签名、CAMSET 校验和（§1） |
  Wi-Fi 能提取密钥/明文吗？ | **不能**。无逐字节反馈、无可利用时差、无 Key Blob |
  研究版有隐藏调试/闪读后门吗？ | **没有**。~70 个候选 mode 只读枚举**全回 `err_param`**（§2） |

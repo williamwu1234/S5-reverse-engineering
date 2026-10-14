@@ -77,7 +77,7 @@
 
 ```bash
 cd scripts
-export S5_IP=192.168.1.131
+export S5_IP=192.168.x.x
 python3 http_fingerprint.py     # 服务器指纹（只读）
 python3 rce_surface_probe.py    # mode / getinfo 子类型 RCE 面枚举（只读）
 python3 recon.py                # 设置面（47 可写域）+ camcmd 词表（只读）

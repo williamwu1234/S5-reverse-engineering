@@ -44,27 +44,27 @@ endsenddata 收到全文件后：
 连接超时同样重试）。此前第 4 次运行在**最后一个分片**收到一次 `err_busy`
 即中止，属脚本缺陷，非相机行为。
 
-## 运行（在你的终端，相机已连 2401 热点 / 192.168.1.131）
+## 运行（在你的终端，相机已连 2401 热点 / 192.168.x.x）
 
 ```bash
 cd /Users/wuwilliam/Downloads/com.panasonic.jp.lumixsync_b0834c31/oracle
 
 # 阶段 0（安全，先跑）
-python3 upload_test.py --ip 192.168.1.131 --bin ../fw_fetch/S5___V29.bin --phase 0
+python3 upload_test.py --ip 192.168.x.x --bin ../fw_fetch/S5___V29.bin --phase 0
 # 相机离线时可等它上线后自动跑（每 15s 探测，30 分钟上限；相机弹出连接提示时按 OK）
 bash wait_cam_and_run.sh
 
 
 # 阶段 1（安全，逐字段试版本字段；先试 0x24）
-python3 upload_test.py --ip 192.168.1.131 --bin ../fw_fetch/S5___V29.bin --phase 1 --field 0x24
+python3 upload_test.py --ip 192.168.x.x --bin ../fw_fetch/S5___V29.bin --phase 1 --field 0x24
 # 若响应与阶段 0 相同，再试: --field 0x1C  /  0x20  /  0x2C  /  0x34
 
 # 阶段 2（风险：相机可能写入并重启；确认后再跑）
-python3 upload_test.py --ip 192.168.1.131 --bin ../fw_fetch/S5___V29.bin --phase 2 --field 0x24 --confirm-risky
+python3 upload_test.py --ip 192.168.x.x --bin ../fw_fetch/S5___V29.bin --phase 2 --field 0x24 --confirm-risky
 # 若回 ok：等 60–120s 相机重启完成，再跑阶段 0 确认相机活着
 
 # 阶段 3（高风险，仅在阶段 2 回 ok 后）
-python3 upload_test.py --ip 192.168.1.131 --bin ../fw_fetch/S5___V29.bin --phase 3 --field 0x24 --partition zboot --confirm-risky
+python3 upload_test.py --ip 192.168.x.x --bin ../fw_fetch/S5___V29.bin --phase 3 --field 0x24 --partition zboot --confirm-risky
 ```
 
 结果自动追加到 `oracle_results.md` + `oracle_results.jsonl`（含每步精确响应与耗时，

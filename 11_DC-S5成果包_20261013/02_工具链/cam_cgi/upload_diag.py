@@ -17,7 +17,7 @@ import sys, os, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import KA, parse_camrply
 
-IP="192.168.1.131"; PORT=80; BOUNDARY="====LUMIX"
+IP="192.168.1.131"; PORT=80; BOUNDARY="====LUMIX"  # ← 相机内网地址，请按你的网络环境修改
 CLEAN="/tmp/camsetting_clean.bin"
 
 def log(m): print("[%s] %s"%(time.strftime("%H:%M:%S"),m),flush=True)

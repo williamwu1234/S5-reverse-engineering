@@ -59,7 +59,7 @@ cd /Users/wuwilliam/Documents/ChatGPT/S5逆向
 ```
 目标设备：… DC-S5（VID=0x04DA PID=0x2382）
 
-[1] GetDeviceInfo (0x1001)  → 0x2001 OK，225 字节（型号 DC-S5 / 固件 2.9 / SN XJL2104270015）
+[1] GetDeviceInfo (0x1001)  → 0x2001 OK，225 字节（型号 DC-S5 / 固件 2.9 / SN XJL########15）
 [2] OpenSession (0x1002)    → 0x2001 OK
 [3] GetStorageIDs (0x1004)  → 0x2001 OK
 [4] GetSyncList (0x9104)    → 0x2001 OK

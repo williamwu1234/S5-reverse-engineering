@@ -8,7 +8,7 @@
 # 流程：
 #   1) 后台启动 ble_hold（握手后保持连接，写 /tmp/ble_hold_ready）
 #   2) 等就绪标记
-#   3) 立刻连 S5-70E253（BLE 仍在保持）
+#   3) 立刻连 S5-XXXXXX（BLE 仍在保持）
 #   4) accctrl 配对（s5_ap_pair.py）
 #   5) 结束 ble_hold、切回家网
 #
@@ -16,7 +16,7 @@
 
 set -u
 IFACE=en0
-CAM_SSID="S5-70E253"
+CAM_SSID="S5-XXXXXX"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 OUTDIR="${1:-${HERE}/out/s5_hold}"
 HOME_GW="${HOME_GW:-192.168.1.1}"

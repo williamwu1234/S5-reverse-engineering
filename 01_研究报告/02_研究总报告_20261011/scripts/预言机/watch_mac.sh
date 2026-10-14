@@ -1,7 +1,7 @@
 #!/bin/bash
 # Watch for the camera coming back on the home LAN.
 # Each tick: probe .131 (fast); every 3rd tick do a full MAC sweep.
-MAC="70:74:14:70:e2:53"
+MAC="70:74:14:XX:XX:XX"
 LOG=out/watch_mac.log
 : > "$LOG"
 n=0

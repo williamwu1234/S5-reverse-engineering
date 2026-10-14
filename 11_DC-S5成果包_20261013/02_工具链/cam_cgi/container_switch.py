@@ -41,7 +41,7 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from persist import download_blob, health, SIZE, OUT
 
-IP = "192.168.1.131"
+IP = "192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 UA = {"User-Agent": "LUMIX Sync"}
 
 # container name -> (blob byte 0x5e value, declared in S5 allmenu?)

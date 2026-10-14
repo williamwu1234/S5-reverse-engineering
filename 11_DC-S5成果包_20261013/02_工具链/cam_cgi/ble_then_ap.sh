@@ -10,7 +10,7 @@
 
 set -u
 IFACE=en0
-CAM_SSID="S5-70E253"
+CAM_SSID="S5-XXXXXX"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 OUTDIR="${1:-${HERE}/out/s5_ble_ap}"
 HOME_GW="${HOME_GW:-192.168.1.1}"

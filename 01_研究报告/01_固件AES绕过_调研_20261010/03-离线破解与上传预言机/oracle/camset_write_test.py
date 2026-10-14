@@ -8,7 +8,7 @@ sum-to-zero checksum on CAMSET writes.
 import sys, time, uuid, urllib.request, urllib.error
 from xml.etree import ElementTree
 
-IP="192.168.1.131"
+IP="192.168.1.131"  # ← 相机内网地址，请按你的网络环境修改
 UA={"User-Agent":"LUMIX Sync"}
 LIVE="burst_183125/live_camsetting_full.bin"
 LOG=open("burst_183125/camset_write_test.log","a")

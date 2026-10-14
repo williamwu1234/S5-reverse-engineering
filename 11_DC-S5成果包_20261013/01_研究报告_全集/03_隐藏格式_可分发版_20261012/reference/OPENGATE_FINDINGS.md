@@ -1,6 +1,6 @@
 # S5 Open-Gate / 6K PHOTO 可行性 + cam.cgi RCE 面测绘
 
-日期 2026-10-12 · 相机 192.168.1.131 · DC-S5 (modelname=S5) · 状态 VD4.30 · cammode=rec(视频模式)
+日期 2026-10-12 · 相机 192.168.x.x · DC-S5 (modelname=S5) · 状态 VD4.30 · cammode=rec(视频模式)
 
 ## A. Open-Gate / 6K PHOTO 结论
 S5 **原生就支持 6K PHOTO(片门全开)功能**,且固件里是完全声明存在的可写 setter,不是隐藏功能。

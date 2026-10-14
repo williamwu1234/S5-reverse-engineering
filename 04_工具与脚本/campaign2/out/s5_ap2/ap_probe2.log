@@ -5,23 +5,23 @@
 [orig] 候选网络数: 92
 
 =============== 切换网络 2026-10-13 06:39:32 ===============
-[ap] SSID=S5-70E253 ip=192.168.54.10 gw=192.168.54.1
+[ap] SSID=S5-XXXXXX ip=192.168.54.10 gw=192.168.54.1
 [ap] LEFT_HOME=1
 
 =============== 第二轮取证 2026-10-13 06:39:38 ===============
 ### SoftAP 第二轮 @ 2026-10-13 06:39:38  cam=192.168.54.1
 [0] getstate -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_reject</result></camrply>
-[0] accctrl req_acc -> err_user_refused,S5-70E253,remote,open
+[0] accctrl req_acc -> err_user_refused,S5-XXXXXX,remote,open
 
 [1] accctrl req_acc_g（只读，取握手密钥）
     HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_param</result></camrply>
     原始长度 85
 
 [2] accctrl req_acc  value=4D454930-0100-1000-8001-00006acd61ab value2=MacProbe
-    HTTP 200 | err_user_refused,S5-70E253,remote,open
-    +3s 后 req_acc 状态 -> ok_under_research,S5-70E253,remote,open
-    +6s 后 req_acc 状态 -> err_user_refused,S5-70E253,remote,open
-    +9s 后 req_acc 状态 -> ok_under_research,S5-70E253,remote,open
+    HTTP 200 | err_user_refused,S5-XXXXXX,remote,open
+    +3s 后 req_acc 状态 -> ok_under_research,S5-XXXXXX,remote,open
+    +6s 后 req_acc 状态 -> err_user_refused,S5-XXXXXX,remote,open
+    +9s 后 req_acc 状态 -> ok_under_research,S5-XXXXXX,remote,open
 
 [3] 请求访问后复测读端点
     getstate                 -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>

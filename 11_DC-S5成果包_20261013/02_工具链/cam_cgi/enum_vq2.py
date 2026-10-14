@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import KA, Net, parse_camrply, Health, Reporter
 from xml.etree import ElementTree
 
-IP = "192.168.1.131"; PORT = 80
+IP = "192.168.1.131"; PORT = 80  # ← 相机内网地址，请按你的网络环境修改
 BASELINE = "mp4_50p_28mbps"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out", "enum_vq")
 os.makedirs(OUT, exist_ok=True)

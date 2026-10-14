@@ -61,14 +61,14 @@
 > ⚠️ SoftAP 只在 **BLE 会话保持期间**或相机主动开启「遥控拍摄」时才在线。
 > 若用手机 App 配对过，需保持相机处于等待连接状态。
 
-**方式 B**：相机和电脑接同一个路由器，用相机在局域网里的 IP（本项目实测 `192.168.1.131`）
+**方式 B**：相机和电脑接同一个路由器，用相机在局域网里的 IP（本项目实测 `192.168.x.x`）
 
 ### 2. 启动
 
 ```bash
 cd 04_工具与脚本/s5_monitor
 python3 s5monitor.py                      # 默认 192.168.54.1
-python3 s5monitor.py --host 192.168.1.131 # 家庭网
+python3 s5monitor.py --host 192.168.x.x # 家庭网
 python3 s5monitor.py --no-stream          # 只起控制台，不自动取景
 ```
 
@@ -414,16 +414,16 @@ REPUBLISH_ON_UNDERRUN = True # 空档重播上一帧（关掉=宁可停顿也不
 
 ```bash
 # 默认即官方模式
-./run.sh 192.168.1.131
+./run.sh 192.168.x.x
 
 # 显式指定
-python3 s5monitor.py --host 192.168.1.131 --pacing-mode fixed --pacing-fps 18
+python3 s5monitor.py --host 192.168.x.x --pacing-mode fixed --pacing-fps 18
 
 # 换帧率（例如省带宽用 12fps）
-./run.sh 192.168.1.131 8080 fixed 12
+./run.sh 192.168.x.x 8080 fixed 12
 
 # 回到自适应模式（不推荐）
-./run.sh 192.168.1.131 8080 adaptive
+./run.sh 192.168.x.x 8080 adaptive
 ```
 
 ### 参数

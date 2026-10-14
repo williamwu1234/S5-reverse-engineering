@@ -1,5 +1,5 @@
 [18:51:21] # S5 cam.cgi HTTP server fingerprint  (session start 2026-10-11 18:51:21)
-[18:51:21] Target: 192.168.1.131:80
+[18:51:21] Target: 192.168.x.x:80
 [18:51:22] Camera ready: ok
 [18:51:22] 
 ########## A. baseline response headers ##########
