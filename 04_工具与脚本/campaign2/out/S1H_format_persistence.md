@@ -52,7 +52,12 @@ S1H 的 `getinfo&type=camsetting` 响应为 66,933 字节，解析出 848 条记
 
 - **格式编号（0x5e）与质量码（0x122/0x123/0x124/0x16e）是两条独立记录，不是从质量 token 派生的。** 0x5e 是一条专用「格式门」记录。
 - 但 CGI 层存在**二次联动**：`setsetting&type=videoquality&value=mp4ed_…` 写成功后，`getsetting&type=videoformat` 自动读回 `mp4ed`（evidence/s1h_activation 的 target_set.bin → target_format.bin 序列直接证明）。即固件按 token 的容器前缀（`mov_`/`mp4_`/`mp4ed_`/`avchd_`）**同时更新 0x5e 格式记录与对应格式的质量记录**，二者耦合写入，但各自独立存储。
-- 未观察到独立的「上次保存/默认格式」字段与「当前格式」字段的区分：本机证据只见到一条格式记录（0x5e）。S5 侧（campaign2 成果）进一步表明 `setsetting` 对 videoformat/videoquality **只写 RAM 不写 flash**，断电回落默认 mp4——这才是 S5 开机 mov→mp4 回退的机制；S1H 上 setsetting 的 mp4ed 在「一次正常关机开机」后保留（E5 级，用户陈述 + 事后菜单视频，未拍全程）。
+- 未观察到独立的「上次保存/默认格式」字段与「当前格式」字段的区分：本机证据只见到一条格式记录（0x5e）。S5 侧（campaign2 成果）表明 `setsetting` 对 videoformat/videoquality **只写 RAM 不写 flash**，需经
+  `startsenddata/senddata/endsenddata` 分块直写 blob 才能落盘。
+  > **（2026-10-14 受控复测更正）** 本行此前附加的"断电回落默认 mp4——这才是 S5 开机 mov→mp4 回退的机制"
+  > **未获重现（n=2）**：直写 flash 后断电重启，`ntsc_pal`、`videoformat`、`videoquality` 三项均保留。
+  > 详见 `01_研究报告/31_录制格式持久化_受控复测_20261014.md`。
+  S1H 上S1H 上 setsetting 的 mp4ed 在「一次正常关机开机」后保留（E5 级，用户陈述 + 事后菜单视频，未拍全程）。
 
 ## 5. 持久化语义（摘自本目录其他证据）
 

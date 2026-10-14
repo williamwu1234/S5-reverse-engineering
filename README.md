@@ -14,14 +14,24 @@
 ## 一句话结论
 
 软件 / Wi-Fi 侧**没有可用的 RCE**，但暴露了**完整的设置面（47 个可写域）+ 若干"启用但未声明"
-的隐藏功能**。真正的成果突破在**隐藏录像格式解锁 + 持久化**：`videoformat` 是单一容器门，mov 态
-一次性拿到 17 个 `mov_*` 高码率档（4K/C4K，100–200Mbps 10bit）；直写 flash 的 65533 字节设置 blob 把相机
-**开机即锁定**在 MOV + NTSC，**跨断电持久**（2026-10-13 断电终验），画质档可在机身菜单自由选择。
-固件 AES 密钥提取与网络 RCE 均为阴性。
+的隐藏功能**。主要成果集中在**隐藏录像格式的可写性与持久化**：`videoformat` 是单一容器门，
+切换至 mov 后可选档位集合变化（NTSC 实测 18 个 mov 档，4K/C4K 100–200Mbps 10bit）；
+直写 flash 的 65533 字节设置 blob 可跨断电保留。固件 AES 密钥提取与网络 RCE 均为阴性。
 
-> 10-13 更正：早先一轮曾判"mov 断电回落 mp4"，后查明是 `persist.py` 的 **flash 上传协议用错**
-> （相机要求分块 `method=separate`，旧代码单次 POST 从未落地），修正后 mov 持久化成立。
-> 详见 `01_研究报告/07_隐藏格式持久化_追查_20261013.md`。
+> **持久化结论的更正史（务请连读）**
+>
+> - **10-13**：判"mov 断电回落 mp4"系 `persist.py` 的 **flash 上传协议用错**（相机要求分块
+>   `method=separate`，旧代码单次 POST 从未落地）。修正后判"持久化成立"。
+> - **10-13 晚**：以"`getinfo camsetting` 返回 **RAM 副本**、写完立刻回读不能代表 flash"为由，
+>   改判**"只有 `ntsc_pal` 持久、`videoformat` 回落 mp4"**。
+> - **2026-10-14 受控复测（n=2）**：上述改判**未被重现**。写入 `ntsc + mov + 0x9b` 后断电重启，
+>   `ntsc_pal`、`videoformat`、`videoquality` **三项均保留**；其中 `videoquality` 的保留与
+>   **开机时 SD 卡槽 1 的挂载状态**相关（槽 1 未挂载时 `0x9b`→`0x9f`）。
+>   **样本量 n=2，机制假设待重复实验确认。**
+> - 判据方法（不受上述修订影响）：`getinfo camsetting` 返回的是 **RAM 副本**，
+>   「写完立刻回读」不能作为持久化判据，**只有断电重启后的读回才反映 flash 内容**。
+>
+> 详见 [`01_研究报告/31_录制格式持久化_受控复测_20261014.md`](01_研究报告/31_录制格式持久化_受控复测_20261014.md)。
 
 ## 项目脉络（三阶段）
 
@@ -32,11 +42,14 @@
    → 结论：~70 个候选 mode 全部回通用 `err_param`，无调试后门；网络 RCE 各路线全阴性
    （唯一未测公开 CVE-2019-5096）；**唯一实机漏洞 = PTP length-DoS**（可复现挂死、拔插恢复、不砖机）。
    固件升级写路径（刷写=重写 rootfs）能流送全部 1474 个完整块，但**最终部分块 flash 定址失败**，未打通。
-3. **阶段三（10-12 ~ 10-13）隐藏录像格式解锁 + 持久化 —— 突破**
-   → `videoformat` 是单一容器门，mp4 / mov 互斥；mov 态一次性拿到 17 个 `mov_*` 高码率档
-   （4K/C4K 100–200Mbps 10bit；真正的 5.9K 片门全开被固件按机型过滤，选不到）。直写 flash 的 65533 字节设置 blob，把相机**开机即锁定**
-   MOV + NTSC，**跨断电持久**（10-13 断电终验），画质档可在机身菜单自由选择（须选 `allmenu` 已声明档）。
-   期间排掉一个假结论：早先"mov 回落"实为上传协议 bug（须分块 `separate`）。HEVC 容器按需求弃用。
+3. **阶段三（10-12 ~ 10-14）隐藏录像格式的可写性与持久化**
+   → `videoformat` 是单一容器门，mp4 / mov 互斥；mov 态可选档位集合与 mp4 态完全不同
+   （NTSC 实测 18 个 mov 档；真正的 5.9K 片门全开被固件按机型过滤，选不到）。
+   直写 flash 的 65533 字节设置 blob 可跨断电保留（须选 `allmenu` 已声明档，否则机身菜单变灰）。
+   阶段内经过多轮结论修订，**持久化结论以 31 号受控复测报告为准**：
+   写入 `ntsc + mov + 0x9b` 后断电重启三项均保留（n=2）；`videoquality` 与开机时 SD 卡槽 1 的
+   挂载状态相关。期间纠正过两次判断（一次是上传协议缺陷，一次是"仅 `ntsc_pal` 持久"的改判未被重现）。
+   HEVC 容器按需求主动弃用（该容器本身仍可用）。
 
 **跨团队汇入（10-12）**：S1R2（DC-S1RM2）团队移交两项实机成果——① CAMSET 9.2MB 设置块
 PTP/SD 读写（校验算法与 S5 camsetting **同一套**，双证闭合）；② FunctionFS 内核越界读写
@@ -49,25 +62,33 @@ F1/F2（SC2006A 实机验证，可利用性低 = DoS + 弱泄露，S5 需单独�
 | 目录 | 内容 | 本仓库 |
 |---|---|---|
 | `00_项目总结/` | 执行摘要、成果总表、项目时间线、**思路总结全文**、**定因与工具链成果**、环境与依赖 | ✓ |
-| `01_研究报告/` | 报告 **01–27**：固件 AES 绕过调研(10-10)、研究总报告(10-11)、隐藏格式可分发版与持久化(10-12)、S1R2 移交、BLE 系列、exFAT 系列、长文件名定因、操作风险手册、ROM BACKUP(10-13) | ✓ |
+| `09_对外分享/` | 对外传播素材（小红书帖等），用于同步进度与招募协作 | ✓ |
+| `13_USB服务通道勘察_交接包_20261014/` | 服务态 USB 通道勘察交接包（`00_交接总结_全文.md`、`01_实测记录.md` 与 `01_实测记录/`、`02_工具/`、`03_Tether协议线索.md`） | ✓ |
+| `01_研究报告/` | 报告 **01–31**。主体：固件 AES 绕过调研(10-10)、研究总报告(10-11)、隐藏格式可分发版与持久化(10-12)、S1R2 移交、BLE 系列、exFAT 系列、长文件名定因、操作风险手册、ROM BACKUP(10-13)。**10-13/10-14 新增四份**：<br>`28_PTP固件更新协议审计_20261013.md`<br>`29_S1R2报告启示与S5对称密钥分析_20261014.md`<br>`30_录制格式能力边界与操作教训_20261014.md`<br>`31_录制格式持久化_受控复测_20261014.md` | ✓ |
 | `02_固件二进制/` | 去重后的固件：`DC-S5/`(V29)、`DC-S5_版本历史/`(V11/V20/V23/V24)、`DC-S1/`(V24)、`DC-S1H/`(V28) | ✗ 版权·体积 |
 | `03_解包_APK/` | 手机 App 解包（jadx 反编译 + apk + res + lib + dex） | ✗ 版权·体积 |
 | `04_工具与脚本/` | `campaign2/`(**含 exFAT 工具链**)、`ble_win/`、`firmware_crypto/`、`ptp/`、`交付包_tools/`、`TOOLS.md` | ✓ |
 | `05_源码/` | `usb-scsi/`、`LumixMonitor-iOS/`、`LumixFast-iOS/` | ✓ |
 | `06_数据与证据/` | `camera_settings/`、`ptp_dumps/`、`captures/`、`service_mode_evidence/`、`hidden_format_evidence/`、`ble_evidence/`、**`exfat/`**、`rombackup_20261013/` | ✓ |
 | `07_参考仓库/` | `s1m2-research/`（S1M2 研究仓库，第三方） | ✗ 非本项目 |
-| `08_`/`09_`/`10_…成果包/` | 三个自包含交付包**已去重并库**（95%–99% 与上述目录重复），各留一份并库说明 | 指针 |
+| `08_`/`09_`/`10_`/`11_…成果包/` | 四个自包含交付包（`08_总结与工具箱`、`09_exFAT越界写成果包`、`10_定因与工具链成果包`、`11_DC-S5成果包`）**已去重并库**（95%–99% 与上述目录重复），各留一份并库说明。其中 `10_` 与 `11_` 各含一份 `01_研究报告_全集/` 副本 | 指针 |
 
 > 收录范围、去重与排除原因详见 [`REPO_CONTENTS.md`](REPO_CONTENTS.md)。
 
 
 ## 核心结论速览
 
-**已证（✓ 实机/协议闭合）**
-- 隐藏格式持久化成功：`mov + mov_60p_200mbps_c4k_10bit + ntsc`，直写 flash，**跨断电持久**（10-13 终验）
+**已证（实机/协议闭合）**
+- **隐藏格式持久化**：直写 flash 的 65533 字节 blob 后断电重启，`ntsc_pal`、`videoformat`、
+  `videoquality` **三项均保留**（2026-10-14 受控复测，n=2；其结论修订史见上文）。
+  `videoquality` 的保留与**开机时 SD 卡槽 1 的挂载状态**相关（槽 1 未挂载时 `0x9b`→`0x9f`）——
+  **该机制仅 1 组对照，待重复实验确认**。详见 31 号报告。
 - CAMSET 写入协议：`startsenddata` 返回 `method=separate/bufsize=61460`，须分块
   `senddata`(61192+4341) + `requestsenddata` + `endsenddata`；错校验和 → `err_reject`
-- 容器门互斥：`videoformat` 单字段门控，mov/mp4 二选一（mov 态 17 档可见、mp4 态 16 档可见）
+- 容器门互斥：`videoformat` 单字段门控，mov/mp4 二选一。
+  可选档位集合适以实时 `GET /cam.cgi?mode=getinfo&type=curmenu` 中 `enable="yes"` 为准：
+  **NTSC+mov = 18 档、PAL+mov = 12 档、NTSC+mp4 = mp4 8 + mp4hevc 2 = 10 档**
+  （旧文档的「mov 17 档 / mp4 16 档」中，前者是 NTSC 专属数字，后者与实测不符）
 - 6K PHOTO（片门全开）原生支持，`6k4k_photo` 可写
 - PTP length-DoS：唯一可复现挂死
 - 服务器为 Panasonic 定制 CGI（GoAhead 系，XHTML 错误页指纹）
@@ -99,15 +120,30 @@ F1/F2（SC2006A 实机验证，可利用性低 = DoS + 弱泄露，S5 需单独�
 
 ```bash
 # 工作目录：04_工具与脚本/campaign2 （写盘需 AC 供电，写后拔电池做终验）
+
+# 0) 前置检查：确认制式/容器/画质，并确认槽 1 已挂载
+curl -s -A "LUMIX Sync" "http://192.168.1.131/cam.cgi?mode=getstate" | grep -E "cammode|sd_memory|current_sd"
 python3 persist.py verify                     # 只读安全：健康 + 实时 + blob 三字段
-python3 persist.py restore --confirm          # 一键恢复隐藏格式（分块写入，需 AC 供电）
-python3 experiment_mov_shadow.py --dry-run    # 离线自检：只对本地 blob 演算，不碰相机
-python3 experiment_mov_shadow.py --confirm    # 把 3062..3074 全写 mov（已实测持久）
-python3 persist_quality.py <质量名> --confirm  # 改录制质量并固化到 flash
-python3 persist.py verify                     # 拔电池重启后再跑，判定是否持久
+
+# 1) 写入（分块传输；仅改写 3 个字段，写前自动备份）
+python3 persist.py restore --confirm           # 一键恢复隐藏格式（需 AC 供电）
+
+# 2) 拔电池 10 秒 → 开机 → 重连 Wi-Fi → 复核（这一步才反映 flash）
+python3 persist.py verify
+
+# 3) 健壮设置器（退避重试 + 回读校验 + 危险档拦截），仅写 RAM
+python3 s5_quality.py status                   # 当前状态 + 菜单安全性判定
+python3 s5_quality.py set <质量名>              # 带重试与回读校验
+
+# 【不推荐】全槽写实验：相机自身行为是「仅写槽 0」，全槽写与重启回退之间存在观测相关
+# 该相关性因果未确立（反例 n=1 / 正例 n=2），不列为推荐做法
+python3 experiment_mov_shadow.py --dry-run     # 离线自检：只对本地 blob 演算，不碰相机
+
 # 关键 1：startsenddata 必须返回 method=separate；单次 POST 整个 blob 不会落地
 # 关键 2：质量名必须存在于机身菜单 allmenu，否则机身菜单【录制质量】会变灰
 # 关键 3：改质量前把相机退出菜单，停在普通拍摄画面（菜单开着 camsetting 会被 err_reject）
+# 关键 4：写入前确认 getstate 的 sd_memory=set（槽 1 已挂载），否则画质可能在开机阶段被降档
+# 关键 5：优先采用「仅写槽 0」的 blob 形态（0x005e = 06 05 ×12），即相机自身行为
 ```
 
 相机在线判定：`arp -a | grep 131` 有 MAC `70:74:14:70:e2:53` 且 `getstate` 出 `ok`。

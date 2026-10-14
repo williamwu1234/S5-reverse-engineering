@@ -23,7 +23,10 @@ def parse_upd(path):
         sha = raw[off+0x1C:off+0x3C]
         iv = raw[off+0x3C:off+0x4C]
         # actual ciphertext
-        data = raw[doff:doff+dsize] if doff+dsize <= len(raw) else b''
+        # ★ 修正（2026-10-14）：doff 是相对【数据基址 0x200】的偏移，不是文件绝对偏移
+        DATA_BASE = 0x200
+        _s = DATA_BASE + doff
+        data = raw[_s:_s+dsize] if _s+dsize <= len(raw) else b''
         entropy = None
         if data:
             from collections import Counter

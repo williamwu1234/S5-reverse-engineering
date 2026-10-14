@@ -1,0 +1,31 @@
+===============================================================
+ EP0 ZERO-LENGTH VENDOR OUT probe  ->  04da:2370
+---------------------------------------------------------------
+ THIS TOOL TRANSMITS. It is the only writing tool in this set.
+ wLength is hard-coded to 0 and pData to NULL: no payload can
+ ever be sent. Only the 8-byte setup packet reaches the device.
+ A zero-length request can still TRIGGER something if the opcode
+ means something. Smallest possible poke, not a no-op.
+---------------------------------------------------------------
+ types : 40,41,42   (6 recipients)
+ range : bRequest 0x00 .. 0xff
+ delay : 20 ms between requests
+ stop  : YES, stop at first non-STALL
+ mode  : *** LIVE -- WILL TRANSMIT ***
+===============================================================
+
+[device opened]
+[sanity] GET_DESCRIPTOR -> 0x00000000, 18 bytes (EP0 works)
+
+=== sweep bmRequestType 0x40 (OUT vendor dev)  bRequest 0x00..0xff ===
+  (all STALLed)
+=== sweep bmRequestType 0x41 (OUT vendor if)  bRequest 0x00..0xff ===
+  (all STALLed)
+=== sweep bmRequestType 0x42 (OUT vendor ep)  bRequest 0x00..0xff ===
+  (all STALLed)
+
+=== summary ===
+  non-STALL results: 0
+  Every zero-length vendor OUT was STALLed.
+  => EP0 cannot open this channel either. Combined with the
+     IN sweep, EP0 is fully ruled out.

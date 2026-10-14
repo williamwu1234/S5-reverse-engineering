@@ -1,0 +1,46 @@
+===============================================================
+ EP0 vendor-request probe for 04da:2370
+ READ-ONLY: only requests with direction=IN are emitted.
+ No payload is ever written to the device by this tool.
+===============================================================
+
+[device opened]
+
+[sanity] standard GET_DESCRIPTOR device -> 0x00000000, 18 bytes (EP0 works)
+
+=== sweep: bmRequestType 0xc0 (IN  vendor dev), bRequest 0x00..0x40, wValue=0x0000 wIndex=0 wLength=64 ===
+    (only non-STALL / non-error results are printed)
+  (all bRequest values STALLed or timed out — no vendor IN requests at this level)
+
+=== summary ===
+  hits: 0
+  EP0 answers no vendor IN request. The channel is either not
+  session-openable this way, or it needs a write to wake up --
+  which this tool deliberately cannot do.
+===============================================================
+ EP0 vendor-request probe for 04da:2370
+ READ-ONLY: only requests with direction=IN are emitted.
+ No payload is ever written to the device by this tool.
+===============================================================
+
+[device opened]
+
+[sanity] standard GET_DESCRIPTOR device -> 0x00000000, 18 bytes (EP0 works)
+
+=== sweep: bmRequestType 0xc0 (IN  vendor dev), bRequest 0x00..0xff, wValue=0x0000 wIndex=0 wLength=64 ===
+    (only non-STALL / non-error results are printed)
+  (all bRequest values STALLed or timed out — no vendor IN requests at this level)
+
+=== sweep: bmRequestType 0xc1 (IN  vendor if), bRequest 0x00..0xff, wValue=0x0000 wIndex=0 wLength=64 ===
+    (only non-STALL / non-error results are printed)
+  (all bRequest values STALLed or timed out — no vendor IN requests at this level)
+
+=== sweep: bmRequestType 0xc2 (IN  vendor ep), bRequest 0x00..0xff, wValue=0x0000 wIndex=0 wLength=64 ===
+    (only non-STALL / non-error results are printed)
+  (all bRequest values STALLed or timed out — no vendor IN requests at this level)
+
+=== summary ===
+  hits: 0
+  EP0 answers no vendor IN request. The channel is either not
+  session-openable this way, or it needs a write to wake up --
+  which this tool deliberately cannot do.

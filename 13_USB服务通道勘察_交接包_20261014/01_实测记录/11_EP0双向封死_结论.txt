@@ -1,0 +1,39 @@
+EP0 双向穷举结论（2026-10-14，DC-S5 服务态 04da:2370 实测）
+================================================================
+
+【EP0 厂商 IN】全部 STALL
+  覆盖 = 3 个接收者(0xC0/C1/C2) × bRequest 0x00-0xFF × 6 个 wValue
+         (0x0000, 0x0001, 0x0002, 0x0100, 0x8000, 0xFFFF)
+  请求数 ≈ 4933
+  命中 = 0
+  注：每次实验前 sanity check（标准 GET_DESCRIPTOR）均通过 18 字节
+      ⇒ EP0 通路本身完好，是设备不应答
+
+【EP0 厂商 OUT（零长度，无数据阶段）】全部 STALL
+  覆盖 = 3 个接收者(0x40/0x41/0x42) × bRequest 0x00-0xFF
+  请求数 = 768
+  命中 = 0
+  注：零长度硬编码（wLength=0, pData=NULL），无法携带任何载荷
+
+【方法学验证（在正常模式 0x2382 上做对照）】
+  正对照 SET_CONFIGURATION(1)          -> 0x00000000 ACCEPTED  ✅ 工具能识别成功
+  厂商 OUT 0x40 × 0x01-0x40            -> 全 STALL（基线）
+  SET_INTERFACE(1)                     -> STALL（设备对冗余 SET_INTERFACE 也 STALL）
+  CLEAR_FEATURE(DEVICE_REMOTE_WAKEUP)  -> STALL（正确：描述符未置 remote-wakeup 位）
+  ⇒ 工具链可信，0 命中是真实结论
+
+【关键错误码】
+  0xe00002ed = kIOReturnNotResponding = macOS 报告【设备 STALL】的方式
+  0xe0004051 = kIOUSBTransactionTimeout（bulk 写入被 NAK 时出现）
+
+【重要教训】
+  第一版 s5_usb_ep0out 把 0xe00002ed 当成"命中"，导致它在第一个请求就停下，
+  厂商 OUT 扫描【从未真正执行】却报告 non-STALL=1。这是典型的假阳性。
+  修复后与 s5_usb_ep0 统一判据。任何 STALL 判据必须包含：
+    kIOUSBPipeStalled | kIOReturnNotResponding(0xe00002ed) |
+    0xe0004051 | kIOReturnTimeout
+
+【最终判定】
+  0x2370 这条通道无法从主机侧用任何 EP0 或 bulk 手段打开。
+  协议只可能在 bulk 上以私有帧格式承载，且需要服务端先发起，
+  或根本由未公开的松下服务软件驱动。⇒ 转向 Tether 抓包（见交接总结 §6 任务 1）
