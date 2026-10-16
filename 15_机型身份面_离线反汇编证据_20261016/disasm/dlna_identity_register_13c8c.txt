@@ -1,0 +1,34 @@
+   13c8c:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+   13c90:	e24ddb01 	sub	sp, sp, #1024	@ 0x400
+   13c94:	e24dd004 	sub	sp, sp, #4
+   13c98:	e1a04000 	mov	r4, r0
+   13c9c:	e58d1020 	str	r1, [sp, #32]
+   13ca0:	e3a02f7a 	mov	r2, #488	@ 0x1e8
+   13ca4:	e3a01000 	mov	r1, #0
+   13ca8:	e28d0030 	add	r0, sp, #48	@ 0x30
+   13cac:	ebfff79f 	bl	11b30 <memset@plt>
+   13cb0:	e3a01000 	mov	r1, #0
+   13cb4:	e3a02f7a 	mov	r2, #488	@ 0x1e8
+   13cb8:	e28d0f86 	add	r0, sp, #536	@ 0x218
+   13cbc:	ebfff79b 	bl	11b30 <memset@plt>
+   13cc0:	e3a03007 	mov	r3, #7
+   13cc4:	e5941000 	ldr	r1, [r4]
+   13cc8:	e3a0201f 	mov	r2, #31
+   13ccc:	e28d0040 	add	r0, sp, #64	@ 0x40
+   13cd0:	e58d3030 	str	r3, [sp, #48]	@ 0x30
+   13cd4:	ebfff76b 	bl	11a88 <strncpy@plt>
+   13cd8:	e5d4e00c 	ldrb	lr, [r4, #12]
+   13cdc:	e284800d 	add	r8, r4, #13
+   13ce0:	e35e0001 	cmp	lr, #1
+   13ce4:	13a0e002 	movne	lr, #2
+   13ce8:	03a0e001 	moveq	lr, #1
+   13cec:	e594c004 	ldr	ip, [r4, #4]
+   13cf0:	e5943008 	ldr	r3, [r4, #8]
+   13cf4:	e1a01008 	mov	r1, r8
+   13cf8:	e3a0201f 	mov	r2, #31
+   13cfc:	e28d006c 	add	r0, sp, #108	@ 0x6c
+   13d00:	e58de068 	str	lr, [sp, #104]	@ 0x68
+   13d04:	e58dc060 	str	ip, [sp, #96]	@ 0x60
+   13d08:	e58d3064 	str	r3, [sp, #100]	@ 0x64
+   13d0c:	ebfff75d 	bl	11a88 <strncpy@plt>
+   13d10:	e5943030 	ldr	r3, [r4, #48]	@ 0x30

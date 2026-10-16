@@ -1,0 +1,57 @@
+== G100_V13 各节 load addr 字段 ==
+  loader1    addr=0x00000000 size=0x1000
+  loader2    addr=0x00001000 size=0x8000
+  loader3    addr=0x00009000 size=0xa000
+  program    addr=0x00080000 size=0x970000
+  zboot      addr=0x03220000 size=0x800
+  dtb        addr=0x03220800 size=0x1000
+  dram_sleep addr=0x01940000 size=0x1800
+  postboot1  addr=0x00c40000 size=0x440000
+  postboot2  addr=0x01080000 size=0x740000
+  postboot3  addr=0x017c0000 size=0x20000
+  postboot4  addr=0x017e0000 size=0x20000
+  postboot5  addr=0x01800000 size=0x140000
+  music      addr=0x01a60000 size=0x360000
+
+== BL 普查：G100 boot 链各段 ==
+[loader1@0] size=0x1000 base=0x00000000 BL/BLX总数≈13 →AES模块调用=0 →CTR骨架调用=0
+[loader2@1000] size=0x8000 base=0x00001000 BL/BLX总数≈191 →AES模块调用=0 →CTR骨架调用=0
+[loader3@9000] size=0xa000 base=0x00009000 BL/BLX总数≈335 →AES模块调用=0 →CTR骨架调用=0
+[zboot@3220000] size=0x800 base=0x03220000 BL/BLX总数≈7 →AES模块调用=0 →CTR骨架调用=0
+[dram_sleep@1940000] size=0x1800 base=0x01940000 BL/BLX总数≈57 →AES模块调用=0 →CTR骨架调用=0
+[postboot1@c40000] size=0x440000 base=0x00c40000 BL/BLX总数≈92111 →AES模块调用=0 →CTR骨架调用=0
+[postboot2@1080000] size=0x740000 base=0x01080000 BL/BLX总数≈74816 →AES模块调用=0 →CTR骨架调用=0
+[postboot3@17c0000] size=0x20000 base=0x017c0000 BL/BLX总数≈0 →AES模块调用=0 →CTR骨架调用=0
+[postboot4@17e0000] size=0x20000 base=0x017e0000 BL/BLX总数≈0 →AES模块调用=0 →CTR骨架调用=0
+[postboot5@1800000] size=0x140000 base=0x01800000 BL/BLX总数≈19100 →AES模块调用=0 →CTR骨架调用=0
+
+== BL 普查：G100 program（9.7MB，两遍线性反汇编）==
+[program@4a80000] size=0x970000 base=0x04a80000 BL/BLX总数≈201834 →AES模块调用=102 →CTR骨架调用=3
+    0x04c2927e (T) -> 0x04eefdba  [其他]
+    0x04c29308 (T) -> 0x04eefdba  [其他]
+    0x04d203b4 (T) -> 0x04eef0bc  [其他]
+    0x04d203c8 (T) -> 0x04eef0bc  [其他]
+    0x04d203fa (T) -> 0x04eef0bc  [其他]
+    0x04d20410 (T) -> 0x04eef0bc  [其他]
+    0x04d20434 (T) -> 0x04eef0e2  [其他]
+    0x04d205c6 (T) -> 0x04eef022  [其他]
+    0x04d20636 (T) -> 0x04eef022  [其他]
+    0x04d206c4 (T) -> 0x04eef05c  [其他]
+    0x04d20af0 (T) -> 0x04eef174  [其他]
+    0x04d20b08 (T) -> 0x04eef18e  [其他]
+  AES 模块被 102 个不同地址调用: ['0x4b91324', '0x4ba5580', '0x4c2927e', '0x4c29308', '0x4cb7f3c', '0x4cf4200', '0x4d203b4', '0x4d203c8', '0x4d203fa', '0x4d20410', '0x4d20434', '0x4d205c6', '0x4d20636', '0x4d206c4', '0x4d20af0', '0x4d20b08', '0x4d20b14', '0x4d20b32', '0x4d236fa', '0x4d3358c']
+  CTR 骨架 fn_4EF054C 被调用: ['0x4e436a6', '0x4e436e4', '0x4e43758']
+
+== 字节级 AES 痕迹扫描 ==
+[loader1] 0x1000B AES痕迹: 无
+[loader2] 0x8000B AES痕迹: 无
+[loader3] 0xa000B AES痕迹: 无
+[zboot] 0x800B AES痕迹: 无
+[dtb] 0x1000B AES痕迹: 无
+[dram_sleep] 0x1800B AES痕迹: 无
+[postboot1] 0x440000B AES痕迹: 无
+[postboot2] 0x740000B AES痕迹: 无
+[postboot3] 0x20000B AES痕迹: 无
+[postboot4] 0x20000B AES痕迹: 无
+[postboot5] 0x140000B AES痕迹: 无
+[program] 0x970000B AES痕迹: S盒前16B×1, 逆S盒前16B×1, Te0[0] BE字×1, Td0[0] BE字×1, 表址0x0524A190 LE×1, 表址0x0524A390 LE×1, 表址0x0524B390 LE×1

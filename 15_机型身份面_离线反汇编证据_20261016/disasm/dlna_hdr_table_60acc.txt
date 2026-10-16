@@ -1,0 +1,25 @@
+   60a90:	fffffe86 			@ <UNDEFINED> instruction: 0xfffffe86
+   60a94:	00000708 	andeq	r0, r0, r8, lsl #14
+   60a98:	000012a0 	andeq	r1, r0, r0, lsr #5
+   60a9c:	001ccb48 	andseq	ip, ip, r8, asr #22
+   60aa0:	00016434 	andeq	r6, r1, r4, lsr r4
+   60aa4:	000fef40 	andeq	lr, pc, r0, asr #30
+   60aa8:	000fef64 	andeq	lr, pc, r4, ror #30
+   60aac:	000fef90 	muleq	pc, r0, pc	@ <UNPREDICTABLE>
+   60ab0:	000fefb8 			@ <UNDEFINED> instruction: 0x000fefb8
+   60ab4:	000fefe0 	andeq	lr, pc, r0, ror #31
+   60ab8:	000ff00c 	andeq	pc, pc, ip
+   60abc:	000ff030 	andeq	pc, pc, r0, lsr r0	@ <UNPREDICTABLE>
+   60ac0:	000046e4 	andeq	r4, r0, r4, ror #13
+   60ac4:	00007907 	andeq	r7, r0, r7, lsl #18
+   60ac8:	001d4450 	andseq	r4, sp, r0, asr r4
+   60acc:	000ff034 	andeq	pc, pc, r4, lsr r0	@ <UNPREDICTABLE>
+   60ad0:	001d4470 	andseq	r4, sp, r0, ror r4
+   60ad4:	000ff044 	andeq	pc, pc, r4, asr #32
+   60ad8:	0005f8ec 	andeq	pc, r5, ip, ror #17
+   60adc:	0005f9b4 			@ <UNDEFINED> instruction: 0x0005f9b4
+   60ae0:	0005fa40 	andeq	pc, r5, r0, asr #20
+   60ae4:	ffffecbe 			@ <UNDEFINED> instruction: 0xffffecbe
+   60ae8:	fffff848 			@ <UNDEFINED> instruction: 0xfffff848
+   60aec:	fffff84c 			@ <UNDEFINED> instruction: 0xfffff84c
+   60af0:	000648f4 	strdeq	r4, [r6], -r4	@ <UNPREDICTABLE>

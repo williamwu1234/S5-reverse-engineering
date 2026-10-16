@@ -1,0 +1,264 @@
+{
+  "prefix_bytes": 256,
+  "modes": [
+    "CBC",
+    "ECB",
+    "CTR(nonce=IV[0:8],ctr=IV[8:16])",
+    "CTR(nonce=IV[0:8],ctr=0)"
+  ],
+  "pad_target": 5240,
+  "firmwares": [
+    {
+      "file": "/Users/<user>/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5/S5___V29.bin",
+      "tag": "V29",
+      "size": 90238464,
+      "gate": {
+        "hits": 7,
+        "total": 7,
+        "verdict": "PASS"
+      },
+      "known_plaintext": [
+        {
+          "idx": 33,
+          "name": "ipu_data",
+          "size": 262144,
+          "template": "all-0x00",
+          "iv": "0e43dbd57c2da5fbc9c59ba5a71f9f37"
+        }
+      ],
+      "candidates": {
+        "total": 5240,
+        "stats": {
+          "hdr_windows": 622,
+          "ecdsa_windows": 0,
+          "digests": 20,
+          "ptool": 6,
+          "strings": 4,
+          "pad": 4588
+        }
+      },
+      "search": {
+        "correct": [],
+        "wrong": []
+      },
+      "unique_keys_correct": []
+    },
+    {
+      "file": "/Users/<user>/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V24.bin",
+      "tag": "V24",
+      "size": 90238464,
+      "gate": {
+        "hits": 7,
+        "total": 7,
+        "verdict": "PASS"
+      },
+      "known_plaintext": [
+        {
+          "idx": 33,
+          "name": "ipu_data",
+          "size": 262144,
+          "template": "all-0x00",
+          "iv": "fd2171451129a958040b0c3df7ca29d7"
+        }
+      ],
+      "candidates": {
+        "total": 5240,
+        "stats": {
+          "hdr_windows": 622,
+          "ecdsa_windows": 0,
+          "digests": 20,
+          "ptool": 6,
+          "strings": 4,
+          "pad": 4588
+        }
+      },
+      "search": {
+        "correct": [],
+        "wrong": []
+      },
+      "unique_keys_correct": []
+    },
+    {
+      "file": "/Users/<user>/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V23.bin",
+      "tag": "V23",
+      "size": 90238464,
+      "gate": {
+        "hits": 7,
+        "total": 7,
+        "verdict": "PASS"
+      },
+      "known_plaintext": [
+        {
+          "idx": 33,
+          "name": "ipu_data",
+          "size": 262144,
+          "template": "all-0x00",
+          "iv": "c231cec8767bb25d4c20774ea2683d8c"
+        }
+      ],
+      "candidates": {
+        "total": 5240,
+        "stats": {
+          "hdr_windows": 622,
+          "ecdsa_windows": 0,
+          "digests": 20,
+          "ptool": 6,
+          "strings": 4,
+          "pad": 4588
+        }
+      },
+      "search": {
+        "correct": [],
+        "wrong": []
+      },
+      "unique_keys_correct": []
+    },
+    {
+      "file": "/Users/<user>/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V20.bin",
+      "tag": "V20",
+      "size": 88702464,
+      "gate": {
+        "hits": 7,
+        "total": 7,
+        "verdict": "PASS"
+      },
+      "known_plaintext": [
+        {
+          "idx": 33,
+          "name": "ipu_data",
+          "size": 262144,
+          "template": "all-0x00",
+          "iv": "a8a8c2440cb4dd83b87997b21e792b41"
+        }
+      ],
+      "candidates": {
+        "total": 5240,
+        "stats": {
+          "hdr_windows": 622,
+          "ecdsa_windows": 0,
+          "digests": 20,
+          "ptool": 6,
+          "strings": 4,
+          "pad": 4588
+        }
+      },
+      "search": {
+        "correct": [],
+        "wrong": []
+      },
+      "unique_keys_correct": []
+    },
+    {
+      "file": "/Users/<user>/Documents/ChatGPT/S5_逆向_项目总包_20261012/02_固件二进制/DC-S5_版本历史/S5___V11.bin",
+      "tag": "V11",
+      "size": 88178176,
+      "gate": {
+        "hits": 7,
+        "total": 7,
+        "verdict": "PASS"
+      },
+      "known_plaintext": [
+        {
+          "idx": 33,
+          "name": "ipu_data",
+          "size": 262144,
+          "template": "all-0x00",
+          "iv": "5afdd4fc5b382e3f468ca55d28107a79"
+        }
+      ],
+      "candidates": {
+        "total": 5240,
+        "stats": {
+          "hdr_windows": 622,
+          "ecdsa_windows": 0,
+          "digests": 20,
+          "ptool": 6,
+          "strings": 4,
+          "pad": 4588
+        }
+      },
+      "search": {
+        "correct": [],
+        "wrong": []
+      },
+      "unique_keys_correct": []
+    }
+  ],
+  "positive_control": {
+    "ok": true,
+    "results": [
+      {
+        "mode": "CBC",
+        "plaintext": "all-0x00",
+        "arm": "correct",
+        "n_hits": 6,
+        "true_found": true,
+        "tested": 105100
+      },
+      {
+        "mode": "CBC",
+        "plaintext": "all-0x00",
+        "arm": "wrong",
+        "n_hits": 0,
+        "true_found": false,
+        "tested": 105100
+      },
+      {
+        "mode": "CTR",
+        "plaintext": "all-0x00",
+        "arm": "correct",
+        "n_hits": 6,
+        "true_found": true,
+        "tested": 105100
+      },
+      {
+        "mode": "CTR",
+        "plaintext": "all-0x00",
+        "arm": "wrong",
+        "n_hits": 0,
+        "true_found": false,
+        "tested": 105100
+      },
+      {
+        "mode": "CBC",
+        "plaintext": "random",
+        "arm": "correct",
+        "n_hits": 6,
+        "true_found": true,
+        "tested": 105100
+      },
+      {
+        "mode": "CBC",
+        "plaintext": "random",
+        "arm": "wrong",
+        "n_hits": 0,
+        "true_found": false,
+        "tested": 105100
+      }
+    ]
+  },
+  "real_container_sensitivity": {
+    "ok": true,
+    "arms": {
+      "correct": {
+        "n_hits": 3,
+        "true_found": true,
+        "tested": 105140
+      },
+      "wrong": {
+        "n_hits": 0,
+        "true_found": false,
+        "tested": 105140
+      }
+    },
+    "candidates": 5240,
+    "stats": {
+      "hdr_windows": 736,
+      "ecdsa_windows": 0,
+      "digests": 20,
+      "ptool": 6,
+      "strings": 4,
+      "pad": 4474
+    }
+  }
+}

@@ -1,0 +1,26 @@
+[14:18:19] 目标 192.168.54.1  等待窗口上限 600s  轮数 4  cleanup=True
+[14:18:19] 
+########## 第 1/4 轮 ##########
+[14:18:20]   相机上线
+[14:18:20] == 窗口开始 ==
+[14:18:20]   初始 getstate: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:18:20]   B. req_acc_can(清 pending, 仅一次): <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>ok</result></camrply>
+[14:18:22]      清后 getstate: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:18:22]   C. req_acc(仅一次): ok_under_research_no_msg,S5-XXXXXX,remote,open
+[14:18:22]   D. camcmd playmode: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:18:24]   E. [0s] getstate: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:18:30]   E. [6s] getstate: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:18:36]   E. [12s] getstate: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:18:42]   E. [18s] getstate: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>err_critical</result></
+[14:19:08]   E. [24s] getstate: __ERR__ <urlopen error timed out>
+[14:19:34]   E. [30s] getstate: __ERR__ <urlopen error timed out>
+[14:20:00]   E. [36s] getstate: __ERR__ <urlopen error timed out>
+[14:20:26]   E. [42s] getstate: __ERR__ <urlopen error timed out>

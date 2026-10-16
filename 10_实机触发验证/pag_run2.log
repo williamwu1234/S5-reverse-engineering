@@ -1,0 +1,34 @@
+[14:52:29] 目标 192.168.54.1  轮数 6
+[14:52:29] 
+########## 第 1/6 轮 ##########
+[14:52:29]   相机上线
+[14:52:29] == 窗口开始 ==
+[14:52:29]   初始 getstate: err_critical
+[14:52:29]   核清理(空值 can, 一次): err_critical
+[14:52:31]   req_acc(一次): ok,S5-XXXXXX,remote,open
+[14:52:32]   camcmd playmode: ok
+[14:52:34]   getstate=ok！dlna 放行检查...
+[14:52:34]   dlna: ok (200)
+[14:52:34]   ✅ 会话完全可用
+[14:52:34] 
+★★★ 会话建立成功，开始受控复现 crash 001 ★★★
+[*] 目标 192.168.54.1  复现轮数 3  日志 repro_log_20261016_145234.jsonl
+[*] 授权态: ok (200)
+[1] 基线（2 次合法 BrowseMetadata）...
+    baseline#1: err=None status=200 dt=0.115s
+    baseline#2: err=None status=200 dt=0.034s
+    基线响应时间 ≈ 0.11s
+
+[2] 复现原始 payload（3 轮，30s 超时）...
+    round 1/3: 发送 StartingIndex=2147483647 ...
+Traceback (most recent call last):
+  File "/Users/<user>/Documents/S5逆向成果包_20261015/10_实机触发验证/repro_crash.py", line 196, in <module>
+    main()
+    ~~~~^^
+  File "/Users/<user>/Documents/S5逆向成果包_20261015/10_实机触发验证/repro_crash.py", line 123, in main
+    e, st, head, dt = send_case(cam, "repro_orig", orig, timeout=30)
+                      ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/<user>/Documents/S5逆向成果包_20261015/10_实机触发验证/repro_crash.py", line 44, in send_case
+    f"Content-Length: {len(body.encode())}\r\n"
+                           ^^^^^^^^^^^
+AttributeError: 'bytes' object has no attribute 'encode'. Did you mean '.decode' instead of '.encode'?

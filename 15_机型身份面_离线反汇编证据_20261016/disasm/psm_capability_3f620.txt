@@ -1,0 +1,25 @@
+   3f620:	e3a06003 	mov	r6, #3
+   3f624:	e28d3008 	add	r3, sp, #8
+   3f628:	e58d6000 	str	r6, [sp]
+   3f62c:	e1a00004 	mov	r0, r4
+   3f630:	e59f1134 	ldr	r1, [pc, #308]	@ 3f76c <shmget@plt+0x2cd8c>
+   3f634:	e3a02000 	mov	r2, #0
+   3f638:	ebffffa1 	bl	3f4c4 <shmget@plt+0x2cae4>
+   3f63c:	e3500000 	cmp	r0, #0
+   3f640:	1a000019 	bne	3f6ac <shmget@plt+0x2cccc>
+   3f644:	e3550001 	cmp	r5, #1
+   3f648:	0a000019 	beq	3f6b4 <shmget@plt+0x2ccd4>
+   3f64c:	e1a02000 	mov	r2, r0
+   3f650:	e58d6000 	str	r6, [sp]
+   3f654:	e1a00004 	mov	r0, r4
+   3f658:	e59f1110 	ldr	r1, [pc, #272]	@ 3f770 <shmget@plt+0x2cd90>
+   3f65c:	e28d3008 	add	r3, sp, #8
+   3f660:	ebffff97 	bl	3f4c4 <shmget@plt+0x2cae4>
+   3f664:	e3500000 	cmp	r0, #0
+   3f668:	1a00000f 	bne	3f6ac <shmget@plt+0x2cccc>
+   3f66c:	e3550001 	cmp	r5, #1
+   3f670:	9a00000f 	bls	3f6b4 <shmget@plt+0x2ccd4>
+   3f674:	e28d6010 	add	r6, sp, #16
+   3f678:	e3550002 	cmp	r5, #2
+   3f67c:	0a00002a 	beq	3f72c <shmget@plt+0x2cd4c>
+   3f680:	e1a02007 	mov	r2, r7

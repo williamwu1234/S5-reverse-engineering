@@ -1,0 +1,68 @@
+   e7794:	e3a02c02 	mov	r2, #512	@ 0x200
+   e7798:	ebfd8fe5 	bl	4b734 <shmget@plt+0x39814>
+   e779c:	e50b0010 	str	r0, [fp, #-16]
+   e77a0:	e51b3010 	ldr	r3, [fp, #-16]
+   e77a4:	e3530000 	cmp	r3, #0
+   e77a8:	0a000001 	beq	e77b4 <wcstok@@Base+0x79740>
+   e77ac:	e3e03066 	mvn	r3, #102	@ 0x66
+   e77b0:	ea000143 	b	e7cc4 <wcstok@@Base+0x79c50>
+   e77b4:	e51b3018 	ldr	r3, [fp, #-24]	@ 0xffffffe8
+   e77b8:	e2833c1b 	add	r3, r3, #6912	@ 0x1b00
+   e77bc:	e283300c 	add	r3, r3, #12
+   e77c0:	e24b2b06 	sub	r2, fp, #6144	@ 0x1800
+   e77c4:	e2422004 	sub	r2, r2, #4
+   e77c8:	e242201c 	sub	r2, r2, #28
+   e77cc:	e1a00002 	mov	r0, r2
+   e77d0:	e3a010ff 	mov	r1, #255	@ 0xff
+   e77d4:	e1a02003 	mov	r2, r3
+   e77d8:	ebfdb518 	bl	54c40 <strcasestr@@Base+0x5e50>
+   e77dc:	e50b0010 	str	r0, [fp, #-16]
+   e77e0:	e51b3010 	ldr	r3, [fp, #-16]
+   e77e4:	e3530000 	cmp	r3, #0
+   e77e8:	aa000004 	bge	e7800 <wcstok@@Base+0x7978c>
+   e77ec:	e51b3010 	ldr	r3, [fp, #-16]
+   e77f0:	e3730072 	cmn	r3, #114	@ 0x72
+   e77f4:	0a000001 	beq	e7800 <wcstok@@Base+0x7978c>
+   e77f8:	e3e03066 	mvn	r3, #102	@ 0x66
+   e77fc:	ea000130 	b	e7cc4 <wcstok@@Base+0x79c50>
+   e7800:	e51b300c 	ldr	r3, [fp, #-12]
+   e7804:	e3833020 	orr	r3, r3, #32
+   e7808:	e50b300c 	str	r3, [fp, #-12]
+   e780c:	ea00011b 	b	e7c80 <wcstok@@Base+0x79c0c>
+   e7810:	e55b3005 	ldrb	r3, [fp, #-5]
+   e7814:	e51b1014 	ldr	r1, [fp, #-20]	@ 0xffffffec
+   e7818:	e283201a 	add	r2, r3, #26
+   e781c:	e3a03004 	mov	r3, #4
+   e7820:	e1a02102 	lsl	r2, r2, #2
+   e7824:	e0812002 	add	r2, r1, r2
+   e7828:	e0823003 	add	r3, r2, r3
+   e782c:	e5933000 	ldr	r3, [r3]
+   e7830:	e1a00003 	mov	r0, r3
+   e7834:	e59f14e4 	ldr	r1, [pc, #1252]	@ e7d20 <wcstok@@Base+0x79cac>
+   e7838:	ebfca9a0 	bl	11ec0 <strcmp@plt>
+   e783c:	e1a03000 	mov	r3, r0
+   e7840:	e3530000 	cmp	r3, #0
+   e7844:	1a000037 	bne	e7928 <wcstok@@Base+0x798b4>
+   e7848:	e51b300c 	ldr	r3, [fp, #-12]
+   e784c:	e2033040 	and	r3, r3, #64	@ 0x40
+   e7850:	e3530000 	cmp	r3, #0
+   e7854:	0a000001 	beq	e7860 <wcstok@@Base+0x797ec>
+   e7858:	e59f347c 	ldr	r3, [pc, #1148]	@ e7cdc <wcstok@@Base+0x79c68>
+   e785c:	ea000118 	b	e7cc4 <wcstok@@Base+0x79c50>
+   e7860:	e55b3005 	ldrb	r3, [fp, #-5]
+   e7864:	e51b1014 	ldr	r1, [fp, #-20]	@ 0xffffffec
+   e7868:	e2832060 	add	r2, r3, #96	@ 0x60
+   e786c:	e3a03004 	mov	r3, #4
+   e7870:	e1a02102 	lsl	r2, r2, #2
+   e7874:	e0812002 	add	r2, r1, r2
+   e7878:	e0823003 	add	r3, r2, r3
+   e787c:	e5933000 	ldr	r3, [r3]
+   e7880:	e1a00003 	mov	r0, r3
+   e7884:	e3a0101e 	mov	r1, #30
+   e7888:	ebfdb0f1 	bl	53c54 <strcasestr@@Base+0x4e64>
+   e788c:	e50b0010 	str	r0, [fp, #-16]
+   e7890:	e51b3010 	ldr	r3, [fp, #-16]
+   e7894:	e373007d 	cmn	r3, #125	@ 0x7d
+   e7898:	1a000001 	bne	e78a4 <wcstok@@Base+0x79830>
+   e789c:	e3e03066 	mvn	r3, #102	@ 0x66
+   e78a0:	ea000107 	b	e7cc4 <wcstok@@Base+0x79c50>

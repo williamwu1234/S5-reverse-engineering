@@ -1,0 +1,33 @@
+   13ee0:	e2841e46 	add	r1, r4, #1120	@ 0x460
+   13ee4:	e58630c8 	str	r3, [r6, #200]	@ 0xc8
+   13ee8:	e2811008 	add	r1, r1, #8
+   13eec:	e3a02080 	mov	r2, #128	@ 0x80
+   13ef0:	e2800008 	add	r0, r0, #8
+   13ef4:	ebfff6e3 	bl	11a88 <strncpy@plt>
+   13ef8:	e59f1274 	ldr	r1, [pc, #628]	@ 14174 <shmget@plt+0x2254>
+   13efc:	e3a02009 	mov	r2, #9
+   13f00:	e1a00008 	mov	r0, r8
+   13f04:	ebfff7cc 	bl	11e3c <strncmp@plt>
+   13f08:	e3a02009 	mov	r2, #9
+   13f0c:	e1a05006 	mov	r5, r6
+   13f10:	e3a0a000 	mov	sl, #0
+   13f14:	e3a09001 	mov	r9, #1
+   13f18:	e3500000 	cmp	r0, #0
+   13f1c:	059434e8 	ldreq	r3, [r4, #1256]	@ 0x4e8
+   13f20:	13a01000 	movne	r1, #0
+   13f24:	058634e8 	streq	r3, [r6, #1256]	@ 0x4e8
+   13f28:	e59434ec 	ldr	r3, [r4, #1260]	@ 0x4ec
+   13f2c:	158614e8 	strne	r1, [r6, #1256]	@ 0x4e8
+   13f30:	e58634ec 	str	r3, [r6, #1260]	@ 0x4ec
+   13f34:	e1a00008 	mov	r0, r8
+   13f38:	e59f1234 	ldr	r1, [pc, #564]	@ 14174 <shmget@plt+0x2254>
+   13f3c:	ebfff7be 	bl	11e3c <strncmp@plt>
+   13f40:	e3a03102 	mov	r3, #-2147483648	@ 0x80000000
+   13f44:	e3500000 	cmp	r0, #0
+   13f48:	03a0b001 	moveq	fp, #1
+   13f4c:	13a0b002 	movne	fp, #2
+   13f50:	058630cc 	streq	r3, [r6, #204]	@ 0xcc
+   13f54:	158630cc 	strne	r3, [r6, #204]	@ 0xcc
+   13f58:	e28410e0 	add	r1, r4, #224	@ 0xe0
+   13f5c:	e3a02080 	mov	r2, #128	@ 0x80
+   13f60:	e28500e0 	add	r0, r5, #224	@ 0xe0

@@ -1,0 +1,12 @@
+[14:48:44] 目标 192.168.54.1  轮数 5
+[14:48:44] 
+########## 第 1/5 轮 ##########
+[14:51:40]   相机上线
+[14:51:40] == 窗口开始 ==
+[14:51:40]   初始 getstate: err_critical
+[14:51:40]   核清理(空值 can, 一次): ok
+[14:51:42]   req_acc(一次): ok_under_research_no_msg,S5-XXXXXX,remote,open
+[14:51:42]   camcmd playmode: err_critical
+[14:51:53]   getstate: err_critical
+[14:52:03]   getstate: err_critical
+[14:52:13]   getstate: err_critical

@@ -1,0 +1,18 @@
+[*] 目标 127.0.0.1，device_id=4D454930-0100-1000-8001-020A0003BD13，device_name=LUMIX Sync
+[*] 前置确认：相机已重启、进入「等待WiFi连接」状态、Mac 已连上热点
+
+[0] dlna 403 未放行 → 需要完整握手。
+[1] req_acc（唯一一次握手）...
+    accctrl 响应: <?xml version="1.0"?><camrply><result>ok</result><uuid>4D454930-0100-1000-8001-020A0003BD13</uuid><type>remote</type><state>open</state></camrply>
+[2] camcmd playmode（电脑指令进回放）...
+    camcmd 响应: <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>ok</result></camrply>
+[3] 轮询 getstate（最多 90s，不发 req_acc）...
+    [0s] getstate = <?xml version="1.0" encoding="UTF-8"?>
+<camrply><result>ok</result></camrply>
+
+✅ getstate=ok，握手成功！可以开始 fuzz。
+[4] 验证 dlna BrowseMetadata ...
+    dlna BrowseMetadata: err=None http=200
+✅ dlna 放行，可开始 fuzz：python3 -u fuzz_dlna.py 127.0.0.1 --strategy all
+   （500 = SOAP Fault 701 也是放行；403 才是未放行）

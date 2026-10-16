@@ -1,0 +1,56 @@
+===================================================
+### wifi_ap_probe2.sh 启动 2026-10-13 07:25:55  缓冲 10s
+===================================================
+[orig] ip=192.168.1.96 gw=192.168.1.1
+[orig] 候选网络数: 92
+
+=============== 切换网络 2026-10-13 07:26:05 ===============
+[ap] 重置 Wi-Fi 射频（off → on）以清掉卡住的关联状态
+[ap t1] Failed to join network S5-XXXXXX.
+[ap t1] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 1 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t2] Failed to join network S5-XXXXXX.
+[ap t2] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 2 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t3] Failed to join network S5-XXXXXX.
+[ap t3] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 3 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t4] Failed to join network S5-XXXXXX.
+[ap t4] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 4 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t5] Failed to join network S5-XXXXXX.
+[ap t5] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 5 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t6] Failed to join network S5-XXXXXX.
+[ap t6] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 6 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t7] Failed to join network S5-XXXXXX.
+[ap t7] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 7 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t8] Failed to join network S5-XXXXXX.
+[ap t8] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 8 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t9] Failed to join network S5-XXXXXX.
+[ap t9] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 9 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t10] Failed to join network S5-XXXXXX.
+[ap t10] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 10 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t11] Failed to join network S5-XXXXXX.
+[ap t11] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 11 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t12] Failed to join network S5-XXXXXX.
+[ap t12] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 12 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t13] Failed to join network S5-XXXXXX.
+[ap t13] Error: -3970  The operation couldn’t be completed. tmpErr[ap] 第 13 次未连上，2s 后重试（热点可能刚上线/在跳信道）…
+[ap t14] Failed to join network S5-XXXXXX.
+[ap t14] Error: -3906  The operation couldn’t be completed. tmpErr[ap] SSID=S5-XXXXXX ip=192.168.1.129 gw=192.168.1.1
+[ap] LEFT_HOME=0
+[ap] !! 未能切到相机热点（LEFT_HOME=0 ip=192.168.1.129）—— 直接退出，不做无意义探测
+current SSID: (nil)
+networks: 30
+  ssid=(nil) rssi=-10 ch=1 open=no
+  ssid=(nil) rssi=-22 ch=36 open=no
+  ssid=(nil) rssi=-22 ch=36 open=no
+  ssid=(nil) rssi=-32 ch=1 open=no
+  ssid=(nil) rssi=-40 ch=10 open=YES
+  ssid=(nil) rssi=-66 ch=9 open=no
+  ssid=(nil) rssi=-75 ch=44 open=no
+  ssid=(nil) rssi=-75 ch=1 open=no
+  ssid=(nil) rssi=-76 ch=44 open=no
+  ssid=(nil) rssi=-79 ch=153 open=no
+  ssid=(nil) rssi=-80 ch=2 open=no
+  ssid=(nil) rssi=-84 ch=7 open=no
+  ssid=(nil) rssi=-85 ch=6 open=no
+[trap] 异常退出，执行恢复
+[restore] 从未离开原网络（切换失败），跳过恢复
+[trap] 恢复流程结束

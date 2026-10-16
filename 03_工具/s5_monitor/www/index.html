@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>S5 Monitor</title>
+<style>
+:root{
+  --bar:rgba(18,18,18,.92);
+  --fg:#eaeaea;
+  --dim:#9aa0a6;
+  --rec:#ff3b30;
+  --ok:#30d158;
+  --accent:#0a84ff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;background:#000;color:var(--fg);
+  font:14px/1.4 -apple-system,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  overscroll-behavior:none;user-select:none;}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;}
+
+/* ---------- 顶部状态栏 ---------- */
+#top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;
+  align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;
+  background:linear-gradient(180deg,rgba(0,0,0,.75),rgba(0,0,0,0));font-size:12px;}
+#top .sp{flex:1}
+.badge{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(8px);white-space:nowrap;}
+.badge.hide{display:none}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.dot.on{background:var(--ok)} .dot.rec{background:var(--rec);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+.batt{width:26px;height:12px;border:1.5px solid var(--fg);border-radius:3px;position:relative;display:inline-block}
+.batt::after{content:"";position:absolute;right:-4px;top:3px;width:2px;height:6px;background:var(--fg);border-radius:0 1px 1px 0}
+.batt i{position:absolute;left:1.5px;top:1.5px;bottom:1.5px;background:var(--ok);border-radius:1px}
+
+/* ---------- 画面 ---------- */
+#stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#000;}
+#live{max-width:100%;max-height:100%;object-fit:contain;display:block;transform-origin:center center;}
+#live.zoom{transition:transform .15s ease-out}
+
+/* 触摸对焦框 */
+#focus{position:absolute;width:78px;height:78px;margin:-39px 0 0 -39px;
+  border:2px solid var(--ok);border-radius:6px;opacity:0;pointer-events:none;
+  box-shadow:0 0 0 1px rgba(0,0,0,.5) inset;transition:opacity .12s;}
+#focus.show{opacity:1}
+#focus::before,#focus::after{content:"";position:absolute;background:var(--ok)}
+#focus.err{border-color:#ff453a}
+#focus.err::before,#focus.err::after{background:#ff453a}
+
+/* 提示条 */
+#playmask{position:absolute;inset:0;display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;background:rgba(0,0,0,.82);
+  z-index:25;text-align:center;padding:24px}
+#playmask.show{display:flex}
+#playmask h3{margin:0;font-size:19px;font-weight:600}
+#playmask p{margin:0;color:var(--dim);font-size:13px;line-height:1.7;max-width:320px}
+#playmask button{margin-top:6px;padding:12px 26px;border-radius:999px;border:0;
+  background:var(--accent);color:#fff;font-size:15px;font-weight:600}
+#playmask button:active{transform:scale(.96)}
+#authbar{position:absolute;top:0;left:0;right:0;z-index:35;display:none;
+  background:#ffd60a;color:#000;font-size:12px;font-weight:600;
+  padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;text-align:center}
+#authbar.show{display:block}
+#authbar button{margin-left:8px;background:#000;color:#ffd60a;border:0;
+  padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600}
+#diag{position:absolute;inset:0;display:none;flex-direction:column;z-index:40;
+  background:rgba(0,0,0,.93);padding:calc(env(safe-area-inset-top) + 12px) 14px 14px;
+  overflow-y:auto;font-size:12px;line-height:1.6}
+#diag.show{display:flex}
+#diag h3{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}
+#diag h3 button{margin-left:auto;background:#2c2c2e;border:0;color:#fff;padding:6px 12px;border-radius:8px;font-size:12px}
+#diag .row{display:flex;justify-content:space-between;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.07)}
+#diag .row b{font-weight:600}
+#diag .ok{color:var(--ok)} #diag .bad{color:#ff453a} #diag .warn{color:#ffd60a}
+#diag .sec{margin-top:14px;color:var(--dim);font-size:11px;letter-spacing:.5px}
+#diag pre{white-space:pre-wrap;word-break:break-all;background:#1c1c1e;padding:8px;border-radius:8px;margin:6px 0 0;font-size:11px}
+#toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);
+  background:rgba(0,0,0,.78);padding:8px 14px;border-radius:999px;font-size:13px;
+  opacity:0;transition:opacity .2s;z-index:30;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+
+/* ---------- 底部控制栏（复刻官方四段式） ---------- */
+#bottom{position:absolute;left:0;right:0;bottom:0;z-index:20;
+  padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);
+  background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,0));}
+#tools{display:flex;justify-content:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.tool{padding:7px 13px;border-radius:999px;background:var(--bar);color:var(--fg);
+  border:1px solid rgba(255,255,255,.14);font-size:12.5px;backdrop-filter:blur(10px)}
+.tool:active{transform:scale(.95)}
+.tool.on{background:var(--accent);border-color:var(--accent)}
+
+#bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.side{display:flex;gap:10px;align-items:center}
+.side.r{justify-content:flex-end}
+
+.btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:var(--fg);font-size:10.5px;padding:4px}
+.btn:active{opacity:.6}
+.ic{width:34px;height:34px;border-radius:50%;background:var(--bar);
+  border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;
+  font-size:16px;line-height:1;backdrop-filter:blur(10px)}
+.ic.on{background:var(--accent);border-color:var(--accent)}
+
+/* 快门 / 录像 */
+#shutter{width:64px;height:64px;border-radius:50%;background:#fff;
+  border:4px solid rgba(255,255,255,.35);box-shadow:0 0 0 3px rgba(0,0,0,.4)}
+#shutter:active{transform:scale(.93)}
+#recbtn{width:52px;height:52px;border-radius:50%;background:transparent;
+  border:3px solid #fff;display:flex;align-items:center;justify-content:center}
+#recbtn i{width:22px;height:22px;border-radius:50%;background:var(--rec);transition:all .15s}
+#recbtn.rec i{width:26px;height:26px;border-radius:5px;background:var(--rec)}
+#recbtn:active{transform:scale(.93)}
+
+#timer{position:absolute;top:calc(env(safe-area-inset-top) + 46px);left:50%;
+  transform:translateX(-50%);background:rgba(255,59,48,.92);padding:4px 12px;
+  border-radius:999px;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;display:none}
+#timer.show{display:block}
+
+/* 参数浮层（右下角） */
+#params{position:absolute;right:12px;bottom:118px;text-align:right;font-size:12px;
+  color:#fff;text-shadow:0 1px 3px #000;line-height:1.6;pointer-events:none}
+#params b{font-weight:600}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 顶部状态 -->
+  <div id="top">
+    <span class="badge"><span class="dot" id="linkdot"></span><span id="linktxt">连接中</span></span>
+    <span class="badge" id="modebadge">拍摄</span>
+    <span class="sp"></span>
+    <span class="badge"><span id="fps">--</span> fps</span>
+    <span class="badge"><span class="batt"><i id="battfill" style="width:70%"></i></span><span id="batttxt">--</span></span>
+  </div>
+
+  <!-- 画面 -->
+  <div id="stage">
+    <img id="live" alt="live view">
+    <div id="focus"></div>
+    <div id="timer">● <span id="tsec">00:00</span></div>
+    <div id="params"></div>
+    <div id="toast"></div>
+    <div id="diag">
+      <h3>📊 卡顿诊断 <button id="diagClose">关闭</button></h3>
+      <div id="diagBody"></div>
+    </div>
+    <div id="authbar">⚠️ 相机未完整授权 —— 请在<b>相机屏幕上点「允许/是」</b>批准连接
+      <button id="authCheck">重新检查</button></div>
+    <div id="playmask">
+      <h3>📷 回放模式</h3>
+      <p>相机在回放模式下<b>不推送实时取景</b>（实时取景仅在拍摄模式有效）。<br>
+         取景流已暂停，以节省相机资源。</p>
+      <button id="backrec">返回拍摄模式</button>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div id="bottom">
+    <div id="tools">
+
+      <button class="tool" id="tFar">◀ 焦点远</button>
+      <button class="tool" id="tNear">焦点近 ▶</button>
+      <button class="tool" id="tFull">⛶ 全屏</button>
+      <button class="tool" id="tStream">⏸ 停流</button>
+      <button class="tool" id="tDiag">📊 诊断</button>
+      <button class="tool" id="tCtrlTest">🧪 控制自检</button>
+    </div>
+
+    <div id="bar">
+      <div class="side">
+        <button class="btn" id="bPlay"><span class="ic">▶</span>回放</button>
+        <button class="btn" id="bMode"><span class="ic">◉</span>拍摄</button>
+      </div>
+
+      <div class="side" style="gap:16px">
+        <button id="recbtn" title="录像"><i></i></button>
+        <button id="shutter" title="快门"></button>
+      </div>
+
+      <div class="side r">
+        <button class="btn" id="bAel"><span class="ic">AE</span>锁定</button>
+        <button class="btn" id="bInfo"><span class="ic">i</span>信息</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   S5 Monitor — 前端
+   复刻官方监看 App 的交互：
+     · 点画面 = 触摸对焦（坐标按【取景流实际分辨率】换算）
+     · 单指拖动 = touch_trace 连续对焦点
+     · 双指捏合 = 变焦
+     · 底部四段式：回放 / 拍摄 · 录像 · 快门 · AE锁定 / 信息
+   ========================================================================= */
+const $ = s => document.querySelector(s);
+const live = $('#live'), focusBox = $('#focus'), toastEl = $('#toast');
+
+const S = {
+  streaming: true,
+  mode: 'rec',          // rec | play
+  recording: false,
+  recStart: 0,
+  ael: false,
+  mag: false,
+  zoom: 0,
+  lvW: 1024, lvH: 768,  // 取景流坐标空间（默认；首帧后自动按实际分辨率校正）
+  fontScale: 1
+};
+
+/* ---------- 小工具 ---------- */
+function toast(msg, ms = 1400) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toastEl.classList.remove('show'), ms);
+}
+async function api(path) {
+  try { const r = await fetch(path); return await r.json(); }
+  catch (e) { return null; }
+}
+
+/* ★ 命令结果反馈：把相机的真实回复显示出来（否则用户不知道为何"没反应"） */
+const ERR_CN = {
+  err_param: '参数格式错（协议不匹配）',
+  err_reject: '相机拒绝了 —— 该功能当前不可用，或需要【重启相机】',
+  err_busy: '相机忙（推流时高频控制易触发）—— 已自动重试',
+  err_critical: '相机处于严重状态 —— 请重启相机',
+  err_unsuitable_app: '相机认为 App 不匹配',
+  '': '（无回复）'
+};
+async function cmd(path, what) {
+  const r = await api(path);
+  if (!r) { toast(what + '：无响应'); return null; }
+  if (r.blocked) { toast(what + '：被安全白名单拦截'); return r; }
+  const rep = (r.reply || '').trim();
+  const m = rep.match(/<result>([^<]*)<\/result>/);
+  const code = m ? m[1] : (rep ? rep.slice(0, 30) : '');
+  if (code === 'ok' || code === '') toast('✅ ' + what + '成功');
+  else toast('❌ ' + what + '：' + (ERR_CN[code] || code), 2600);
+  return r;
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+
+/* ---------- 取景流：断线自动重连 ---------- */
+function connectStream() {
+  live.src = '/stream?t=' + Date.now();
+  S.streaming = true;
+  $('#tStream').textContent = '⏸ 停流';
+}
+live.addEventListener('load', () => {
+  // 首帧后按实际分辨率校正触摸坐标空间
+  if (live.naturalWidth && live.naturalHeight) {
+    S.lvW = live.naturalWidth; S.lvH = live.naturalHeight;
+  }
+  $('#linkdot').classList.add('on');
+  $('#linktxt').textContent = '已连接';
+});
+live.addEventListener('error', () => {
+  $('#linkdot').classList.remove('on');
+  $('#linktxt').textContent = '重连中';
+  setTimeout(connectStream, 1500);   // MJPEG 断流自动重连
+});
+
+/* ---------- 触摸对焦（核心，复刻官方行为） ---------- */
+let dragging = false, lastSend = 0;
+function toCam(clientX, clientY) {
+  const r = live.getBoundingClientRect();
+  // object-fit: contain → 计算图像在元素内的实际显示区域
+  const ar = S.lvW / S.lvH, br = r.width / r.height;
+  let w = r.width, h = r.height, ox = 0, oy = 0;
+  if (ar > br) { h = r.width / ar; oy = (r.height - h) / 2; }
+  else         { w = r.height * ar; ox = (r.width - w) / 2; }
+  let x = (clientX - r.left - ox) / w;
+  let y = (clientY - r.top  - oy) / h;
+  x = Math.max(0, Math.min(1, x)); y = Math.max(0, Math.min(1, y));
+  return { x: Math.round(x * S.lvW), y: Math.round(y * S.lvH),
+           sx: clientX, sy: clientY, inFrame: (x>0.001&&x<0.999&&y>0.001&&y<0.999) };
+}
+function showFocus(cx, cy, ok = true) {
+  const r = live.getBoundingClientRect();
+  focusBox.style.left = (cx - 0) + 'px';
+  focusBox.style.top  = (cy - 0) + 'px';
+  focusBox.classList.toggle('err', !ok);
+  focusBox.classList.add('show');
+  clearTimeout(focusBox._t);
+  focusBox._t = setTimeout(() => focusBox.classList.remove('show'), 2200);
+}
+/* ★ 严格按官方 App 的格式：
+     touch        value=<x>/<y>  value2=on       （按下）
+     touch        value=0/0      value2=off      （抬起释放）
+     touch_trace  value=<x>/<y>                  （拖动）
+     touchaf_chg_pos value=<x>/<y>               （移动 AF 点）
+   —— 注意是【斜杠】分隔，且必须带 value2=on，否则相机回 err_param */
+function sendTouch(x, y) {
+  const p = api(`/api/ctrl?type=touch&value=${x}%2F${y}&value2=on`);
+  p.then(r => {
+    if (r && r.reply) {
+      const ok = r.reply.indexOf('ok') >= 0;
+      $('#linktxt').textContent = ok ? '对焦 ok' : ('对焦失败: ' + r.reply.slice(0, 32));
+      setTimeout(()=>{ $('#linktxt').textContent = '已连接'; }, 2000);
+    }
+  });
+  return p;
+}
+function sendTouchRelease() {
+  return api(`/api/ctrl?type=touch&value=0%2F0&value2=off`);
+}
+function sendTrace(x, y) {
+  api(`/api/ctrl?type=touch_trace&value=${x}%2F${y}`);
+}
+function sendChgPos(x, y) {
+  api(`/api/ctrl?type=touchaf_chg_pos&value=${x}%2F${y}`);
+}
+
+$('#stage').addEventListener('pointerdown', e => {
+  const p = toCam(e.clientX, e.clientY);
+  showFocus(e.clientX, e.clientY, p.inFrame);
+  if (!p.inFrame) return;
+  dragging = true; lastSend = 0;
+  sendTouch(p.x, p.y);
+  if (navigator.vibrate) navigator.vibrate(8);
+});
+$('#stage').addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const now = performance.now();
+  if (now - lastSend < 330) return;       // ★ 降到 3Hz：实测相机对 camctrl 频率极敏感
+  lastSend = now;
+  const p = toCam(e.clientX, e.clientY);
+  if (!p.inFrame) return;
+  showFocus(e.clientX, e.clientY);
+  sendTouch(p.x, p.y);                    // ★ 改用已验证可用的 touch（touch_trace 本机 err_param）
+});
+addEventListener('pointerup', () => {
+  if (dragging) { dragging = false; sendTouchRelease(); }   // ★ 官方会发 0/0 + off
+});
+
+/* 双指捏合变焦 */
+let pinch0 = null;
+$('#stage').addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    pinch0 = Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
+                        e.touches[0].clientY-e.touches[1].clientY);
+  }
+}, {passive:true});
+$('#stage').addEventListener('touchmove', e => {
+  if (e.touches.length === 2 && pinch0) {
+    const d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
+                         e.touches[0].clientY-e.touches[1].clientY);
+    if (Math.abs(d - pinch0) > 26) {
+      const dir = d > pinch0 ? 1 : -1;
+      zoomStep(dir); pinch0 = d;
+    }
+  }
+}, {passive:true});
+$('#stage').addEventListener('touchend', () => { pinch0 = null; }, {passive:true});
+
+/* ---------- 变焦（本地视觉 + 相机侧 frame_ctrl） ---------- */
+function zoomStep(dir) {
+  S.zoom = Math.max(0, Math.min(8, S.zoom + dir));
+  live.style.transform = `scale(${1 + S.zoom * 0.25})`;
+  live.classList.add('zoom');
+  cmd(`/api/cmd?value=${dir > 0 ? 'tele-normal' : 'wide-normal'}`, '变焦');
+}
+
+/* ---------- 底部按钮 ---------- */
+$('#shutter').onclick = () => cmd('/api/cmd?value=capture', '拍照');
+$('#recbtn').onclick = async () => {
+  S.recording = !S.recording;
+  const v = S.recording ? 'video_recstart' : 'video_recstop';
+  await cmd('/api/cmd?value=' + v, S.recording ? '开始录像' : '停止录像');
+  $('#recbtn').classList.toggle('rec', S.recording);
+  $('#modebadge').textContent = S.recording ? '录像中' : '拍摄';
+  if (S.recording) { S.recStart = Date.now(); $('#timer').classList.add('show'); }
+  else { $('#timer').classList.remove('show'); }
+  toast(S.recording ? '开始录像' : '停止录像');
+};
+function setMode(m) {
+  S.mode = m;
+  const mask = $('#playmask');
+  if (m === 'play') {
+    mask.classList.add('show');
+    $('#modebadge').textContent = '回放';
+    live.src = '';                       // 停掉 MJPEG 连接，避免空转
+    S.streaming = false;
+  } else {
+    mask.classList.remove('show');
+    $('#modebadge').textContent = '拍摄';
+    connectStream();                     // 重新建立取景流
+  }
+}
+$('#bMode').onclick = async () => {
+  const r = await cmd('/api/mode?value=rec', '切拍摄模式');
+  setMode('rec');
+};
+$('#bPlay').onclick = async () => {
+  const r = await cmd('/api/mode?value=play', '切回放模式');
+  setMode('play');
+};
+$('#backrec').onclick = () => $('#bMode').click();
+$('#bAel').onclick = async () => {
+  S.ael = !S.ael;
+  await cmd('/api/ctrl?type=af_ae_lock&value=' + (S.ael ? 'on' : 'off'), 'AE锁定');
+  $('#bAel').querySelector('.ic').classList.toggle('on', S.ael);
+};
+$('#bInfo').onclick = async () => {
+  const d = await api('/api/info?type=capability');
+  toast('能力信息已输出到控制台', 1200);
+  console.log('capability:', d && d.reply);
+};
+
+/* 工具条 */
+/* ★ 焦点驱动（近/远）—— 用 capability 明确列出的 camcmd，稳定可用
+     长按 = 连续驱动（每 260ms 一步），松开停止
+     ⚠️ 相机上同一组 tele/wide 在 AF 下表现为变焦、MF 下表现为手动对焦 */
+let focusTimer = null;
+function driveFocus(dir) {          // dir: 'tele'(远) | 'wide'(近)
+  cmd(`/api/cmd?value=${dir}-normal`, dir === 'tele' ? '焦点远' : '焦点近');
+}
+function holdStart(dir, btn) {
+  btn.classList.add('on');
+  driveFocus(dir);
+  clearInterval(focusTimer);
+  focusTimer = setInterval(() => driveFocus(dir), 260);
+}
+function holdStop(btn) {
+  btn.classList.remove('on');
+  clearInterval(focusTimer);
+  focusTimer = null;
+  api('/api/cmd?value=focus-stop');      // 尝试停止（相机若不支持会忽略）
+}
+[['tFar','tele'],['tNear','wide']].forEach(([id, dir]) => {
+  const b = document.getElementById(id);
+  b.addEventListener('pointerdown', e => { e.preventDefault(); holdStart(dir, b); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev =>
+    b.addEventListener(ev, () => holdStop(b)));
+});
+$('#tFull').onclick = () => {
+  const el = document.documentElement;
+  if (!document.fullscreenElement) el.requestFullscreen && el.requestFullscreen();
+  else document.exitFullscreen && document.exitFullscreen();
+};
+$('#tStream').onclick = async () => {
+  const act = S.streaming ? 'stop' : 'start';
+  await api('/api/stream?action=' + act);
+  if (S.streaming) { live.src = ''; S.streaming = false; $('#tStream').textContent = '▶ 开始'; toast('已停流'); }
+  else { connectStream(); toast('已开始'); }
+};
+
+/* ---------- 状态轮询 ---------- */
+async function poll() {
+  const st = await api('/api/state');
+  if (st) {
+    $('#fps').textContent = st.fps != null ? st.fps.toFixed(1) : '--';
+    if (st.batt) {
+      let b = String(st.batt);
+      let pct = null;
+      const m = b.match(/(\d+)\s*\/\s*(\d+)/);
+      if (m) pct = Math.round(m[1] / m[2] * 100);
+      if (pct !== null) { $('#battfill').style.width = pct + '%'; $('#batttxt').textContent = pct + '%'; }
+      else { $('#batttxt').textContent = b.slice(0, 8); }
+    }
+    const authbar = $('#authbar');
+    if (st.access_mode && st.access_mode !== 'ok') {
+      authbar.classList.add('show');
+    } else {
+      authbar.classList.remove('show');
+    }
+    if (st.focusmode) $('#modebadge').textContent =
+      (st.focusmode === 'MF' ? 'MF 手动' : st.focusmode + ' 自动');
+    $('#params').innerHTML =
+      [st.iso && 'ISO <b>' + st.iso + '</b>',
+       st.fnumber && 'F<b>' + st.fnumber + '</b>',
+       st.shutterspeed && '<b>' + st.shutterspeed + '</b>',
+       st.capacity && '可拍 <b>' + st.capacity + '</b>'].filter(Boolean).join('<br>');
+  }
+  setTimeout(poll, 3000);
+}
+
+/* ---------- 录像计时 ---------- */
+setInterval(() => {
+  if (S.recording) {
+    const s = Math.floor((Date.now() - S.recStart) / 1000);
+    $('#tsec').textContent = pad(Math.floor(s / 60)) + ':' + pad(s % 60);
+  }
+}, 500);
+
+/* ---------- 诊断面板 ---------- */
+async function showDiag() {
+  const d = await api('/api/diag');
+  const box = $('#diagBody');
+  if (!d) { box.innerHTML = '<div class="row bad">诊断接口无响应</div>'; $('#diag').classList.add('show'); return; }
+  const s = d.summary || {};
+  const cls = v => v > 0 ? 'bad' : 'ok';
+  let h = '<div class="sec">总览</div>';
+  h += `<div class="row"><span>相机侧最大空档</span><b class="${cls(s.max_camera_gap_ms)}">${s.max_camera_gap_ms} ms</b></div>`;
+  h += `<div class="row"><span>节奏器垫帧次数</span><b>${s.pacing_underrun}</b></div>`;
+  h += `<div class="row"><span>下发慢(>200ms)次数</span><b class="${cls(s.http_slow_writes)}">${s.http_slow_writes}</b></div>`;
+  h += `<div class="row"><span>当前帧率</span><b>${s.fps_now} fps</b></div>`;
+  h += `<div class="row"><span>节奏器目标</span><b>${s.pacing_fps_fixed != null ? s.pacing_fps_fixed : (s.pacing_fps_adaptive || '?')} fps</b></div>`;
+  h += `<div class="row"><span>队列深度</span><b>${s.queue_len}</b></div>`;
+  h += `<div class="row"><span>★估算延迟</span><b class="${(s.est_latency_ms||0)>400?'bad':'ok'}">${s.est_latency_ms||0} ms</b></div>`;
+  h += `<div class="row"><span>平滑模式</span><b>${s.smooth_mode||''}</b></div>`;
+  h += `<div class="row"><span>心跳间隔</span><b>${s.keepalive_sec}s</b></div>`;
+  h += `<div class="row"><span>相机响应耗时</span><b>${s.cam_latency_ms} ms</b></div>`;
+  h += `<div class="sec">相机侧空档直方图</div><pre>${JSON.stringify(d.camera_gap_histogram || {}, null, 1)}</pre>`;
+  h += `<div class="sec">判定</div><div class="row"><b>${d.verdict || ''}</b></div>`;
+  h += '<div class="sec">最近的卡顿事件</div>';
+  const st = (d.recent_stalls || []).slice().reverse();
+  if (!st.length) h += '<div class="row ok">本次会话未记录到卡顿 ✅</div>';
+  else for (const e of st) h += `<div class="row"><span>${e.t} <b>${e.kind}</b> ${e.ms?e.ms+'ms':''}<br><small style="color:#9aa0a6">${e.detail||''}</small></span></div>`;
+  box.innerHTML = h;
+  $('#diag').classList.add('show');
+}
+async function showCtrlTest() {
+  toast('正在逐个测试控制命令…', 2500);
+  const d = await api('/api/ctrltest');
+  const box = $('#diagBody');
+  if (!d) { box.innerHTML = '<div class="row bad">自检失败</div>'; $('#diag').classList.add('show'); return; }
+  let h = `<h3>🧪 控制自检 <button onclick="document.getElementById('diag').classList.remove('show')">关闭</button></h3>`;
+  h += `<div class="row"><b>${d.ok}/${d.total} 项可用</b></div>`;
+  for (const r of d.results || []) {
+    const cls = r.code === 'ok' ? 'ok' : 'bad';
+    h += `<div class="row"><span>${r.what}</span><b class="${cls}">${r.code}</b></div>`;
+  }
+  h += `<div class="sec">说明</div><div class="row"><span>${d.hint || ''}</span></div>`;
+  box.innerHTML = h;
+  $('#diag').classList.add('show');
+}
+$('#tCtrlTest').onclick = showCtrlTest;
+$('#authCheck').onclick = async () => {
+  const r = await api('/api/access');
+  alert('权限状态: ' + (r ? r.mode : '?') + '\n\n' + (r ? r.hint : ''));
+  if (r && r.mode === 'ok') $('#authbar').classList.remove('show');
+};
+$('#tDiag').onclick = showDiag;
+$('#diagClose').onclick = () => $('#diag').classList.remove('show');
+
+/* ---------- 启动 ---------- */
+connectStream();
+poll();
+toast('点画面即可触摸对焦', 2200);
+</script>
+</body>
+</html>

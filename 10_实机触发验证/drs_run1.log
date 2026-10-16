@@ -1,0 +1,69 @@
+[14:20:56] 目标 192.168.54.1  轮数 4  核清理=True
+[14:20:56] 
+########## 第 1/4 轮 ##########
+[14:26:33]   相机上线
+[14:26:33] == 窗口开始 ==
+[14:26:33]   初始 getstate: err_critical
+[14:26:33]   B. 核清理 req_acc_can(空值, 仅一次): ok
+[14:26:35]      清后 getstate: err_critical
+[14:26:35]   C. req_acc(官方UUID, 仅一次): ok_under_research_no_msg,S5-XXXXXX,remote,open
+[14:26:35]   D. camcmd playmode: err_critical
+[14:26:36]   E. [2s] getstate: err_critical
+[14:26:41]   E. [6s] getstate: err_critical
+[14:26:46]   E. [10s] getstate: err_critical
+[14:26:50]   E. [15s] getstate: err_critical
+[14:26:55]   E. [20s] getstate: err_critical
+[14:27:00]   E. [24s] getstate: err_critical
+[14:27:04]   E. [28s] getstate: err_critical
+[14:27:09]   E. [33s] getstate: err_critical
+[14:27:14]   E. [38s] getstate: err_critical
+[14:27:18]   E. [42s] getstate: err_critical
+[14:27:21]   getstate 未达 ok
+[14:27:21]   本窗口失败，等相机掉线进下一窗口（最多 10 分钟）...
+[14:28:34] 
+########## 第 2/4 轮 ##########
+[14:38:35]   等待 600s 相机仍未上线，本轮放弃
+[14:38:35] 
+########## 第 3/4 轮 ##########
+[14:43:47]   相机上线
+[14:43:47] == 窗口开始 ==
+[14:43:47]   初始 getstate: err_critical
+[14:43:47]   B. 核清理 req_acc_can(空值, 仅一次): ok
+[14:43:49]      清后 getstate: err_critical
+[14:43:49]   C. req_acc(官方UUID, 仅一次): ok_under_research_no_msg,S5-XXXXXX,remote,open
+[14:43:50]   D. camcmd playmode: err_critical
+[14:43:51]   E. [2s] getstate: err_critical
+[14:43:56]   E. [6s] getstate: err_critical
+[14:44:00]   E. [10s] getstate: err_critical
+[14:44:05]   E. [15s] getstate: err_critical
+[14:44:10]   E. [20s] getstate: err_critical
+[14:44:14]   E. [24s] getstate: err_critical
+[14:44:19]   E. [28s] getstate: err_critical
+[14:44:23]   E. [33s] getstate: err_critical
+[14:44:28]   E. [38s] getstate: err_critical
+[14:44:33]   E. [42s] getstate: err_critical
+[14:44:36]   getstate 未达 ok
+[14:44:36]   本窗口失败，等相机掉线进下一窗口（最多 10 分钟）...
+[14:45:14] 
+########## 第 4/4 轮 ##########
+[14:45:46]   相机上线
+[14:45:46] == 窗口开始 ==
+[14:45:46]   初始 getstate: err_critical
+[14:45:46]   B. 核清理 req_acc_can(空值, 仅一次): ok
+[14:45:48]      清后 getstate: err_critical
+[14:45:48]   C. req_acc(官方UUID, 仅一次): ok_under_research,S5-XXXXXX,remote,open
+[14:45:48]   D. camcmd playmode: err_critical
+[14:45:50]   E. [2s] getstate: err_critical
+[14:45:54]   E. [6s] getstate: err_critical
+[14:45:59]   E. [10s] getstate: err_critical
+[14:46:03]   E. [15s] getstate: err_critical
+[14:46:08]   E. [20s] getstate: err_critical
+[14:46:13]   E. [24s] getstate: err_critical
+[14:46:17]   E. [28s] getstate: err_critical
+[14:46:22]   E. [33s] getstate: err_critical
+[14:46:27]   E. [38s] getstate: err_critical
+[14:46:31]   E. [42s] getstate: err_critical
+[14:46:35]   getstate 未达 ok
+[14:46:35]   本窗口失败，等相机掉线进下一窗口（最多 10 分钟）...
+[14:47:58] 
+全部轮次失败。建议：相机接 AC；或在相机上退出等待画面重新进入；或断电 30s 冷启动。

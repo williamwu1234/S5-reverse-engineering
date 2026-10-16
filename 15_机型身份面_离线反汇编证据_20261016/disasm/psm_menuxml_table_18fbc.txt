@@ -1,0 +1,110 @@
+   18fbc:	e59f21a0 	ldr	r2, [pc, #416]	@ 19164 <shmget@plt+0x6784>
+   18fc0:	e3a06000 	mov	r6, #0
+   18fc4:	e1a01000 	mov	r1, r0
+   18fc8:	e59f0198 	ldr	r0, [pc, #408]	@ 19168 <shmget@plt+0x6788>
+   18fcc:	ebffe593 	bl	12620 <printf@plt>
+   18fd0:	e28d1f7e 	add	r1, sp, #504	@ 0x1f8
+   18fd4:	e52161e8 	str	r6, [r1, #-488]!	@ 0xfffffe18
+   18fd8:	e28d200c 	add	r2, sp, #12
+   18fdc:	e3a00002 	mov	r0, #2
+   18fe0:	e58d600c 	str	r6, [sp, #12]
+   18fe4:	eb00b96d 	bl	475a0 <shmget@plt+0x34bc0>
+   18fe8:	e59dc00c 	ldr	ip, [sp, #12]
+   18fec:	e5940000 	ldr	r0, [r4]
+   18ff0:	e5941008 	ldr	r1, [r4, #8]
+   18ff4:	e59d3010 	ldr	r3, [sp, #16]
+   18ff8:	e1a02005 	mov	r2, r5
+   18ffc:	e58dc000 	str	ip, [sp]
+   19000:	ebfff5e1 	bl	1678c <shmget@plt+0x3dac>
+   19004:	e1a00006 	mov	r0, r6
+   19008:	e28ddf7e 	add	sp, sp, #504	@ 0x1f8
+   1900c:	e8bd8070 	pop	{r4, r5, r6, pc}
+   19010:	eb0092a7 	bl	3dab4 <shmget@plt+0x2b0d4>
+   19014:	e2400f4d 	sub	r0, r0, #308	@ 0x134
+   19018:	e2400003 	sub	r0, r0, #3
+   1901c:	e3500017 	cmp	r0, #23
+   19020:	979ff100 	ldrls	pc, [pc, r0, lsl #2]
+   19024:	eaffffe2 	b	18fb4 <shmget@plt+0x65d4>
+   19028:	00019158 	andeq	r9, r1, r8, asr r1
+   1902c:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19030:	00019118 	andeq	r9, r1, r8, lsl r1
+   19034:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19038:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   1903c:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19040:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19044:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19048:	00019148 	andeq	r9, r1, r8, asr #2
+   1904c:	00019150 	andeq	r9, r1, r0, asr r1
+   19050:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19054:	00019120 	andeq	r9, r1, r0, lsr #2
+   19058:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   1905c:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19060:	00019128 	andeq	r9, r1, r8, lsr #2
+   19064:	00019130 	andeq	r9, r1, r0, lsr r1
+   19068:	00019138 	andeq	r9, r1, r8, lsr r1
+   1906c:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19070:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19074:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19078:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   1907c:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19080:	00018fb4 			@ <UNDEFINED> instruction: 0x00018fb4
+   19084:	00019140 	andeq	r9, r1, r0, asr #2
+   19088:	e59f60dc 	ldr	r6, [pc, #220]	@ 1916c <shmget@plt+0x678c>
+   1908c:	e3a03000 	mov	r3, #0
+   19090:	e5942008 	ldr	r2, [r4, #8]
+   19094:	e5940000 	ldr	r0, [r4]
+   19098:	e3a01001 	mov	r1, #1
+   1909c:	eb00405c 	bl	29214 <shmget@plt+0x16834>
+   190a0:	e3a02f7a 	mov	r2, #488	@ 0x1e8
+   190a4:	e1a01000 	mov	r1, r0
+   190a8:	e28d0010 	add	r0, sp, #16
+   190ac:	ebffe540 	bl	125b4 <memcpy@plt>
+   190b0:	e3a02f72 	mov	r2, #456	@ 0x1c8
+   190b4:	e28d0020 	add	r0, sp, #32
+   190b8:	e3a01000 	mov	r1, #0
+   190bc:	ebffe4cd 	bl	123f8 <memset@plt>
+   190c0:	e3a03003 	mov	r3, #3
+   190c4:	e1a01006 	mov	r1, r6
+   190c8:	e28d0024 	add	r0, sp, #36	@ 0x24
+   190cc:	e58d3020 	str	r3, [sp, #32]
+   190d0:	ebffe543 	bl	125e4 <strcpy@plt>
+   190d4:	e1a00005 	mov	r0, r5
+   190d8:	e28d1010 	add	r1, sp, #16
+   190dc:	eb008c94 	bl	3c334 <shmget@plt+0x29954>
+   190e0:	e3a00000 	mov	r0, #0
+   190e4:	e28ddf7e 	add	sp, sp, #504	@ 0x1f8
+   190e8:	e8bd8070 	pop	{r4, r5, r6, pc}
+   190ec:	e59f607c 	ldr	r6, [pc, #124]	@ 19170 <shmget@plt+0x6790>
+   190f0:	eaffffe5 	b	1908c <shmget@plt+0x66ac>
+   190f4:	eb004b6a 	bl	2bea4 <shmget@plt+0x194c4>
+   190f8:	e59f2064 	ldr	r2, [pc, #100]	@ 19164 <shmget@plt+0x6784>
+   190fc:	e3a0301e 	mov	r3, #30
+   19100:	e1a01000 	mov	r1, r0
+   19104:	e59f005c 	ldr	r0, [pc, #92]	@ 19168 <shmget@plt+0x6788>
+   19108:	ebffe544 	bl	12620 <printf@plt>
+   1910c:	e3a00001 	mov	r0, #1
+   19110:	e28ddf7e 	add	sp, sp, #504	@ 0x1f8
+   19114:	e8bd8070 	pop	{r4, r5, r6, pc}
+   19118:	e59f6054 	ldr	r6, [pc, #84]	@ 19174 <shmget@plt+0x6794>
+   1911c:	eaffffda 	b	1908c <shmget@plt+0x66ac>
+   19120:	e59f6050 	ldr	r6, [pc, #80]	@ 19178 <shmget@plt+0x6798>
+   19124:	eaffffd8 	b	1908c <shmget@plt+0x66ac>
+   19128:	e59f604c 	ldr	r6, [pc, #76]	@ 1917c <shmget@plt+0x679c>
+   1912c:	eaffffd6 	b	1908c <shmget@plt+0x66ac>
+   19130:	e59f6048 	ldr	r6, [pc, #72]	@ 19180 <shmget@plt+0x67a0>
+   19134:	eaffffd4 	b	1908c <shmget@plt+0x66ac>
+   19138:	e59f6044 	ldr	r6, [pc, #68]	@ 19184 <shmget@plt+0x67a4>
+   1913c:	eaffffd2 	b	1908c <shmget@plt+0x66ac>
+   19140:	e59f6040 	ldr	r6, [pc, #64]	@ 19188 <shmget@plt+0x67a8>
+   19144:	eaffffd0 	b	1908c <shmget@plt+0x66ac>
+   19148:	e59f603c 	ldr	r6, [pc, #60]	@ 1918c <shmget@plt+0x67ac>
+   1914c:	eaffffce 	b	1908c <shmget@plt+0x66ac>
+   19150:	e59f6038 	ldr	r6, [pc, #56]	@ 19190 <shmget@plt+0x67b0>
+   19154:	eaffffcc 	b	1908c <shmget@plt+0x66ac>
+   19158:	e59f6034 	ldr	r6, [pc, #52]	@ 19194 <shmget@plt+0x67b4>
+   1915c:	eaffffca 	b	1908c <shmget@plt+0x66ac>
+   19160:	00051110 	andeq	r1, r5, r0, lsl r1
+   19164:	000510b0 	strheq	r1, [r5], -r0
+   19168:	0004fe20 	andeq	pc, r4, r0, lsr #28
+   1916c:	000510ec 	andeq	r1, r5, ip, ror #1
+   19170:	000510c8 	andeq	r1, r5, r8, asr #1

@@ -1,0 +1,162 @@
+===================================================
+### wifi_ap_probe.sh 启动 2026-10-13 06:29:23
+### 缓冲 45s 后开始切换网络
+===================================================
+[orig] ip=192.168.1.129 gw=192.168.1.1 prefix=192.168.1
+[orig] 首选网络候选:
+        2401
+        S5-XXXXXX
+        吴的iPhone
+        2401-5G
+        BHSZ-DT
+        ChinaNet-VhtX-5G
+        ChinaNet-VhtX
+        长峰桑拿沐足
+        LMJ-Wifi-FHC
+        HUAWEI-204
+        PCIS-BX
+        1501
+        yrm
+        凤凰楼一楼
+        彭厨
+        ShiZQ
+        GEHOO HOUSE-5G
+        HLS5G
+        老马食馆-5G
+        永樂王
+        CMCC-zM3Z-5G
+        陈记深井烧鹅-5G
+        陈记深井烧鹅
+        压屏佬手机
+        J R
+        FM_718850
+        yunhou
+        zctsg (pw:12345678)
+        周大洋的OPPO
+        RANZ_8350
+        ezviz_9840B0_5G
+        CMCC-204
+        REDMI Turbo 4
+        zjb
+        ChinaNet-D2ax
+        iPhone
+        HUAWEI P40 Pro
+        PCIS
+        以饭湘许
+        广汇海记牛肉火锅-5G
+        潮艺-5G
+        Asus-RT-AC68U
+        LIUBO2_4_5G
+        论牛
+        MySong
+        三秦坊5G
+        ltdw_5G
+        TP-LINK_6828-5G
+        189******17的P40 Pro
+        HUAWEI-2401_5G
+        MiMover_skmh5vx_MI
+        HUAWEI-1CS9JK
+        TP-LINK-6828-5G
+        Li的iphone
+        ChinaNet-2app
+        jxe   2.4G
+        CT-WiFi-509
+        FM_2.4G
+        FM_5G
+        有甸餐厅888
+        room-8220-502
+        iPhone16 Pro Max
+        1302
+        iPhone 15 Pro Max
+        钢铁侠
+        CMCC-666
+        UC_666
+        CMCC-666-5G
+        公孙烧鹅_5G
+        TP-LINK_CA46
+        TP-LINK_47FC
+        君雅Hotel-8222-5G
+        东北菜二楼
+        MENTONGBINGSUTT
+        棒棒哒-5G
+        PCIS-YZ
+        广迅-5G
+        vivo Y76s
+        株洲天泉
+        TP-LINK_二楼
+        TP-LINK_7450
+        花花美食_5G
+        CU_j666
+        MI 9
+        和二茶楼
+        FAST_888
+        JZG
+        du
+        CMCC-VkFS
+        8229
+        MEET_5G
+        FAST_D97D9A
+
+=============== 切换网络 2026-10-13 06:30:08 ===============
+[ap] 已连 S5-XXXXXX  ip=192.168.54.10  gw=192.168.54.1
+op = BOOTREPLY
+htype = 1
+flags = 0x0
+hlen = 6
+hops = 0
+xid = 0xee0be3e6
+secs = 0
+ciaddr = 0.0.0.0
+yiaddr = 192.168.54.10
+siaddr = 0.0.0.0
+giaddr = 0.0.0.0
+chaddr = 66:81:2E:XX:XX:XX
+sname = 
+file = 
+options:
+Options count is 6
+dhcp_message_type (uint8): ACK 0x5
+server_identifier (ip): 192.168.54.1
+lease_time (uint32): 0xe10
+subnet_mask (ip): 255.255.255.0
+
+=============== 取证开始 2026-10-13 06:30:13 ===============
+### S5 SoftAP 侧只读取证 @ 2026-10-13 06:30:13
+== 相机 = 192.168.54.1 ==
+
+== Q2: UA 门槛测试 ==
+  带 UA(LUMIX Sync)       -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></c
+  不带 UA                  -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></c
+  伪造其他 UA(Chrome)        -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></c
+
+== Q1: 只读端点(未做任何 App 握手) ==
+  getinfo capability       -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  getinfo allmenu          -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  getinfo curmenu          -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  getinfo lens             -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  getsetting videoformat   -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  getsetting ntcs_pal      -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  accctrl req_acc          -> HTTP 200 | ok_under_research,S5-XXXXXX,remote,open
+  camctrl                  -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+
+== Q3: CSRF（外部 Referer/Origin） ==
+  带外部 Referer/Origin -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></c
+  带外部头读 lens        -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></c
+
+== 无认证控制测试（可逆模式切换） ==
+  camcmd playmode (无任何握手/凭据) -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  camcmd recmode (复位)             -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+
+== 端口扫描 192.168.54.1 ==
+  开放: [80, 50001, 60606]
+
+== 全量 camsetting 下载（65,533 B） ==
+  startsenddata -> HTTP 200 | <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+  endsenddata -> <?xml version="1.0" encoding="UTF-8"?> <camrply><result>err_critical</result></camrply>
+
+== 取证完成 -> /Users/<user>/Documents/ChatGPT/S5_逆向_项目总包_20261012/04_工具与脚本/campaign2/out/s5_ap/ap_probe.json ==
+=============== 取证结束 2026-10-13 06:30:21 ===============
+
+wifi_ap_probe.sh: line 38: ORIG_GW�: unbound variable
+[trap] 异常退出，尝试恢复网络
+wifi_ap_probe.sh: line 38: ORIG_GW�: unbound variable

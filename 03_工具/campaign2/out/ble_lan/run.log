@@ -1,0 +1,25 @@
+[07:38:47.509] 目标 IP=192.168.1.131  seed=020000025AD6  UUID=4D454930-0100-1000-8001-020000025AD6
+[07:38:47.516] 编码自检 encodeString("ABC",0x9032782C) = d33b70d1
+[07:38:47.547] BLE 扫描…
+[07:38:50.920] BLE 发现 S5-XXXXXX rssi=-56
+[07:38:51.648] BLE 已连接
+[07:38:57.379] BLE 枚举完成 41 特征
+[07:38:57.904] 写身份 DLNA_UUID = 4d454930010010008001020000025ad6  (accctrl value = 4D454930-0100-1000-8001-020000025AD6)
+[07:38:58.006]   ← BLE 写回调 8D08A420 err=成功
+[07:38:59.479] 写身份设备名 = MacBLE
+[07:38:59.595]   ← BLE 写回调 CD7A71A0 err=成功
+[07:39:01.057] === Wi-Fi 阶段（BLE 保持连接）===
+[07:39:09.078] 基线 req_acc      → (err) The request timed out.
+[07:39:17.084] req_acc_g         → (err) The request timed out.
+[07:39:17.085] 解析密钥 key       = 0x00000000
+[07:39:17.085] 链路为 open → 走明文 req_acc
+[07:39:33.085] req_acc           → (err) The request timed out.
+[07:39:44.239]   +0s → (err) The request timed out.
+[07:39:55.392]   +3s → (err) The request timed out.
+[07:40:06.546]   +6s → (err) The request timed out.
+[07:40:17.702]   +9s → (err) The request timed out.
+[07:40:28.857]   +12s → (err) The request timed out.
+[07:40:40.013]   +15s → (err) The request timed out.
+[07:40:51.168]   +18s → (err) The request timed out.
+[07:41:02.323]   +21s → (err) The request timed out.
+[07:41:02.323] 窗口结束

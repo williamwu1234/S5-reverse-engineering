@@ -1,0 +1,83 @@
+{
+  "log": [
+    "### SoftAP 第二轮 @ 2026-10-13 06:39:38  cam=192.168.54.1",
+    "[0] getstate -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_reject</result></camrply>",
+    "[0] accctrl req_acc -> err_user_refused,S5-XXXXXX,remote,open",
+    "\n[1] accctrl req_acc_g（只读，取握手密钥）",
+    "    HTTP 200 | <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "    原始长度 85",
+    "\n[2] accctrl req_acc  value=4D454930-0100-1000-8001-00006acd61ab value2=MacProbe",
+    "    HTTP 200 | err_user_refused,S5-XXXXXX,remote,open",
+    "    +3s 后 req_acc 状态 -> ok_under_research,S5-XXXXXX,remote,open",
+    "    +6s 后 req_acc 状态 -> err_user_refused,S5-XXXXXX,remote,open",
+    "    +9s 后 req_acc 状态 -> ok_under_research,S5-XXXXXX,remote,open",
+    "\n[3] 请求访问后复测读端点",
+    "    getstate                 -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getinfo capability       -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getinfo lens             -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    getsetting videoformat   -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "    startsenddata            -> <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "\n[4] accctrl req_acc_can（清理 pending）",
+    "    HTTP 200 | <?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "\n[5] 新端口服务识别",
+    "  -- port 50001 --",
+    "     HTTP/raw: ",
+    "  -- port 60606 --",
+    "     HTTP/raw: HTTP/1.1 404 Not Found CONNECTION: close",
+    "     /                                              -> 404 | Server=- | ",
+    "     /index.html                                    -> 404 | Server=- | ",
+    "     /rootDesc.xml                                  -> 404 | Server=- | ",
+    "     /description.xml                               -> 404 | Server=- | ",
+    "     /upnp/control/content_directory                -> 404 | Server=- | ",
+    "     /cgi-bin/magicBox.cgi?action=getDeviceInfo     -> 404 | Server=- | ",
+    "\n[6] 全端口扫描 1-65535（并行）",
+    "    开放端口: [80, 50001, 60606]"
+  ],
+  "results": {
+    "baseline_accctrl": "err_user_refused,S5-XXXXXX,remote,open",
+    "req_acc_g": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_param</result></camrply>",
+    "req_acc_request": "err_user_refused,S5-XXXXXX,remote,open",
+    "post_getstate": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "post_getinfo capability": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "post_getinfo lens": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "post_getsetting videoformat": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "post_startsenddata": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <camrply><result>err_critical</result></camrply>",
+    "port50001_raw": "",
+    "port60606_raw": "HTTP/1.1 404 Not Found CONNECTION: close",
+    "port60606_": {
+      "status": 404,
+      "server": "",
+      "body": ""
+    },
+    "port60606_index.html": {
+      "status": 404,
+      "server": "",
+      "body": ""
+    },
+    "port60606_rootDesc.xml": {
+      "status": 404,
+      "server": "",
+      "body": ""
+    },
+    "port60606_description.xml": {
+      "status": 404,
+      "server": "",
+      "body": ""
+    },
+    "port60606_upnp_control_content_directory": {
+      "status": 404,
+      "server": "",
+      "body": ""
+    },
+    "port60606_cgi-bin_magicBox.cgi?action=getDeviceInfo": {
+      "status": 404,
+      "server": "",
+      "body": ""
+    },
+    "all_open_ports": [
+      80,
+      50001,
+      60606
+    ]
+  }
+}
